@@ -1,0 +1,39 @@
+This is the method.
+
+\section{Choice of method} \label{sec:choiceofmethod}
+- Explain a query and see what indexes are chosen at what time
+- Explain how the database was transferred (quickly)
+- The steps:
+-- Run executions with parameters
+-- Save output to file
+-- Parse output to find how data is accessed via an index
+-- Identify unique access methods for each relation
+- Show pseudocode for each step
+
+\subsection{Choice of databases} \label{sec:choiceofdatabases}
+The two database chosen to be evaluated are PostgreSQL and MariaDB. Both of these databases fulfill the following criteria:
+\begin{enumerate}
+    \item Modern databases that see much use and development;
+    \item Open-source projects with code that anyone can read, modify and help develop;
+    \item And they implement state-of-the-art algorithms and methods.
+\end{enumerate}
+
+In addition to this PostgreSQL is the typical choice for academic evaluation. All research papers mentioned in Chapter \ref{chap:relatedwork} that have implemented new algorithms or modified old ones have done so in PostgreSQL.
+
+MariaDB on the other hand is commonly used in the world of enterprise as it also support MySQL – another database commonly used in enterprise.
+
+Studying these two databases should cover how well a modern state-of-the-art query optimizer performs. In addition, as mentioned in Section \ref{sec:purpose} since both of them are open-source, if one performs better than the other the code can be studied to identify areas of improvement.
+
+\section{Benchmark problems} \label{sec:benchmark}
+- TriOptimas, huge and complex
+
+\section{Implementation}
+- Programmet implementeras i Python
+- Postgres-driver: psycopg
+
+\subsection{PostgreSQL}
+
+\subsection{MariaDB}
+
+\section{Performance analysis}
+- Repeat a number of times (f.e.  1000) and see if different indexes are chosen at the same point of execution

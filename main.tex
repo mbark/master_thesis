@@ -1,0 +1,83 @@
+\documentclass[a4paper,11pt]{kth-mag}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[swedish,english]{babel}
+\usepackage{csquotes}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{courier}
+\usepackage{epigraph}
+\usepackage{modifications}
+\usepackage{numberedblock}
+\usepackage{forest}
+\usepackage{subcaption}
+\usepackage[                    % References
+        backend=biber
+    ]{biblatex}
+    \addbibresource{references.bib}
+\usepackage{standalone}
+
+\title{Lorem ipsum dolor sit amet, sed diam nonummy nibh eui
+       mod tincidunt ut laoreet dol}
+
+\subtitle{Duis autem vel eum iruire dolor in hendrerit in
+          vulputate velit esse molestie consequat, vel illum
+          dolore eu feugiat null}
+\foreigntitle{Lorem ipsum dolor sit amet, sed diam nonummy nibh eui
+              mod tincidunt ut laoreet dol}
+\author{Martin Barksten}
+\date{January 2016}
+\blurb{Master's Thesis at NADA\\Supervisor: John Folkesson\\Examiner: Patric Jensfelt}
+\trita{TRITA xxx yyyy-nn}
+
+\usepackage{hyperref}
+
+\begin{document}
+\lstset{basicstyle=\ttfamily,breaklines=true}
+\lstset{frame=lines}
+\emergencystretch=1em
+
+\frontmatter
+\pagestyle{empty}
+\removepagenumbers
+\maketitle
+\selectlanguage{english}
+\begin{abstract}
+    \input{Content/0_1_abstract}
+\end{abstract}
+\clearpage
+\begin{foreignabstract}{swedish}
+    \input{Content/0_2_foreign_abstract}
+\end{foreignabstract}
+\clearpage
+\tableofcontents*
+\clearpage
+\listoffigures
+\mainmatter
+\pagestyle{newchap}
+
+\chapter{Glossary} \label{chap:glossary}
+    \input{Content/1_glossary}
+\chapter{Introduction} \label{chap:introduction}
+    \input{Content/2_introduction}
+\chapter{Related work} \label{chap:relatedwork}
+    \input{Content/3_related_work}
+\chapter{Theory} \label{chap:theory}
+    \input{Content/4_theory}
+\chapter{Method} \label{chap:method}
+    \input{Content/5_method}
+\chapter{Results} \label{chap:results}
+    \input{Content/6_results}
+\chapter{Discussion} \label{chap:discussion}
+    \input{Content/7_discussion}
+\nocite{*}
+\printbibliography
+
+\appendix
+\addappheadtotoc
+\chapter{RDF}\label{appA}
+
+The appendix.
+\end{document}
