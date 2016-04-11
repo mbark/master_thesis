@@ -1,0 +1,19 @@
+EXJOBB -*- mode: org -*-
+* Finish data collection
+** TODO Transfer MySql to MariaDb
+** TODO Test the second query and analyze to see how it performs
+** TODO Allow MariaDb data to be analyzed as well
+** TODO Run tests in MariaDb
+** TODO Go from parsed output to some form of table to display
+
+* Report
+** TODO Begin writing the method part
+** TODO Read the method part from Are Query Optimizers Good? for inspiration
+** TODO Write pseudocode to explain how it works
+** TODO Add implementation info such as drivers and libraries used
+
+* Questions
+** TODO Do we need more than two queries?
+** TODO How we argue that these queries are representative?
+** TODO How do we argue the underlying database better?
+** TODO What are the specs of the computers used? Is that relevant?
