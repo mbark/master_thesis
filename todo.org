@@ -7,8 +7,12 @@ EXJOBB -*- mode: org -*-
 ** TODO Go from parsed output to some form of table to display
 
 * Report
-** TODO Begin writing the method part
-** TODO Read the method part from Are Query Optimizers Good? for inspiration
+** DONE Read the method part from Are Query Optimizers Good? for inspiration
+CLOSED: [2016-04-12 Tue 11:32]
+** DONE Begin writing the method part
+CLOSED: [2016-04-12 Tue 13:15]
+** TODO Find the relevant statistics of the database used
+** TODO Rephrase from index selection to access method (seq scan vs index is also relevant)
 ** TODO Write pseudocode to explain how it works
 ** TODO Add implementation info such as drivers and libraries used
 

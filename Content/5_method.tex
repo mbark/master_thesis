@@ -1,39 +1,119 @@
-This is the method.
+In this chapter, the methods used to investigate the problem statement are
+presented. First, the choice of method is described briefly and motivated, this
+section will also cover the databases used and why these were picked. Following
+this section comes a section describing the benchmark problems, that is the
+data set used and the corresponding queries. Finally the implementation details
+of the tool used is described in more detail.
 
 \section{Choice of method} \label{sec:choiceofmethod}
-- Explain a query and see what indexes are chosen at what time
-- Explain how the database was transferred (quickly)
-- The steps:
--- Run executions with parameters
--- Save output to file
--- Parse output to find how data is accessed via an index
--- Identify unique access methods for each relation
-- Show pseudocode for each step
+This section will cover first why the databases used for evaluation were
+chosen, following this dataset used for evaluation is motivated and finally a
+short description of the technologies used.
 
 \subsection{Choice of databases} \label{sec:choiceofdatabases}
 The two database chosen to be evaluated are PostgreSQL and MariaDB. Both of these databases fulfill the following criteria:
 \begin{enumerate}
-    \item Modern databases that see much use and development;
-    \item Open-source projects with code that anyone can read, modify and help develop;
-    \item And they implement state-of-the-art algorithms and methods.
+\item Modern databases that see much use and development;
+\item Open-source projects with code that anyone can read, modify and help develop;
+\item And they implement state-of-the-art algorithms and methods.
 \end{enumerate}
 
-In addition to this PostgreSQL is the typical choice for academic evaluation. All research papers mentioned in Chapter \ref{chap:relatedwork} that have implemented new algorithms or modified old ones have done so in PostgreSQL.
+In addition to this PostgreSQL is the typical choice for academic evaluation.
+All research papers mentioned in Chapter \ref{chap:relatedwork} that have
+implemented new algorithms or modified old ones have done so in PostgreSQL.
+MariaDB on the other hand is compatible with MySQL making it a common
+alternative for enterprises. The two databases should therefore cover the most
+commonly used open-source databases for academia and enterprises.
 
-MariaDB on the other hand is commonly used in the world of enterprise as it also support MySQL – another database commonly used in enterprise.
+Studying these two databases should cover how well a modern state-of-the-art
+query optimizer performs. In addition, as mentioned in Section \ref{sec:purpose}
+since both of them are open-source, if one performs better than the other the
+code can be studied to identify areas of improvement.
 
-Studying these two databases should cover how well a modern state-of-the-art query optimizer performs. In addition, as mentioned in Section \ref{sec:purpose} since both of them are open-source, if one performs better than the other the code can be studied to identify areas of improvement.
+\subsection{Choice of dataset}
+The dataset used for evaluation is one taken directly from the real-world, this
+is to ensure that the database has all the traits of a real database:
+non-trivial indexes, non-uniform and skewed data as well as a considerable
+amount of data.
+
+One important reason that the dataset was selected was that most of the ones
+currently used for evaluation such as TPC-H, TPC-DS or more recently JOB (REFERENCE), all
+have trivial index setups; that is one index on the primary key for each
+relation. As such, studying how the query optimizer selects index for these is
+irrelevant: there is just one index trivially found to be correct.
+
+The dataset is based on TriOptima's data, meaning it can't be published. The
+relevant statistics of the dataset will be shown in Section \ref{sec:benchmark}
+
+\subsection{Choice of technologies used}
+The technologies used to develop the tool used for evaluation were chosen to be
+Clojure, using a JDBC driver. The reason these were selected is that Clojure
+runs on the JVM, making it platform independent. In addition most of the work
+done by the tool is to process and transform data in the form of JSON, a task
+that Clojure is well suited to.
 
 \section{Benchmark problems} \label{sec:benchmark}
-- TriOptimas, huge and complex
+This section will give a description if the problems used for benchmarking the
+query optimizers. The section will start with a description of the relevant
+statistics of the data set, following that is a description of the queries
+chosen to evaluate the query optimizer.
+
+\subsection{TriOptimas data set}
+- size of some tables, number of indexes etc
+
+\subsection{The queries}
+- focus on using tables with many indexes
+- join several tables to improve errors and increase difficulty for the optimizer
+- focus on using realistic queries actually used by trioptima to allow for
+better and more realistic modeling
 
 \section{Implementation}
-- Programmet implementeras i Python
-- Postgres-driver: psycopg
+The tool was implemented in Clojure and the evaluation is split up into two
+separate processes:
+\begin{enumerate}
+\item Repeatedly executing queries with different sample sizes;
+\item And then parsing the output of the executions to find the access methods used.
+\end{enumerate}
+
+The following sections will describe each of the two processes separately.
+Finally relevant implementation details, such as how the statistics are deleted,
+are provided for each of the two databases.
+
+\subsection{Query execution} \label{sec:queryexecution}
+During the query execution data is gathered about one or more queries, repeated
+a number of times with a number of different sample sizes used. All resulting
+query plans are then saved to a file for later parsing and evaluation.
+
+The execution of one query consists of:
+\begin{enumerate}
+\item Deleting all statistics gathered by the database;
+\item Setting the parameter for what the number of samples used is;
+\item Executing an ANALYZE to gather statistics about all tables;
+\item Executing an ANALYZE on the query to find what query plan the query
+  optimizer selects;
+\item And finally saving the resulting JSON to a file;
+\end{enumerate}
+
+This procedure is then repeated for each query and each sample size, a number of
+times to find all possible query plans used. Pseudocode describing this process
+can be found in (REFERERA).
+
+\subsection{Parsing and analyzing} \label{sec:parsing}
+During the parsing and analysis a file generated from the previous process
+(described in \ref{sec:queryexecution}) is parsed and then analyzed to find what
+access methods are used for each relation.
+
+Analyzing one query consists of:
+\begin{enumerate}
+\item Identifying all relation accesses;
+\item Grouping the relation accesses by what relation they access;
+\item Finding all unique relation accesses per relation;
+\item And finally calculating the size of the unique relation accesses per relation.
+\end{enumerate}
+
+This procedure is repeated for each repetition of each query and each sample
+size. Pseudocode describing this process can be found in Figure (REFERENCE).
 
 \subsection{PostgreSQL}
 
 \subsection{MariaDB}
-
-\section{Performance analysis}
-- Repeat a number of times (f.e.  1000) and see if different indexes are chosen at the same point of execution
