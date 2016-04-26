@@ -1,5 +1,5 @@
 EXJOBB -*- mode: org -*-
-* Finish data collection
+* TODO Finish data collection
 ** DONE Gather new data now that all tables are analyzed
 CLOSED: [2016-04-19 Tue 15:00]
 ** DONE Add functionality to get the count for each alias
@@ -32,6 +32,7 @@ CLOSED: [2016-04-12 Tue 16:27]
 ** TODO Remain consistent between dataset or data set
 ** TODO Add code from the project itself showing the transformation of the data
 ** TODO Extend the method part with to describe the current implementation
+** TODO Clean up the code a bit to be able to add it to the report
 * Questions
 ** TODO Should I also study the effect the potential incorrect selection has?
 ** TODO How should the pseudocode be formatted?

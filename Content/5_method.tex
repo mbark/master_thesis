@@ -81,177 +81,212 @@ some of the technologies and frameworks used. Following this is a description of
 the two steps of the analysis. Finally the queries used for PostgreSQL and
 MariaDB respectively are presented.
 
+The evaluation process is split into three steps:
+\begin{enumerate}
+\item Repeatedly executing the query with different sample sizes to generate
+  query plans;
+\item Parsing the query plans to find what access methods are used for all
+  relations;
+\item And finally analyzing the parsed plans to find the number of unique access
+  methods used for each relation;
+\end{enumerate}
+
+To increase robustness and allow further analysis the results for each step are
+saved and can be performed independently on the other.
+
 The tool was implemented in Clojure, using JDBC to connect to and query the
-databases. The tool is called via the command line and an example execution can
-be seen in Figure~\ref{fig:cmd:running}. For more information regarding the
-tool, see the public repository at GitHub.
+databases. For more information about the project, refer to the documentation at
+the repo (REFERERA). The typical use of the tool is to perform all steps in one
+Figure~\ref{fig:cmd:runtool1}. For the case when not all steps need to done, the
+tool can take a file to read from as the first input, see
+Figure~\ref{fig:cmd:runtool2} for an example of how this can be done.
 
 \begin{figure}[ht]
-  \caption[Running the tool from the command line]{An example of running the
-  tool from the command line with some parameters.}
-  \begin{lstlisting}[language=bash]
-    lein run queries=query1 query2 repetitions=100 samplesizes=10 100 --database=postgresql
-  \end{lstlisting}~\label{fig:cmd:running}
+  \begin{minted}[breaklines]{bash}
+    lein run steps='generate parse analyze' query=queryid repetitions=100 samplesizes='10 100' --database=postgresql
+  \end{minted}
+  \caption[Using the tool to generate, parse and analyze a query]{An example of
+    using the tool to generate, parse and analyze a query with some given
+    parameters, such as the sample sizes to use.}
+  \label{fig:cmd:runtool1}
 \end{figure}
 
-The evaluation is split up into two separate processes:
-\begin{enumerate}
-\item Repeatedly executing queries with different sample sizes;
-\item And then parsing the output of the executions to find the access methods used.
-\end{enumerate}
+\begin{figure}[ht]
+  \begin{minted}[breaklines]{bash}
+    lein run plans/xxx-000000000 steps='parse analyze'
+  \end{minted}
+  \caption[Using the tool to parse and analyze a previously generated plan]{An
+    example of how the tool can be used to parse and analyze a previously
+    generated file containing query plans.}
+  \label{fig:cmd:runtool2}
+\end{figure}
 
-The following sections will describe each of the two processes separately.
+The following sections will describe the implementation details for each of the
+three steps: generation, parsing and finally analysis.
 
-\subsection{Query execution}\label{sec:queryexecution}
-During the query execution data is gathered about one or more queries, repeated
-a number of times with a number of different sample sizes used. All resulting
-query plans are then saved to a file for later parsing and evaluation.
+\subsection{Generating plans}\label{sec:generatingplans}
+Generating the plans is done by setting the statistics target for the database's
+\texttt{ANALYZE}, sampling new data with the target and then finding the query plan for
+the query. This process is then repeated a number of times for each sample size
+to ensure that all possible access methods are found.
 
-The execution of one query consists of:
-\begin{enumerate}
-\item Delete all statistics gathered by the database if necessary;
-\item Set the parameter that controls the sample size used;
-\item Gather statistics about the tables used in the query;
-\item Find the query plan chosen by the query optimizer for the given query;
-\item And finally save the output to a file.
-\end{enumerate}
+The relevant parts of the code that generate the plans can be seen in
+Figure~\ref{fig:clj:generating}. Some of the functions used have been cut to
+improve readability, most notably are:
+\begin{itemize}
+\item resample-with, which will delete old statistics gathered if necessary, set
+  the statistics target and then make the database resample;
+\item explain-query, which will find the query plan found for the current query,
+  typically through using the \texttt{EXPLAIN} command in SQL.
+\end{itemize}
+For the full code refer to Appendix (REFEREA).
 
-This procedure is then repeated for each query and each sample size, a number of
-times to find all possible query plans used. Pseudocode describing this process
-can be found in Algorithm~\ref{fig:code:gathering}.
+\begin{figure}[ht]
+  \begin{minted}[breaklines]{clj}
+(defn- sample-and-query [db-con db id n]
+  (delay
+    (resample-with! db-con db id n)
+    (map
+     #(explain-query db-con db id %)
+     (range 1 1000))))
 
-\begin{algorithm}
-\caption[Pseudocode for the data gathering]{The algorithm used when
-  gathering data about queries.}\label{fig:code:gathering}
-\begin{algorithmic}[1]
-  \For{each $query$ \Pisymbol{psy}{206} $queries$ }
-    \For{each $samplesize$ \Pisymbol{psy}{206} $samplesizes$}
-      \For{each $i$ \Pisymbol{psy}{206} $repitions$}
-        \State delete statistics;
-        \State set statistics target to $samplesize$
-        \State analyze database tables
-        \State analyze query
-        \State add result to file
-      \EndFor
-    \EndFor
-  \EndFor
-\end{algorithmic}
-\end{algorithm}
+(defn- repeat-query [db-con db id sample-size repetitions]
+  (repeatedly
+   repetitions
+   #(sample-and-query db-con db id sample-size)))
 
-\subsection{Parsing and analyzing}\label{sec:parsing}
-During the parsing and analysis a file generated from the previous process
-(described in~\ref{sec:queryexecution}) is parsed and then analyzed to find what
-access methods are used for each relation.
+(defn- plans-for-query [db-con db query-id sample-sizes repetitions]
+  (map #(repeat-query db-con db query-id % repetitions) sample-sizes))
 
-Analyzing one query consists of:
-\begin{enumerate}
-\item Identifying all relation accesses;
-\item Grouping the relation accesses by what relation they access;
-\item Finding all unique relation accesses per relation;
-\item And finally calculating the size of the unique relation accesses per relation.
-\end{enumerate}
+(defn generate-plans [opts]
+  (swap! db-connection
+         (assoc :connection
+                (j/get-connection ((:database opts) db-specs))))
+  (plans-for-query {:connection @db-connection}
+                   (:database opts)
+                   (:query opts)
+                   (:samplesizes opts)
+                   (:repetitions opts)))
+   \end{minted}
+   \caption[The clojure code to generate a query]{The relevant parts of the
+     clojure code used to generate the query plans. Some function definitions
+     have been removed to improve readability, see the Appendix (REFERERA) for
+     the full code}
+\label{fig:clj:generating}
+\end{figure}
 
-This procedure is repeated for each repetition of each query and each sample
-size. Pseudocode describing this process can be found in Algorithm~\ref{fig:code:analyzing}.
+\subsection{Parsing the plans}\label{sec:parsing}
+Parsing the plans generated by the generate step, described
+in~\ref{sec:generatingplans}, consists of identifying all the access
+methods in the query plan and saving these as a list for the next step:
+analysis, which is described in section~\ref{sec:analyzingplans}.
 
-\begin{algorithm}
-\caption[Pseudocode for the parsing and analyzing]{The algorithm used to analyze
-the output of the query execution.}\label{fig:code:analyzing}
-\begin{algorithmic}[1]
-  \For{each $queryplan$ \Pisymbol{psy}{206} $queryplans$ }
-    \State let relationaccesses = groupby(``relations'', findindexes(queryplan))
-    \For{each $accessmethods$ \Pisymbol{psy}{206} $relationaccesses$}
-      \State count(unique($accessmethods$))
-    \EndFor
-  \EndFor
-\end{algorithmic}
-\end{algorithm}
+The parsing will collate the results of all repetitions per sample size
+in order to find all possible access methods for those two parameters.
+
+The source code for the parsing can be seen in Figure~\ref{fig:clj:parsing}. The
+parsing step starts with the function parse-plans, which will find the relation
+accesses used for each plan and then group it by the relation used.
+
+\begin{figure}[ht]
+\begin{minted}[breaklines]{clj}
+(def relation-accesses (atom []))
+
+(defn db->index-access-identifier [db]
+  (cond
+    (= db :postgresql) "Alias"
+    (= db :mariadb) "table"))
+
+(defn- save-if-relation-access [db o]
+  (if (and (map? o) (contains? o (db->index-access-identifier db)))
+    (swap! relation-accesses conj o))
+  o)
+
+(defn- find-relation-accesses [db plan]
+  (reset! relation-accesses [])
+  (postwalk #(save-if-relation-access db %) plan)
+  @relation-accesses)
+
+(defn- group-by-relation [db accesses]
+  (apply merge-with concat
+         (map
+          (fn [l] (group-by #(get % (db->index-access-identifier db)) l))
+          accesses)))
+
+(defn parse-plans [db plans]
+   (let [accesses (map #(find-relation-accesses db %) plans)
+         by-relation (group-by-relation db accesses)]
+     by-relation))
+   \end{minted}
+   \caption[The clojure code to parse a query]{The clojure code used to parser
+     the query plan output from the generation step.}
+\label{fig:clj:parsing}
+\end{figure}
+
+\subsection{Analyzing the plans}\label{sec:analyzingplans}
+Analyzing the plans is done by simply removing all the duplicate access methods
+for each relation. The code for this can be seen in
+Figure~\ref{fig:clj:analyzing}. The analysis is done for each plan from the
+parsing, that is for each sample size used.
+
+\begin{figure}[ht]
+\begin{minted}[breaklines]{clj}
+(defn db->index-access-identifier [db]
+  (cond
+    (= db :postgresql) "Alias"
+    (= db :mariadb) "table"))
+
+(defn analyze-plan [db plan]
+  (zipmap
+   (keys plan)
+   (map
+    (fn [accesses]
+      (count (distinct-by
+              #(get % (db->index-access-identifier db))
+              accesses)))
+    (vals plan))))
+   \end{minted}
+   \caption[The clojure code to analyze a query]{The Clojure code used to
+     analyze the parsed output. The code will simply change the map so that it
+     only retains the unique access methods used for each plan.}
+\label{fig:clj:analyzing}
+\end{figure}
 
 \subsection{PostgreSQL}
-The commands used by PostgreSQL to delete the statistics gathered, set the
-sample size and analyze the tables can be
-seen in Figures~\ref{fig:sql:pgstatistics},~\ref{fig:sql:pgsamplesize} and
-\ref{fig:sql:pganalyze} respectively.
+The SQL commands used to resample the data in PostgreSQL can be seen in
+Figure~\ref{fig:sql:pganalyze}. Between every new \texttt{ANALYZE} the statistics
+are deleted.
 
 \begin{figure}[ht]
 \begin{lstlisting}[language=SQL]
   DELETE FROM pg_statistics;
-\end{lstlisting}
-\caption[Clearing the statistics in PostgreSQL]{The query used to clear out all
-  statistics generated by ANALYZE in PostgreSQL.}
-\label{fig:sql:pgstatistics}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{lstlisting}[language=SQL]
   SET default_statistics_target TO :SAMPLE_SIZE;
-\end{lstlisting}
-\caption[Setting the sample size in PostgreSQL.]{The query used to set the
-  sample size used by PostgreSQL when gathering data via ANALYZE.}
-\label{fig:sql:pgsamplesize}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{lstlisting}[language=SQL]
   ANALYZE table1;
   ANALYZE table2;
 \end{lstlisting}
-\caption[Analyzing the tables in PostgreSQL.]{The query used to make PostgreSQL
-  gather statistics about all tables in the database.}
+\caption[The SQL commands used to resample inPostgreSQL.]{The SQL commands used
+  to first delete all statistics in PostgreSQL, set the statistics target and
+  finally analyze all tables involved in the query.}
 \label{fig:sql:pganalyze}
 \end{figure}
 
 \subsection{MariaDB}
-The SQL queries used to test MariaDB can be seen in
-Figures~\ref{fig:sql:mdbstatistics},~\ref{fig:sql:mdbsamplesize},~\ref{fig:sql:mdbanalyze}
+The SQL commands used to resample the data in MariaDB can be seen in
+Figure~\ref{fig:sql:resamplemdb}, it is worth noting that the statistics are not
+deleted between each resampling here, as InnoDB does not support that functionality.
 
 \begin{figure}[ht]
 \begin{lstlisting}[language=SQL]
   SET GLOBAL innodb_stats_persistent='OFF';
   SET GLOBAL innodb_stats_auto_recalt='OFF';
-\end{lstlisting}
-\caption[Ensure InnoDB use the stats we sample.]{The query used to ensure that
-  InnoDB will use the stats we sample.}
-\label{fig:sql:mdbstatistics}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{lstlisting}[language=SQL]
   SET GLOBAL innodb_stats_transient_sample_pages = :SAMPLE_SIZE;
-\end{lstlisting}
-\caption[Setting the sample size in MariaDB.]{The query used to set the sample
-  size used by MariaDB when gathering data via ANALYZE.}
-\label{fig:sql:mdbsamplesize}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{lstlisting}[language=SQL]
   ANALYZE TABLE table1, table2;
 \end{lstlisting}
-\caption[Analyzing the tables in MariaDB.]{The query used to make MariaDB
-  gather statistics about the queried tables in the database.}
-\label{fig:sql:mdbanalyze}
+\caption[The SQL commands used to resample in MariaDB.]{The SQL commands used to
+first ensure that MariaDB will not use some other stats than those we gather,
+then set the statistics target and finally analyze all tables involved in the query.}
+\label{fig:sql:resamplemdb}
 \end{figure}
 
 \section{Evaluation}
 Here are some the results found from the evaluation.
-
-\begin{tikzpicture}
-\begin{axis}[
-	x tick label style={
-		/pgf/number format/1000 sep=},
-	ylabel=Year,
-	enlargelimits=0.05,
-	legend style={at={(0.5,-0.1)},
-	anchor=north,legend columns=-1},
-	ybar interval=0.7,
-]
-\addplot
-	coordinates {(2012,408184) (2011,408348)
-		 (2010,414870) (2009,412156) (2008,415 838)};
-\addplot
-	coordinates {(2012,388950) (2011,393007)
-		(2010,398449) (2009,395972) (2008,398866)};
-\legend{Men,Women}
-\end{axis}
-\end{tikzpicture}
