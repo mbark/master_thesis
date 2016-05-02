@@ -11,7 +11,6 @@
 \usepackage{epigraph}
 \usepackage{modifications}
 \usepackage{algorithm}
-\usepackage{algpseudocode}
 \usepackage{pifont}
 \usepackage{numberedblock}
 \usepackage{forest}
@@ -24,12 +23,10 @@
 \usepackage[section]{minted}
 \usepackage{standalone}
 
-\title{Lorem ipsum dolor sit amet, sed diam nonummy nibh eui
-       mod tincidunt ut laoreet dol}
+\title{Evaluating the effect of cardinality estimates on index selection in
+  relational databases}
 
-\subtitle{Duis autem vel eum iruire dolor in hendrerit in
-          vulputate velit esse molestie consequat, vel illum
-          dolore eu feugiat null}
+\subtitle{Studying how PostgreSQL and MariaDB select index in a real-world scenario}
 \foreigntitle{Lorem ipsum dolor sit amet, sed diam nonummy nibh eui
               mod tincidunt ut laoreet dol}
 \author{Martin Barksten}
@@ -43,6 +40,7 @@
 \lstset{basicstyle=\ttfamily,breaklines=true}
 \lstset{frame=lines}
 \emergencystretch=1em
+\pgfplotsset{width=10cm, compat=1.9}
 
 \frontmatter
 \pagestyle{empty}
@@ -82,7 +80,7 @@
 
 \appendix
 \addappheadtotoc
-\chapter{RDF}\label{appA}
+\chapter{Source code}\label{appendix:sourcecode}
 
 The appendix.
 \end{document}

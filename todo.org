@@ -12,7 +12,7 @@ CLOSED: [2016-04-21 Thu 15:57]
 CLOSED: [2016-04-21 Thu 15:57]
 ** DONE Run tests in MariaDb
 CLOSED: [2016-04-21 Thu 15:57]
-** TODO Go from parsed output to some form of table to display
+** TODO Save the parameters used for each query plan to allow later analysis
 ** TODO Get a few (maybe 9 in total) more queries to test on
 ** TODO Test mariadb and postgres on all queries
 * Report

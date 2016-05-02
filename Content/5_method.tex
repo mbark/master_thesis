@@ -37,13 +37,31 @@ is to ensure that the database has all the traits of a real database:
 non-trivial indexes, non-uniform and skewed data as well as a considerable
 amount of data.
 
-One important reason that the dataset was selected was that most of the ones
-currently used for evaluation such as TPC-H, TPC-DS or more recently JOB (REFERENCE), all
-have trivial index setups; that is one index on the primary key for each
-relation. As such, studying how the query optimizer selects index for these is
-irrelevant: there is just one index trivially found to be correct.
+\subsubsection{The database}
+The database was selected primarily because of the fact that it is a real-world
+database, and as such has complex relations, indexes and skewed distributions.
+The databases otherwise used most commonly for evaluation are
+TPC-H~\cite{tpc_th}, TPC-DS~\cite{tpc_tha} or more recently
+JOB~\cite{leis_2015_how_hgaqor}, all of which have trivial index setups with
+one index per relation on the primary key only. The problem of selecting the
+correct index is therefore not possible to evaluate as the index selection is
+trivial.
 
-The relevant statistics of the dataset are shown in Section~\ref{sec:benchmark}
+For a more in-depth look at the statistics of the database used for evaluation
+see, Section~\ref{sec:benchmark}.
+
+\subsubsection{The queries}
+The queries used for evaluation are all variations of one, complex query. The
+reason is that:
+\begin{itemize}
+\item The tables must be sufficiently large to require the cardinality to be
+  estimated via sampling;
+\item The indexes on the relation must be sufficiently many such that there are
+  more than one possible alternative for query optimizer.
+\end{itemize}
+
+These two criteria are not fulfilled for more than a few tables in a database,
+but it is typically these that will also require the most time to access.
 
 \subsection{Choice of technologies used}
 The technologies used to develop the tool used for evaluation were chosen to be
@@ -63,17 +81,29 @@ The hardware used for testing is a dedicated computer running only the databases
 and nothing else. The configuration parameters for the database are those of a
 standard setup for PostgreSQL and MariaDB respectively.
 
-The exact specifications of the hardware are not relevant as the choice of index
-selection does not depend on those, but rather the software of the database itself.
+The exact specifications of the hardware are irrelevant for the index selection
+as it does not depend on the hardware but rather the software of the database itself.
 
-\subsection{The data set}
-- number of tables, size of some tables, number of indexes etc
+\subsection{The dataset}
+This section will cover some of the relevant statistics of the dataset used to
+evaluate the databases, starting with a section covering the relevant statistics
+of the dataset. Following this is a section describing the queries used to test
+against the dataset.
 
-\subsection{The queries}
-- focus on using tables with many indexes
-- join several tables to improve errors and increase difficulty for the optimizer
-- focus on using realistic queries actually used by trioptima to allow for
-better and more realistic modeling
+\subsection{The queries}\label{sec:queries}
+To evaluate the databases one query covering most of the larger tables with more
+complex index setups was created. The query was then created in several
+different variations, with the first and original being the most complex in
+terms of joins done and tables included. Other variants were used to test the
+effect using multiple \mintinline{sql}{JOIN} has.
+
+The variants of the query are described below:
+\begin{enumerate}
+\item\label{eval:query:variant1} [Variant 1] A \mintinline{sql}{SELECT} on a total of 10 different tables, using
+  joining all together with different foreign keys \mintinline{sql}{JOIN} or
+  \mintinline{sql}{LEFT JOIN}. The values are filtered based on an integer
+  value which is supplied as a host variable.
+\end{enumerate}
 
 \section{Implementation}
 This section will cover the implementation details of the tool, starting with
@@ -95,8 +125,8 @@ To increase robustness and allow further analysis the results for each step are
 saved and can be performed independently on the other.
 
 The tool was implemented in Clojure, using JDBC to connect to and query the
-databases. For more information about the project, refer to the documentation at
-the repo (REFERERA). The typical use of the tool is to perform all steps in one
+databases. For more information about the project, refer to the documentation for
+the repository~\cite{barksten_mbark_m}. The typical use of the tool is to perform all steps in one
 Figure~\ref{fig:cmd:runtool1}. For the case when not all steps need to done, the
 tool can take a file to read from as the first input, see
 Figure~\ref{fig:cmd:runtool2} for an example of how this can be done.
@@ -126,7 +156,7 @@ three steps: generation, parsing and finally analysis.
 
 \subsection{Generating plans}\label{sec:generatingplans}
 Generating the plans is done by setting the statistics target for the database's
-\texttt{ANALYZE}, sampling new data with the target and then finding the query plan for
+\mintinline{sql}{ANALYZE}, sampling new data with the target and then finding the query plan for
 the query. This process is then repeated a number of times for each sample size
 to ensure that all possible access methods are found.
 
@@ -134,44 +164,34 @@ The relevant parts of the code that generate the plans can be seen in
 Figure~\ref{fig:clj:generating}. Some of the functions used have been cut to
 improve readability, most notably are:
 \begin{itemize}
-\item resample-with, which will delete old statistics gathered if necessary, set
+\item \mintinline{clojure}{resample-with}, which will delete old statistics gathered if necessary, set
   the statistics target and then make the database resample;
-\item explain-query, which will find the query plan found for the current query,
-  typically through using the \texttt{EXPLAIN} command in SQL.
+\item \mintinline{clojure}{explain-query}, which will find the query plan found for the current query,
+  typically through using the \mintinline{sql}{EXPLAIN} command in SQL.
 \end{itemize}
-For the full code refer to Appendix (REFEREA).
+For the full code refer to Appendix~\ref{appendix:sourcecode}.
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{clj}
-(defn- sample-and-query [db-con db id n]
-  (delay
-    (resample-with! db-con db id n)
-    (map
-     #(explain-query db-con db id %)
-     (range 1 1000))))
+(defn- sample-and-query [save-plan options]
+  (resample-with! options)
+  (doseq [param param-range]
+    (save-plan (explain-query options param))))
 
-(defn- repeat-query [db-con db id sample-size repetitions]
-  (repeatedly
-   repetitions
-   #(sample-and-query db-con db id sample-size)))
-
-(defn- plans-for-query [db-con db query-id sample-sizes repetitions]
-  (map #(repeat-query db-con db query-id % repetitions) sample-sizes))
-
-(defn generate-plans [opts]
-  (swap! db-connection
-         (assoc :connection
-                (j/get-connection ((:database opts) db-specs))))
-  (plans-for-query {:connection @db-connection}
-                   (:database opts)
-                   (:query opts)
-                   (:samplesizes opts)
-                   (:repetitions opts)))
+(defn generate-plans [opts save-plan]
+  (j/with-db-connection [db-con (opts->db-info opts)]
+    (doseq [sample-size (:samplesizes opts)]
+      (dotimes [i (:repetitions opts)]
+       (sample-and-query save-plan
+                         (assoc
+                          opts
+                          :sample-size sample-size
+                          :connection db-con))))))
    \end{minted}
    \caption[The clojure code to generate a query]{The relevant parts of the
      clojure code used to generate the query plans. Some function definitions
-     have been removed to improve readability, see the Appendix (REFERERA) for
-     the full code}
+     have been removed to improve readability, see the
+     Appendix~\ref{appendix:sourcecode} for the full code}
 \label{fig:clj:generating}
 \end{figure}
 
@@ -190,33 +210,24 @@ accesses used for each plan and then group it by the relation used.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{clj}
-(def relation-accesses (atom []))
-
-(defn db->index-access-identifier [db]
-  (cond
-    (= db :postgresql) "Alias"
-    (= db :mariadb) "table"))
-
-(defn- save-if-relation-access [db o]
-  (if (and (map? o) (contains? o (db->index-access-identifier db)))
+(defn- save-if-relation-access [db-id o]
+  (if (and (map? o) (contains? o db-id))
     (swap! relation-accesses conj o))
   o)
 
-(defn- find-relation-accesses [db plan]
+(defn- find-relation-accesses [db-id plan]
   (reset! relation-accesses [])
-  (postwalk #(save-if-relation-access db %) plan)
+  (postwalk #(save-if-relation-access db-id %) plan)
   @relation-accesses)
 
-(defn- group-by-relation [db accesses]
-  (apply merge-with concat
-         (map
-          (fn [l] (group-by #(get % (db->index-access-identifier db)) l))
-          accesses)))
+(defn- group-by-relation [db-id accesses]
+  (group-by
+   #(get % db-id)
+   accesses))
 
-(defn parse-plans [db plans]
-   (let [accesses (map #(find-relation-accesses db %) plans)
-         by-relation (group-by-relation db accesses)]
-     by-relation))
+(defn parse-plan [db plan]
+  (let [db-id (access-key db)]
+    (group-by-relation db-id (find-relation-accesses db-id plan))))
    \end{minted}
    \caption[The clojure code to parse a query]{The clojure code used to parser
      the query plan output from the generation step.}
@@ -231,39 +242,43 @@ parsing, that is for each sample size used.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{clj}
-(defn db->index-access-identifier [db]
-  (cond
-    (= db :postgresql) "Alias"
-    (= db :mariadb) "table"))
+(defn conj-distinct [f x y]
+  (reduce
+   (fn [coll v]
+     (if (some #(= (f %) (f v)) coll)
+       coll
+       (conj coll v)))
+   x y))
 
-(defn analyze-plan [db plan]
-  (zipmap
-   (keys plan)
-   (map
-    (fn [accesses]
-      (count (distinct-by
-              #(get % (db->index-access-identifier db))
-              accesses)))
-    (vals plan))))
+(defn analyze-plans [db next-plan plans-to-read]
+  (loop [m {} plans-left plans-to-read]
+    (if (zero? plans-left)
+      m
+      (recur
+       (merge-with
+        #(conj-distinct (fn [access] (get access (idx-key db)))
+                        %1 %2)
+        m (next-plan))
+       (dec plans-left)))))
    \end{minted}
    \caption[The clojure code to analyze a query]{The Clojure code used to
-     analyze the parsed output. The code will simply change the map so that it
-     only retains the unique access methods used for each plan.}
+     analyze the parsed output. The code will merge the maps generated, only
+     keeping the unique access methods for each relation.}
 \label{fig:clj:analyzing}
 \end{figure}
 
 \subsection{PostgreSQL}
 The SQL commands used to resample the data in PostgreSQL can be seen in
-Figure~\ref{fig:sql:pganalyze}. Between every new \texttt{ANALYZE} the statistics
+Figure~\ref{fig:sql:pganalyze}. Between every new \mintinline{sql}{ANALYZE} the statistics
 are deleted.
 
 \begin{figure}[ht]
-\begin{lstlisting}[language=SQL]
+\begin{minted}[breaklines]{postgresql}
   DELETE FROM pg_statistics;
   SET default_statistics_target TO :SAMPLE_SIZE;
   ANALYZE table1;
   ANALYZE table2;
-\end{lstlisting}
+\end{minted}
 \caption[The SQL commands used to resample inPostgreSQL.]{The SQL commands used
   to first delete all statistics in PostgreSQL, set the statistics target and
   finally analyze all tables involved in the query.}
@@ -276,12 +291,12 @@ Figure~\ref{fig:sql:resamplemdb}, it is worth noting that the statistics are not
 deleted between each resampling here, as InnoDB does not support that functionality.
 
 \begin{figure}[ht]
-\begin{lstlisting}[language=SQL]
+\begin{minted}[breaklines]{mysql}
   SET GLOBAL innodb_stats_persistent='OFF';
   SET GLOBAL innodb_stats_auto_recalt='OFF';
   SET GLOBAL innodb_stats_transient_sample_pages = :SAMPLE_SIZE;
   ANALYZE TABLE table1, table2;
-\end{lstlisting}
+\end{minted}
 \caption[The SQL commands used to resample in MariaDB.]{The SQL commands used to
 first ensure that MariaDB will not use some other stats than those we gather,
 then set the statistics target and finally analyze all tables involved in the query.}
@@ -289,4 +304,50 @@ then set the statistics target and finally analyze all tables involved in the qu
 \end{figure}
 
 \section{Evaluation}
-Here are some the results found from the evaluation.
+This section will show the results of the evaluation. The section will start
+with presenting each query and its corresponding evaluation. Following this is a
+section about the general findings from these queries, and the further
+evaluation done for these findings.
+
+\subsection{Query evaluation}
+This section will cover the results found for each query and database. In the
+figures all relations with more than one possible index-selection are shown.
+The number of possible different index selections is shown next to the number of
+ambiguous indexes to allow comparison.
+
+The evaluation of variant 1 of the query for MariadDB can be seen in
+Figure~\ref{fig:plot:mariadb:query1}.
+
+\begin{figure}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    legend style={at={(0.5,-0.15)},
+      anchor=north,legend columns=-1},
+    symbolic x coords={ct,mt},
+    xtick=data,
+    nodes near coords,
+    nodes near coords align={vertical},
+    ]
+\addplot coordinates {(ct,5) (mt, 2)};
+\addplot coordinates {(ct,3) (mt, 1)};
+\legend{possible indexes, ambiguous indexes}
+\end{axis}
+\end{tikzpicture}
+\caption[The index selections for MariaDB and query variant 1.]{The different
+  indexes selected for MariaDB and the query variant 1, the possible index
+  selections - as in those considered by the query optimizer - are shown next to
+those actually selected.}
+\label{fig:plot:mariadb:query1}
+\end{figure}
+
+From these figures the following observations can be made:
+\begin{enumerate}
+\item\label{item:eval:params} As can be seen in
+  Figure~\ref{fig:plot:mariadb:query1}, the number of ambiguous indexes remain
+  the same regardless of sample size.
+\end{enumerate}
+
+Item~\ref{item:eval:params} is especially interesting as the behavior is
+different for the two different databases, PostgreSQL does not have any
+ambiguous indexes and indeed always selects the same query plan.
