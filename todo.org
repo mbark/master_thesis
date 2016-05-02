@@ -12,7 +12,8 @@ CLOSED: [2016-04-21 Thu 15:57]
 CLOSED: [2016-04-21 Thu 15:57]
 ** DONE Run tests in MariaDb
 CLOSED: [2016-04-21 Thu 15:57]
-** TODO Save the parameters used for each query plan to allow later analysis
+** DONE Save the parameters used for each query plan to allow later analysis
+CLOSED: [2016-05-02 Mon 16:19]
 ** TODO Get a few (maybe 9 in total) more queries to test on
 ** TODO Test mariadb and postgres on all queries
 * Report
@@ -24,22 +25,24 @@ CLOSED: [2016-04-12 Tue 13:15]
 CLOSED: [2016-04-12 Tue 15:06]
 ** DONE Add implementation info such as drivers and libraries used
 CLOSED: [2016-04-12 Tue 16:27]
+** DONE Add references throughout the text
+CLOSED: [2016-05-02 Mon 16:23]
+** DONE Flesh out with more info about the choice of dataset
+CLOSED: [2016-05-02 Mon 16:23]
+** DONE Remain consistent between dataset or data set
+CLOSED: [2016-05-02 Mon 16:23]
+** DONE Add code from the project itself showing the transformation of the data
+CLOSED: [2016-05-02 Mon 16:23]
+** DONE Extend the method part with to describe the current implementation
+CLOSED: [2016-05-02 Mon 16:23]
+** DONE Clean up the code a bit to be able to add it to the report
+CLOSED: [2016-05-02 Mon 16:23]
 ** TODO Find the relevant statistics of the database used
 ** TODO Rephrase from index selection to access method (seq scan vs index is also relevant)
-** TODO Add text about transferring the databases from MySQL
-** TODO Add references throughout the text
-** TODO Flesh out with more info about the choice of dataset
-** TODO Remain consistent between dataset or data set
-** TODO Add code from the project itself showing the transformation of the data
-** TODO Extend the method part with to describe the current implementation
-** TODO Clean up the code a bit to be able to add it to the report
+** DONE Explain the code, the functions and so on to give some context
+CLOSED: [2016-05-02 Mon 17:00]
+** DONE Replace texttt with minted when referring to code
+CLOSED: [2016-05-02 Mon 17:22]
 * Questions
-** TODO Should I also study the effect the potential incorrect selection has?
-** TODO How should the pseudocode be formatted?
-** TODO Do we need more than two queries?
-** TODO How we argue that these queries are representative?
-** TODO How do we argue the underlying database better?
-** DONE What are the specs of the computers used? Is that relevant?
 ** TODO What are the relevant statistics for the database tested?
 ** TODO How do we show the index usages?
-** TODO Should I instead focus on just one query maybe?

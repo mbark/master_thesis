@@ -2,7 +2,7 @@ In this chapter, the methods used to investigate the problem statement are
 presented. First, the choice of method is described briefly and motivated, this
 section will also cover the databases used and why these were picked. Following
 this section comes a section describing the benchmark problems, that is the
-data set used and the corresponding queries. Finally the implementation details
+dataset used and the corresponding queries. Finally the implementation details
 of the tool used is described in more detail.
 
 \section{Choice of method}\label{sec:choiceofmethod}
@@ -65,15 +65,20 @@ but it is typically these that will also require the most time to access.
 
 \subsection{Choice of technologies used}
 The technologies used to develop the tool used for evaluation were chosen to be
-Clojure, using a JDBC driver. The reason these were selected is that Clojure
-runs on the JVM, making it platform independent. In addition most of the work
-done by the tool is to process and transform data in the form of JSON, a task
-that Clojure is well suited to.
+Clojure. The choice of Clojure was done for two reasons:
+\begin{itemize}
+\item It runs on the JVM, making the tool platform independent;
+\item And Clojure is a high-level language well suited to transforming data in
+  simple ways.
+\end{itemize}
+
+For more information regarding the implementation of the tool, see
+Section~\ref{sec:implementation}.
 
 \section{Benchmark problems}\label{sec:benchmark}
 This section will give a description if the problems used for benchmarking the
 query optimizers. The section will start with a description of the relevant
-statistics of the data set, following that is a description of the queries
+statistics of the dataset, following that is a description of the queries
 chosen to evaluate the query optimizer.
 
 \subsection{Hardware used}
@@ -95,17 +100,17 @@ To evaluate the databases one query covering most of the larger tables with more
 complex index setups was created. The query was then created in several
 different variations, with the first and original being the most complex in
 terms of joins done and tables included. Other variants were used to test the
-effect using multiple \mintinline{sql}{JOIN} has.
+effect using multiple \sql{JOIN} has.
 
 The variants of the query are described below:
 \begin{enumerate}
-\item\label{eval:query:variant1} [Variant 1] A \mintinline{sql}{SELECT} on a total of 10 different tables, using
-  joining all together with different foreign keys \mintinline{sql}{JOIN} or
-  \mintinline{sql}{LEFT JOIN}. The values are filtered based on an integer
+\item [variant 1] A \sql{SELECT} on a total of 10 different tables, using
+  joining all together with different foreign keys \sql{JOIN} or
+  \sql{LEFT JOIN}. The values are filtered based on an integer
   value which is supplied as a host variable.
 \end{enumerate}
 
-\section{Implementation}
+\section{Implementation}\label{sec:implementation}
 This section will cover the implementation details of the tool, starting with
 some of the technologies and frameworks used. Following this is a description of
 the two steps of the analysis. Finally the queries used for PostgreSQL and
@@ -156,20 +161,25 @@ three steps: generation, parsing and finally analysis.
 
 \subsection{Generating plans}\label{sec:generatingplans}
 Generating the plans is done by setting the statistics target for the database's
-\mintinline{sql}{ANALYZE}, sampling new data with the target and then finding the query plan for
+\sql{ANALYZE}, sampling new data with the target and then finding the query plan for
 the query. This process is then repeated a number of times for each sample size
 to ensure that all possible access methods are found.
 
-The relevant parts of the code that generate the plans can be seen in
-Figure~\ref{fig:clj:generating}. Some of the functions used have been cut to
-improve readability, most notably are:
-\begin{itemize}
-\item \mintinline{clojure}{resample-with}, which will delete old statistics gathered if necessary, set
-  the statistics target and then make the database resample;
-\item \mintinline{clojure}{explain-query}, which will find the query plan found for the current query,
-  typically through using the \mintinline{sql}{EXPLAIN} command in SQL.
-\end{itemize}
-For the full code refer to Appendix~\ref{appendix:sourcecode}.
+The relevant parts of the code used to generate plans can be found in
+Figure~\ref{fig:clj:generating}. In the Figure two functions can be seen:
+\clj{generate-plans} and \clj{sample-and-query}, additionally some functions are
+referenced but not seen, for a full reference see Appendix~\ref{appendix:sourcecode}.
+
+The generation starts a call to \clj{generate-plans}, which takes a variable
+describing the generation options as well as the function used to save plans.
+For each sample size the process of sampling and explaining the queries, will
+then be repeated the number of repetitions times.
+
+Sampling and explaining the query is handled by \clj{sample-and-query}, which
+will delete old statistics and sample the referenced tables through the use of
+\clj{resample-with!} and then for each possible parameter value save the explain
+result of the query. For the specific SQL commands used, see
+Section~\ref{sec:postgresql} and Section~\ref{sec:mariadb} for PostgreSQL and MariaDB respectively.
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{clj}
@@ -201,12 +211,15 @@ in~\ref{sec:generatingplans}, consists of identifying all the access
 methods in the query plan and saving these as a list for the next step:
 analysis, which is described in section~\ref{sec:analyzingplans}.
 
-The parsing will collate the results of all repetitions per sample size
-in order to find all possible access methods for those two parameters.
+The code for the parsing can be seen in Figure~\ref{fig:clj:parsing}. The
+parsing step starts with the function \clj{parse-plan}, which will find all
+relation accesses and group them by what relation they access. The function
+\clj{find-relation-accesses} traverses the output of the query plan, saving
+the access methods it finds. The function \clj{group-by-relation} will then
+group all access methods found by what relation they access.
 
-The source code for the parsing can be seen in Figure~\ref{fig:clj:parsing}. The
-parsing step starts with the function parse-plans, which will find the relation
-accesses used for each plan and then group it by the relation used.
+Each plan generated by the previous step is parsed and the process main purpose
+is to reduce the size of the plans, and allow a more efficient analysis.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{clj}
@@ -235,10 +248,15 @@ accesses used for each plan and then group it by the relation used.
 \end{figure}
 
 \subsection{Analyzing the plans}\label{sec:analyzingplans}
-Analyzing the plans is done by simply removing all the duplicate access methods
-for each relation. The code for this can be seen in
-Figure~\ref{fig:clj:analyzing}. The analysis is done for each plan from the
-parsing, that is for each sample size used.
+Analyzing the plans is done by merging all access methods found, keeping only those
+that are distinct. The process will therefore consist of going through all the
+query plans found for a sample size, one for each possible parameter value,
+times the number of repetitions.
+
+The code to analyze is shown in Figure~\ref{fig:clj:analyzing}. The
+\clj{analyze-plans} function will read the next plan, via \clj{next-plan},
+merge it with the current plan using \clj{conj-distinct} to add only those
+access methods that are unique.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{clj}
@@ -267,10 +285,10 @@ parsing, that is for each sample size used.
 \label{fig:clj:analyzing}
 \end{figure}
 
-\subsection{PostgreSQL}
+\subsection{PostgreSQL}\label{sec:postgresql}
 The SQL commands used to resample the data in PostgreSQL can be seen in
-Figure~\ref{fig:sql:pganalyze}. Between every new \mintinline{sql}{ANALYZE} the statistics
-are deleted.
+Figure~\ref{fig:sql:pganalyze}. Between every new \sql{ANALYZE} the statistics
+are deleted by deleting all data from \sql{pg_statistics}.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{postgresql}
@@ -285,15 +303,21 @@ are deleted.
 \label{fig:sql:pganalyze}
 \end{figure}
 
-\subsection{MariaDB}
+\subsection{MariaDB}\label{sec:mariadb}
 The SQL commands used to resample the data in MariaDB can be seen in
-Figure~\ref{fig:sql:resamplemdb}, it is worth noting that the statistics are not
-deleted between each resampling here, as InnoDB does not support that functionality.
+Figure~\ref{fig:sql:resamplemdb}. Unlike PostgreSQL the statistics are not
+deleted between each resampling because InnoDB does not support these
+functionality, instead the statistics are just overwritten by a new analyze.
+
+Before sampling two variables \sql{innodb_stats_persistent} and
+\sql{innodb_stats_auto_recalc} are both set to \sql{'OFF'}. This is to ensure
+that InnoDB only use the transient data and does not save any between database
+restarts and so on.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{mysql}
   SET GLOBAL innodb_stats_persistent='OFF';
-  SET GLOBAL innodb_stats_auto_recalt='OFF';
+  SET GLOBAL innodb_stats_auto_recalc='OFF';
   SET GLOBAL innodb_stats_transient_sample_pages = :SAMPLE_SIZE;
   ANALYZE TABLE table1, table2;
 \end{minted}
@@ -315,7 +339,7 @@ figures all relations with more than one possible index-selection are shown.
 The number of possible different index selections is shown next to the number of
 ambiguous indexes to allow comparison.
 
-The evaluation of variant 1 of the query for MariadDB can be seen in
+The evaluation of query variant 1 of the query for MariaDB can be seen in
 Figure~\ref{fig:plot:mariadb:query1}.
 
 \begin{figure}
@@ -325,9 +349,10 @@ Figure~\ref{fig:plot:mariadb:query1}.
     legend style={at={(0.5,-0.15)},
       anchor=north,legend columns=-1},
     symbolic x coords={ct,mt},
+    ylabel={\#index},
     xtick=data,
     nodes near coords,
-    nodes near coords align={vertical},
+    nodes near coords align={vertical}
     ]
 \addplot coordinates {(ct,5) (mt, 2)};
 \addplot coordinates {(ct,3) (mt, 1)};
@@ -340,14 +365,3 @@ Figure~\ref{fig:plot:mariadb:query1}.
 those actually selected.}
 \label{fig:plot:mariadb:query1}
 \end{figure}
-
-From these figures the following observations can be made:
-\begin{enumerate}
-\item\label{item:eval:params} As can be seen in
-  Figure~\ref{fig:plot:mariadb:query1}, the number of ambiguous indexes remain
-  the same regardless of sample size.
-\end{enumerate}
-
-Item~\ref{item:eval:params} is especially interesting as the behavior is
-different for the two different databases, PostgreSQL does not have any
-ambiguous indexes and indeed always selects the same query plan.
