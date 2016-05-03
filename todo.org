@@ -4,9 +4,12 @@ EXJOBB -*- mode: org -*-
 ** TODO Subset the query to generate more query variations
 ** TODO Test MariaDB and PostgreSQL on the subsets
 * Report - Method
-** TODO Go through all text and see that it makes sense
+** DONE Go through all text and see that it makes sense
+CLOSED: [2016-05-03 Tue 16:19]
 ** DONE Write down the statistics of the database and tables
 CLOSED: [2016-05-03 Tue 13:14]
+** TODO Add more metrics to the query-part
+** TODO Improve the implementation part as well
 ** TODO Add to evaluation when more is done
 ** TODO Let Bjorn read it and give feedback
 ** TODO Send it to John for feedback

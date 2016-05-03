@@ -1,105 +1,109 @@
-In this chapter, the methods used to investigate the problem statement are
-presented. First, the choice of method is described briefly and motivated, this
-section will also cover the databases used and why these were picked. Following
-this section comes a section describing the benchmark problems, that is the
-dataset used and the corresponding queries. Finally the implementation details
-of the tool used is described in more detail.
+In this chapter, the method used to investigate the problem statement is
+presented. First, the choice of method is described, motivating the dataset and
+technologies used. Following this the problems used for benchmarking are
+presented, including a more in-depth description of the dataset. After these
+motivations, the actual implementation details are presented, showing how the
+database's are evaluated. Finally the results from the evaluation are presented.
 
 \section{Choice of method}\label{sec:choiceofmethod}
-This section begins with a short motivation to why the choice of method in
-general. Following this is a description of the databases and why these were
-chosen. After this is a section on the dataset used, both data and queries
-against the data. Finally is a section on the hardware used to test on and a
-motivation for the choice of technologies used to implement the tool of evaluation.
+This section will motivate the methods' three primary questions:
+\begin{enumerate}
+\item What databases are evaluated?
+\item What dataset is used to evaluate the databases?
+\item How are the databases evaluated?
+\end{enumerate}
 
-\subsection{Motivation of method}
-The method of evaluation was chosen for a number of reasons:
-\begin{itemize}
-\item The dataset used should be based on real-world data to capture the
-  complexity of databases;
-\item All benchmarks should be done in such a way that they provide consistent
-  results;
-\item And the method developed should be generic and allow multiple queries and
-  databases to be tested with the same methods and algorithms.
-\end{itemize}
+The following three sections will answer these questions in order, motivating
+choice of databases, dataset and implementation.
 
 \subsection{Choice of databases}\label{sec:choiceofdatabases}
-The two database chosen to be evaluated are PostgreSQL and MariaDB.
-Both of these databases fulfill the following criteria:
+The two database chosen to evaluated are PostgreSQL and MariaDB. The choice was
+made, as they both are:
 \begin{enumerate}
-\item Modern databases that see much use and development;
-\item Open-source projects with code that anyone can read, modify and help develop;
+\item Modern databases with widespread use and active development;
+\item Open-source projects allowing anyone to read and modify the source code;
 \item And they implement state-of-the-art algorithms and methods.
 \end{enumerate}
 
-In addition to this PostgreSQL is the typical choice for academic evaluation.
-All research papers mentioned in Chapter~\ref{chap:relatedwork} that have
+In addition to this they both cover two common use-cases: academia and
+enterprises. All research papers mentioned in Chapter~\ref{chap:relatedwork} that have
 implemented new algorithms or modified old ones have done so in PostgreSQL.
-MariaDB on the other hand is compatible with MySQL making it a common
-alternative for enterprises. The two databases should therefore cover the most
-commonly used open-source databases for academia and enterprises.
+On the other hand MariaDB is compatible with MySQL, making it a common
+alternative for enterprises.
 
-Studying these two databases should cover how well a modern state-of-the-art
-query optimizer performs. In addition, as mentioned in Section~\ref{sec:purpose}
-since both of them are open-source, if one performs better than the other the
-code can be studied to identify areas of improvement.
+An evaluation of both of these database will give a good indication of the
+performance of a modern state-of-the-art query optimizer. Furthermore, as
+mentioned in Section~\ref{sec:purpose} since both of them are open-source, if
+one performs better than the other the code can be studied to identify areas of
+improvement.
 
-\subsection{Choice of dataset}
-The dataset used for evaluation is one taken directly from the real-world, this
-is to ensure that the database has all the traits of a real database:
-non-trivial indexes, non-uniform and skewed data as well as a considerable
-amount of data.
-
-\subsubsection{The database}
-The database was selected primarily because of the fact that it is a real-world
-database, and as such has complex relations, indexes and skewed distributions.
-The databases otherwise used most commonly for evaluation are
-TPC-H~\cite{tpc_th}, TPC-DS~\cite{tpc_tha} or more recently
-JOB~\cite{leis_2015_how_hgaqor}, all of which have trivial index setups with
-one index per relation on the primary key only. The problem of selecting the
-correct index is therefore not possible to evaluate as the index selection is
-trivial.
-
-For a more in-depth look at the statistics of the database used for evaluation
-see, Section~\ref{sec:benchmark}.
-
-\subsubsection{The queries}
-The queries used for evaluation are all variations of one, complex query. The
-reason is that:
-\begin{itemize}
-\item The tables must be sufficiently large to require the cardinality to be
-  estimated via sampling;
-\item The indexes on the relation must be sufficiently many such that there are
-  more than one possible alternative for query optimizer.
-\end{itemize}
-
-These two criteria are not fulfilled for more than a few tables in a database,
-but it is typically these that will also require the most time to access.
-
-\subsection{Choice of technologies used}
-The technologies used to develop the tool used for evaluation were chosen to be
-Clojure~\cite{clojure_c}. The choice was done primarily for two reasons:
+\subsection{Choice of dataset}\label{sec:dataset}
+The primary focus when selecting the dataset used was to use a dataset which
+could capture the complexity of a real-world database and provide a realistic
+challenge for the query optimizer. The primary requirements are that the dataset
+feature:
 \begin{enumerate}
-\item It runs on the JVM, making the tool platform independent;
-\item And Clojure is a high-level language well suited to transforming data in
-  simple ways.
+\item Many tables with multiple indexes;
+\item Not just indexes on a single row, but also compound indexes covering
+  several;
+\item Skewed and non-uniform data that is not trivial to correctly estimate
+  based on sampling;
+\item A large amount of data forcing the database to estimate the data.
 \end{enumerate}
 
-For more information regarding the implementation of the tool, see
-Section~\ref{sec:implementation}.
+The datasets most commonly used for evaluation of database implementations are
+TPC-H~\cite{tpc_th}, TPC-DS~\cite{tpc_tha} and more recently
+JOB~\cite{leis_2015_how_hgaqor}. None of these datasets however feature the
+several indexes on the same table or compound indexes, making the problem of
+index selection trivial for all of them.
+
+Instead, the dataset chosen was one taken from the real world: the dataset for
+TriOptima's product TriReduce. This database fulfill all of the requirements, as
+can be seen in Table~\ref{table:dataset}. The metrics of the dataset are
+presented in more detail in Section~\ref{sec:benchmark}.
+
+Another important aspect of the dataset is the queries used for evaluation.
+Selecting these was done based on the following critera:
+\begin{itemize}
+\item The tables queried must be sufficiently large to require the cardinality to be
+  estimated via sampling;
+\item The data most be accessible via one or more index so that the actual index
+  selection is not trivial for the query optimizer.
+\end{itemize}
+
+The two criteria are not fulfilled for more than a few tables in a database,
+reducing the amount of queries relevant for evaluation. However, the queries
+that do fulfill the above requirements are also those that are most interesting
+to study for a database as they are the ones that will take the most execution time.
+
+\subsection{Choice of implementation}
+The focus when implementing the tool used to evaluate the databases was to find
+a tool that would allow a high-level description of the data transformations
+necessary. Additionally the language must be sufficiently stable and be able to
+handle potentially large amounts of simultaneous data.
+
+The language chosen that fulfill these requirements is Clojure. Clojure compiles
+to bytecode that runs on the JVM, which is stable and well-used. Additionally
+the language is well-suited to describing data transformations as it provides
+many high-level functions for doing so.
+
+More information regarding Clojure and the tool developed will be presented in
+Section~\ref{sec:implementation}, which also shows how some of the data
+transformations are done in practice.
 
 \section{Benchmark problems}\label{sec:benchmark}
-This section will give a description if the problems used for benchmarking the
-query optimizers. The sections starts with a short description of the hardware
-used. Following this is a section covering the relevant statistics of the
-dataset used. Finally is a description of the queries used for evaluation.
+This section describe the problems used for benchmarking, starting with
+specification of the hardware that the tests were ran on. Following this is
+first a description of the metrics of the dataset used.
 
 \subsection{Hardware specs}
-The hardware used for testing is a dedicated computer running only the databases
-and nothing else. The configuration parameters for the database are those of a
-standard setup for PostgreSQL and MariaDB respectively.
+All evaluation tests were ran on a dedicated computer running only the databases
+and tests. The most important part of the hardware is to ensure that there is
+sufficient data for both the databases and the results of the tests. For all
+evaluations three hard drives were used, one for each database and one for the
+tool itself.
 
-The specifications of the hardware are:
+The exact specifications are:
 \begin{itemize}
 \item 2 \textit{Intel® Xeon® Processor E5-2643 (10M Cache, 3.30 GHz, 8.00 GT/s Intel®
     QPI)}, featuring 4 cores each;
@@ -111,15 +115,14 @@ The specifications of the hardware are:
     3.5"}, used to store the MariaDB database on.
 \end{itemize}
 
-Although it is worth noting that the hardware should have no, or very little,
-effect on the query optimizer's plan selection.
+As a final note it is worth pointing out that the effect of the hardware should
+have none, or very little, effect on the query optimizer's plan selection.
 
 \subsection{The dataset}
-The dataset is taken from the real-world and describes the data behind one of
-TriOptima's products, TriReduce~\cite{portfolio_pcsfoddt|t}. The more relevant
-metrics of the dataset can be seen in Table~\ref{table:dataset}, which shows the
-number of indexes, number of rows and the size in bytes for the entire database
-and the tables used in the queries.
+As detailed in Section~\ref{sec:dataset} the dataset should be sufficiently
+complex in terms of indexes, table size and table values.
+Table~\ref{table:dataset} presents the number of indexes, the number of rows and
+the size in MB of the entire database and all tables involved in the benchmarking.
 
 \begin{table}
   \begin{center}
@@ -147,26 +150,43 @@ and the tables used in the queries.
   \end{center}
 \end{table}
 
-The metrics described in Table~\ref{table:dataset} are those for the original
-database, which is a MySQL instance. The MySQL database was ported to PostgreSQL
-with \textit{py-mysql2pgsql}~\cite{philipsoutham_p}, which converts MySQL
-specific data types, indexes etc.\ to their most similar PostgreSQL
-equivalent. It was not necessary to port to MariaDB as it is built on MySQL and
-supports it out of the box.
+The original dataset was saved in a MySQL database, which was ported to
+PostgreSQL and MariaDB. MariaDB is made as an add-on to MySQL and thus required
+no specific porting, the data was just copied into a fresh install of MariaDB
+using a \textit{mysqldump}. For PostgreSQL
+\textit{py-mysql2pgsql}~\cite{philipsoutham_p} was used to create a dump of the
+MySQL database with all MySQL specific data types converted to their most
+similar PostgreSQL equivalents. The data was then read into a fresh install of PostgreSQL.
+
+In the copying process all indexes and relations were maintained, thus
+maintaining the same metrics for both of the copies as for the original.
 
 \subsection{The queries}\label{sec:queries}
-To evaluate the databases one query covering most of the larger tables with more
-complex index setups was created. The query was then created in several
-different variations, with the first and original being the most complex in
-terms of joins done and tables included. Other variants were used to test the
-effect using multiple \sql{JOIN} has.
+To evaluate the databases only one query was used. The
+reason is that, as described in Section~\ref{sec:dataset}, there are few tables that can be
+involved in the query as they must fulfill the important critera in terms of
+indexes and size. As such one query covering all of the most complex tables were
+written, this query can be considered to be the most complex query for the
+dataset. Subsets are then used to simulate simpler scenarios.
 
-The variants of the query are described below:
-\begin{enumerate}
-\item [variant 1] A \sql{SELECT} on a total of 10 different tables,
-  joining all together through \sql{JOIN}s on relations between them. The values
-  are filtered based on an integer value which is supplied as a host variable.
-\end{enumerate}
+The metrics of all queries can be seen in Table~\ref{table:queries}, which shows
+the number of \sql{JOIN}s involved and which tables are queried. Refer to
+Table~\ref{table:dataset} for the metrics of the individual tables.
+
+\begin{table}
+  \begin{center}
+    \begin{tabu} {c c c c}
+      \toprule
+      number & tables involved & indexes & size (MB) \\
+      \midrule
+      database total & 1130 & 305 & 1165290 \\
+      \bottomrule
+    \end{tabu}
+    \caption[The metrics for the queries]{The metrics for the queries used for
+      evaluation of the databases. For the metrics of the tables referred to,
+      see Table~\ref{table:dataset}.}\label{table:queries}
+  \end{center}
+\end{table}
 
 \section{Implementation}\label{sec:implementation}
 This section will cover the implementation details of the tool, starting with
