@@ -1,48 +1,20 @@
 EXJOBB -*- mode: org -*-
-* TODO Finish data collection
-** DONE Gather new data now that all tables are analyzed
-CLOSED: [2016-04-19 Tue 15:00]
-** DONE Add functionality to get the count for each alias
-CLOSED: [2016-04-19 Tue 15:00]
-** DONE Transfer MySql to MariaDb
-CLOSED: [2016-04-21 Thu 15:57]
-** DONE Test the second query and analyze to see how it performs
-CLOSED: [2016-04-21 Thu 15:57]
-** DONE Allow MariaDb data to be analyzed as well
-CLOSED: [2016-04-21 Thu 15:57]
-** DONE Run tests in MariaDb
-CLOSED: [2016-04-21 Thu 15:57]
-** DONE Save the parameters used for each query plan to allow later analysis
-CLOSED: [2016-05-02 Mon 16:19]
-** TODO Get a few (maybe 9 in total) more queries to test on
-** TODO Test mariadb and postgres on all queries
+* TODO Data collection
+** TODO Add the evaluation for postgresql for the full query
+** TODO Subset the query to generate more query variations
+** TODO Test MariaDB and PostgreSQL on the subsets
+* Report - Method
+** TODO Go through all text and see that it makes sense
+** DONE Write down the statistics of the database and tables
+CLOSED: [2016-05-03 Tue 13:14]
+** TODO Add to evaluation when more is done
+** TODO Let Bjorn read it and give feedback
+** TODO Send it to John for feedback
 * Report
-** DONE Read the method part from Are Query Optimizers Good? for inspiration
-CLOSED: [2016-04-12 Tue 11:32]
-** DONE Begin writing the method part
-CLOSED: [2016-04-12 Tue 13:15]
-** DONE Write pseudocode to explain how it works
-CLOSED: [2016-04-12 Tue 15:06]
-** DONE Add implementation info such as drivers and libraries used
-CLOSED: [2016-04-12 Tue 16:27]
-** DONE Add references throughout the text
-CLOSED: [2016-05-02 Mon 16:23]
-** DONE Flesh out with more info about the choice of dataset
-CLOSED: [2016-05-02 Mon 16:23]
-** DONE Remain consistent between dataset or data set
-CLOSED: [2016-05-02 Mon 16:23]
-** DONE Add code from the project itself showing the transformation of the data
-CLOSED: [2016-05-02 Mon 16:23]
-** DONE Extend the method part with to describe the current implementation
-CLOSED: [2016-05-02 Mon 16:23]
-** DONE Clean up the code a bit to be able to add it to the report
-CLOSED: [2016-05-02 Mon 16:23]
-** TODO Find the relevant statistics of the database used
+** TODO Ensure the terminology is consistent
+** TODO Talk about access paths or query plans consistently
 ** TODO Rephrase from index selection to access method (seq scan vs index is also relevant)
-** DONE Explain the code, the functions and so on to give some context
-CLOSED: [2016-05-02 Mon 17:00]
-** DONE Replace texttt with minted when referring to code
-CLOSED: [2016-05-02 Mon 17:22]
 * Questions
 ** TODO What are the relevant statistics for the database tested?
-** TODO How do we show the index usages?
+
+** TODO How is the index usage per query, per table and per sample size best presented?

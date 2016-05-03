@@ -6,9 +6,22 @@ dataset used and the corresponding queries. Finally the implementation details
 of the tool used is described in more detail.
 
 \section{Choice of method}\label{sec:choiceofmethod}
-This section will cover first why the databases used for evaluation were
-chosen, following this dataset used for evaluation is motivated and finally a
-short description of the technologies used.
+This section begins with a short motivation to why the choice of method in
+general. Following this is a description of the databases and why these were
+chosen. After this is a section on the dataset used, both data and queries
+against the data. Finally is a section on the hardware used to test on and a
+motivation for the choice of technologies used to implement the tool of evaluation.
+
+\subsection{Motivation of method}
+The method of evaluation was chosen for a number of reasons:
+\begin{itemize}
+\item The dataset used should be based on real-world data to capture the
+  complexity of databases;
+\item All benchmarks should be done in such a way that they provide consistent
+  results;
+\item And the method developed should be generic and allow multiple queries and
+  databases to be tested with the same methods and algorithms.
+\end{itemize}
 
 \subsection{Choice of databases}\label{sec:choiceofdatabases}
 The two database chosen to be evaluated are PostgreSQL and MariaDB.
@@ -65,35 +78,81 @@ but it is typically these that will also require the most time to access.
 
 \subsection{Choice of technologies used}
 The technologies used to develop the tool used for evaluation were chosen to be
-Clojure. The choice of Clojure was done for two reasons:
-\begin{itemize}
+Clojure~\cite{clojure_c}. The choice was done primarily for two reasons:
+\begin{enumerate}
 \item It runs on the JVM, making the tool platform independent;
 \item And Clojure is a high-level language well suited to transforming data in
   simple ways.
-\end{itemize}
+\end{enumerate}
 
 For more information regarding the implementation of the tool, see
 Section~\ref{sec:implementation}.
 
 \section{Benchmark problems}\label{sec:benchmark}
 This section will give a description if the problems used for benchmarking the
-query optimizers. The section will start with a description of the relevant
-statistics of the dataset, following that is a description of the queries
-chosen to evaluate the query optimizer.
+query optimizers. The sections starts with a short description of the hardware
+used. Following this is a section covering the relevant statistics of the
+dataset used. Finally is a description of the queries used for evaluation.
 
-\subsection{Hardware used}
+\subsection{Hardware specs}
 The hardware used for testing is a dedicated computer running only the databases
 and nothing else. The configuration parameters for the database are those of a
 standard setup for PostgreSQL and MariaDB respectively.
 
-The exact specifications of the hardware are irrelevant for the index selection
-as it does not depend on the hardware but rather the software of the database itself.
+The specifications of the hardware are:
+\begin{itemize}
+\item 2 \textit{Intel® Xeon® Processor E5-2643 (10M Cache, 3.30 GHz, 8.00 GT/s Intel®
+    QPI)}, featuring 4 cores each;
+\item 1 \textit{Seagate Savvio 15K.3 ST9146853SS 146GB 15000 RPM 64MB Cache SAS 6Gb/s
+    2.5"}, used to store the project itself on;
+\item 1 \textit{Seagate Constellation ES.3 ST4000NM0023 4TB 7200 RPM 128MB Cache SAS
+    6Gb/s 3.5"}, used to store the PostgreSQL database on;
+\item And 1 \textit{Seagate Constellation ES ST2000NM0001 2TB 7200 RPM 64MB Cache SAS 6Gb/s
+    3.5"}, used to store the MariaDB database on.
+\end{itemize}
+
+Although it is worth noting that the hardware should have no, or very little,
+effect on the query optimizer's plan selection.
 
 \subsection{The dataset}
-This section will cover some of the relevant statistics of the dataset used to
-evaluate the databases, starting with a section covering the relevant statistics
-of the dataset. Following this is a section describing the queries used to test
-against the dataset.
+The dataset is taken from the real-world and describes the data behind one of
+TriOptima's products, TriReduce~\cite{portfolio_pcsfoddt|t}. The more relevant
+metrics of the dataset can be seen in Table~\ref{table:dataset}, which shows the
+number of indexes, number of rows and the size in bytes for the entire database
+and the tables used in the queries.
+
+\begin{table}
+  \begin{center}
+    \begin{tabu} {c c c c}
+      \toprule
+      name & \#index & \#rows & size (MB) \\
+      \midrule
+      database total & 1130 & 305 & 1165290 \\
+      mm & 6 & 64882651 & 9448 \\
+      book & 6 & 51709 & 10 \\
+      resamb & 3 & 40598 & 5 \\
+      bti & 3 & 0 & 0.05 \\
+      cmm & 2 & 17335822 & 1219 \\
+      cmt & 9 & 52808814 & 12811 \\
+      t & 35 & 115851469 & 92633 \\
+      est & 32 & 33726190 & 19434 \\
+      ct & 23 & 115751571 & 72320 \\
+      mt & 9 & 21721256 & 4284 \\
+      \bottomrule
+    \end{tabu}
+    \caption[The metrics for the dataset]{The metrics for the dataset used for
+      evaluation of the databases. Both the metrics for the entire database and
+      those of individual tables are shown. Note that the table names have been
+      anonymized and are only referred to by an identifier.}\label{table:dataset}
+  \end{center}
+\end{table}
+
+The metrics described in Table~\ref{table:dataset} are those for the original
+database, which is a MySQL instance. The MySQL database was ported to PostgreSQL
+with \textit{py-mysql2pgsql}~\cite{philipsoutham_p}, which converts MySQL
+specific data types, indexes etc.\ to their most similar PostgreSQL
+equivalent. It was not necessary to port to MariaDB as it is built on MySQL and
+supports it out of the box.
 
 \subsection{The queries}\label{sec:queries}
 To evaluate the databases one query covering most of the larger tables with more
@@ -104,10 +163,9 @@ effect using multiple \sql{JOIN} has.
 
 The variants of the query are described below:
 \begin{enumerate}
-\item [variant 1] A \sql{SELECT} on a total of 10 different tables, using
-  joining all together with different foreign keys \sql{JOIN} or
-  \sql{LEFT JOIN}. The values are filtered based on an integer
-  value which is supplied as a host variable.
+\item [variant 1] A \sql{SELECT} on a total of 10 different tables,
+  joining all together through \sql{JOIN}s on relations between them. The values
+  are filtered based on an integer value which is supplied as a host variable.
 \end{enumerate}
 
 \section{Implementation}\label{sec:implementation}
