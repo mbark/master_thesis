@@ -76,7 +76,7 @@ reducing the amount of queries relevant for evaluation. However, the queries
 that do fulfill the above requirements are also those that are most interesting
 to study for a database as they are the ones that will take the most execution time.
 
-\subsection{Choice of implementation}
+\subsection{Choice of implementation}\label{sec:implchoice}
 The focus when implementing the tool used to evaluate the databases was to find
 a tool that would allow a high-level description of the data transformations
 necessary. Additionally the language must be sufficiently stable and be able to
@@ -189,12 +189,15 @@ Table~\ref{table:dataset} for the metrics of the individual tables.
 \end{table}
 
 \section{Implementation}\label{sec:implementation}
-This section will cover the implementation details of the tool, starting with
-some of the technologies and frameworks used. Following this is a description of
-the two steps of the analysis. Finally the queries used for PostgreSQL and
-MariaDB respectively are presented.
+This section will cover the implementation details of the tool used for
+evaluation. The section starts with a general overview of the process of
+evaluation, breaking it down into steps. Following this is a description of the
+tool developed, showing how it is used and what technologies are used.
+The next three sections then cover the steps of evaluation and specific
+implementation details for each. Finally implementation details are provided for
+PostgreSQL and MariaDB.
 
-The evaluation process is split into three steps:
+Evaluating a database for a given query can be broken down into three primary steps:
 \begin{enumerate}
 \item Repeatedly executing the query with different sample sizes to generate
   query plans;
@@ -204,15 +207,15 @@ The evaluation process is split into three steps:
   methods used for each relation;
 \end{enumerate}
 
-To increase robustness and allow further analysis the results for each step are
-saved and can be performed independently on the other.
+These three steps must be executed in order, but they can be executed
+independently of each other; it is possible to only generate plans at a time and
+save them for later parsing and analysis.
 
-The tool was implemented in Clojure, using JDBC to connect to and query the
-databases. For more information about the project, refer to the documentation for
-the repository~\cite{barksten_mbark_m}. The typical use of the tool is to perform all steps in one
-Figure~\ref{fig:cmd:runtool1}. For the case when not all steps need to done, the
-tool can take a file to read from as the first input, see
-Figure~\ref{fig:cmd:runtool2} for an example of how this can be done.
+\subsection{Overview of the tool}
+The tool was implemented so as to be executed from the command line, providing
+all the necessary parameters via flags. As mentioned in
+Section~\ref{sec:implchoice} the tool was developed using Clojure and is
+therefore typically ran via Leiningen, as shown in Figure~\ref{fig:cmd:runtool1}.
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{bash}
@@ -223,6 +226,11 @@ Figure~\ref{fig:cmd:runtool2} for an example of how this can be done.
     parameters, such as the sample sizes to use.}\label{fig:cmd:runtool1}
 \end{figure}
 
+As the steps can be executed one at a time, the results for each are saved and
+the tool allows the execution of only a specific set of steps at a time. An
+example of this can be seen in Figure~\ref{fig:cmd:runtool2} where a previously
+generated plan is parsed and analyzed.
+
 \begin{figure}[ht]
   \begin{minted}[breaklines]{bash}
     lein run plans/xxx-000000000 steps='parse analyze'
@@ -232,30 +240,35 @@ Figure~\ref{fig:cmd:runtool2} for an example of how this can be done.
     generated file containing query plans.}\label{fig:cmd:runtool2}
 \end{figure}
 
-The following sections will describe the implementation details for each of the
-three steps: generation, parsing and finally analysis.
+The full code of the tool can be seen in Appendix~\ref{appendix:sourcecode} and is
+open-source and can be found at~\cite{barksten_mbark_m}. The repository has
+further documentation regarding project structure etc.
 
 \subsection{Generating plans}\label{sec:generatingplans}
-Generating the plans is done by setting the statistics target for the database's
-\sql{ANALYZE}, sampling new data with the target and then finding the query plan for
-the query. This process is then repeated a number of times for each sample size
-to ensure that all possible access methods are found.
+The task of generating query plans can be broken down in the following steps:
+\begin{enumerate}
+\item Set the statistics target for the database;
+\item Generate new statistics for all tables involved in the query used for evaluation;
+\item Find the query plan for each parameter value of the query.
+\end{enumerate}
+These steps can then be repeated a number of times to ensure that all query plans are
+found.
 
-The relevant parts of the code used to generate plans can be found in
+The most relevant parts of the code used to generate plans can be found in
 Figure~\ref{fig:clj:generating}. In the Figure two functions can be seen:
-\clj{generate-plans} and \clj{sample-and-query}, additionally some functions are
+\clj{generate-plans} and \clj{sample-and-query}, additional functions are
 referenced but not seen, for a full reference see Appendix~\ref{appendix:sourcecode}.
 
-The generation starts a call to \clj{generate-plans}, which takes a variable
-describing the generation options as well as the function used to save plans.
-For each sample size the process of sampling and explaining the queries, will
-then be repeated the number of repetitions times.
+The generation step is handled by \clj{generate-plans}, which is provided the
+options for the evaluation. This function will then for each sample size,
+repeated the number of times specified call \clj{sample-and-query}.
 
-Sampling and explaining the query is handled by \clj{sample-and-query}, which
-will delete old statistics and sample the referenced tables through the use of
-\clj{resample-with!} and then for each possible parameter value save the explain
-result of the query. For the specific SQL commands used, see
-Section~\ref{sec:postgresql} and Section~\ref{sec:mariadb} for PostgreSQL and MariaDB respectively.
+The \clj{sample-and-query} function will in turn perform all of the steps
+outlined above; set the statistics target and generate new statistics via
+\clj{resample-with!} and then find the query plan for all possible parameter
+values via repeated calls to \clj{explain-query}.
+
+Each plan found is directly saved to file for later use in parsing.
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{clj}
@@ -275,27 +288,23 @@ Section~\ref{sec:postgresql} and Section~\ref{sec:mariadb} for PostgreSQL and Ma
                           :connection db-con))))))
    \end{minted}
    \caption[The clojure code to generate a query]{The relevant parts of the
-     clojure code used to generate the query plans. Some function definitions
+     Clojure code used to generate the query plans. Some function definitions
      have been removed to improve readability, see the
      Appendix~\ref{appendix:sourcecode} for the full code}
 \label{fig:clj:generating}
 \end{figure}
 
 \subsection{Parsing the plans}\label{sec:parsing}
-Parsing the plans generated by the generate step, described
-in~\ref{sec:generatingplans}, consists of identifying all the access
-methods in the query plan and saving these as a list for the next step:
-analysis, which is described in section~\ref{sec:analyzingplans}.
+Parsing the generated plans is done by simply stripping all information but the
+access methods from the query plans, after this is done the access methods are
+grouped by what relation they access. The code for the parsing can be seen in
+Figure~\ref{fig:clj:parsing}.
 
-The code for the parsing can be seen in Figure~\ref{fig:clj:parsing}. The
-parsing step starts with the function \clj{parse-plan}, which will find all
-relation accesses and group them by what relation they access. The function
-\clj{find-relation-accesses} traverses the output of the query plan, saving
-the access methods it finds. The function \clj{group-by-relation} will then
-group all access methods found by what relation they access.
-
-Each plan generated by the previous step is parsed and the process main purpose
-is to reduce the size of the plans, and allow a more efficient analysis.
+Parsing a plan is done with the function \clj{parse-plan}, which will find all
+access methods with \clj{find-relation-accesses} and group these by their relation
+with \clj{group-by-relation}. Finding the access methods in the query plan is
+done by traversing the plan as a tree and calling \clj{save-if-relation-access}
+on each value --- storing it if it described an access.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{clj}
@@ -323,16 +332,24 @@ is to reduce the size of the plans, and allow a more efficient analysis.
 \label{fig:clj:parsing}
 \end{figure}
 
-\subsection{Analyzing the plans}\label{sec:analyzingplans}
-Analyzing the plans is done by merging all access methods found, keeping only those
-that are distinct. The process will therefore consist of going through all the
-query plans found for a sample size, one for each possible parameter value,
-times the number of repetitions.
+Each generated plan is parsed and the new plan saved to another file. The main
+purpose is to transform the data into something more easily analyzed.
+Additionally the size of the query plans are reduced in size, reducing the
+time taken to analyze all plans.
 
-The code to analyze is shown in Figure~\ref{fig:clj:analyzing}. The
-\clj{analyze-plans} function will read the next plan, via \clj{next-plan},
-merge it with the current plan using \clj{conj-distinct} to add only those
-access methods that are unique.
+\subsection{Analyzing the plans}\label{sec:analyzingplans}
+Analyzing the plans is done by merging all access methods found when parsing the
+plans, keeping the distinct methods for each relation. The code for analysis can
+be seen in Figure~\ref{fig:clj:analyzing}.
+
+Analyzing all generated plans for a sample size is done by the function
+\clj{analyze-plans}, which is provided an identifier for the database evaluated,
+a function to read the next plan and the total number of plans to read. The
+analysis is done by generating map, reading the next plan and merging it with
+the previous one. If the same relation is found in both (which will always be
+the case) the function \clj{conj-distinct} will add only the new access methods
+found that are distinct from those previous found. Only the index used is
+considered in terms of two plans being distinct from each other.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{clj}
@@ -361,10 +378,17 @@ access methods that are unique.
 \label{fig:clj:analyzing}
 \end{figure}
 
+The analysis is done for each sample size, and the resulting map of relation to
+access methods is saved for study.
+
 \subsection{PostgreSQL}\label{sec:postgresql}
-The SQL commands used to resample the data in PostgreSQL can be seen in
-Figure~\ref{fig:sql:pganalyze}. Between every new \sql{ANALYZE} the statistics
-are deleted by deleting all data from \sql{pg_statistics}.
+In PostgreSQL the SQL commands used are quite straightforward, one is used to
+delete all previously gathered statistics, one to set the statistics target and
+finally an \sql{ANALYZE} is called for each table involved in the query being
+evaluated. The specific commands used can be seen in
+Figure~\ref{fig:sql:pganalyze}, the value of the sample size is provided as a
+host variable, as it will depend on the options used when evaluating a database
+and query.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{postgresql}
@@ -380,15 +404,18 @@ are deleted by deleting all data from \sql{pg_statistics}.
 \end{figure}
 
 \subsection{MariaDB}\label{sec:mariadb}
-The SQL commands used to resample the data in MariaDB can be seen in
-Figure~\ref{fig:sql:resamplemdb}. Unlike PostgreSQL the statistics are not
-deleted between each resampling because InnoDB does not support these
-functionality, instead the statistics are just overwritten by a new analyze.
+In MariaDB the commands used to resample the data are storage engine specific,
+in this case InnoDB supports the storage. It is worth noting that InnoDB only
+supports MariaDB with statistics, it is then MariaDB that performs the actual
+query optimization.
 
-Before sampling two variables \sql{innodb_stats_persistent} and
-\sql{innodb_stats_auto_recalc} are both set to \sql{'OFF'}. This is to ensure
-that InnoDB only use the transient data and does not save any between database
-restarts and so on.
+It is necessary in InnoDB to ensure that the statistics used are those
+generated, to do this no persistent statistics are saved. Furthermore, no data
+is deleted between resampling as it is neither possible nor necessary, the old
+statistics are overwritten by the new. Finally the tables are all analyzed in
+one single \sql{ANALYZE} call.
+
+The specific commands used can be seen in Figure~\ref{fig:sql:resamplemdb}.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{mysql}
