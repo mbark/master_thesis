@@ -3,7 +3,7 @@ presented. First, the choice of method is described, motivating the dataset and
 technologies used. Following this the problems used for benchmarking are
 presented, including a more in-depth description of the dataset. After these
 motivations, the actual implementation details are presented, showing how the
-database's are evaluated. Finally the results from the evaluation are presented.
+database's are evaluated.
 
 \section{Choice of method}\label{sec:choiceofmethod}
 This section will motivate the methods' three primary questions:
@@ -428,42 +428,4 @@ The specific commands used can be seen in Figure~\ref{fig:sql:resamplemdb}.
 first ensure that MariaDB will not use some other stats than those we gather,
 then set the statistics target and finally analyze all tables involved in the query.}
 \label{fig:sql:resamplemdb}
-\end{figure}
-
-\section{Evaluation}
-This section will show the results of the evaluation. The section will start
-with presenting each query and its corresponding evaluation. Following this is a
-section about the general findings from these queries, and the further
-evaluation done for these findings.
-
-\subsection{Query evaluation}
-This section will cover the results found for each query and database. In the
-figures all relations with more than one possible index-selection are shown.
-The number of possible different index selections is shown next to the number of
-ambiguous indexes to allow comparison.
-
-The evaluation of query variant 1 of the query for MariaDB can be seen in
-Figure~\ref{fig:plot:mariadb:query1}.
-
-\begin{figure}
-\begin{tikzpicture}
-\begin{axis}[
-    ybar,
-    legend style={at={(0.5,-0.15)},
-      anchor=north,legend columns=-1},
-    symbolic x coords={ct,mt},
-    ylabel={\#index},
-    xtick=data,
-    nodes near coords,
-    nodes near coords align={vertical}
-    ]
-\addplot coordinates {(ct,5) (mt, 2)};
-\addplot coordinates {(ct,3) (mt, 1)};
-\legend{possible indexes, ambiguous indexes}
-\end{axis}
-\end{tikzpicture}
-\caption[The index selections for MariaDB and query variant 1.]{The different
-  indexes selected for MariaDB and the query variant 1, the possible index
-  selections --- as in those considered by the query optimizer --- are shown next to
-those actually selected.}\label{fig:plot:mariadb:query1}
 \end{figure}

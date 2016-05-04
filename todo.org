@@ -1,23 +1,27 @@
 EXJOBB -*- mode: org -*-
-* TODO Data collection
+* Data collection
 ** TODO Add the evaluation for postgresql for the full query
-** TODO Subset the query to generate more query variations
+** TODO Subset the query for more variations
 ** TODO Test MariaDB and PostgreSQL on the subsets
 * Report - Method
 ** DONE Go through all text and see that it makes sense
 CLOSED: [2016-05-03 Tue 16:19]
 ** DONE Write down the statistics of the database and tables
 CLOSED: [2016-05-03 Tue 13:14]
-** TODO Add more metrics to the query-part
-** TODO Improve the implementation part as well
-** TODO Add to evaluation when more is done
-** TODO Let Bjorn read it and give feedback
-** TODO Send it to John for feedback
+** DONE Improve the implementation part as well
+CLOSED: [2016-05-04 Wed 14:09]
+** DONE Let Bjorn read it and give feedback
+CLOSED: [2016-05-04 Wed 14:09]
+** DONE Send it to John for feedback
+CLOSED: [2016-05-04 Wed 14:09]
+** TODO Add the actual metrics to the queries part
+** TODO Add back all tables data for the MariaDB query
+** TODO Add the results for the subsets of the original query
+* Report - Results
+** TODO What goes here?
+* Report - Discussion
+** TODO Lay down what my basic findings are as well as future work
 * Report
 ** TODO Ensure the terminology is consistent
-** TODO Talk about access paths or query plans consistently
+** TODO Use the term access path or query plan consistently
 ** TODO Rephrase from index selection to access method (seq scan vs index is also relevant)
-* Questions
-** TODO What are the relevant statistics for the database tested?
-
-** TODO How is the index usage per query, per table and per sample size best presented?
