@@ -58,7 +58,7 @@ several indexes on the same table or compound indexes, making the problem of
 index selection trivial for all of them.
 
 Instead, the dataset chosen was one taken from the real world: the dataset for
-TriOptima's product TriReduce. This database fulfill all of the requirements, as
+TriOptima's product triReduce. This database fulfill all of the requirements, as
 can be seen in Table~\ref{table:dataset}. The metrics of the dataset are
 presented in more detail in Section~\ref{sec:benchmark}.
 
@@ -122,7 +122,9 @@ have none, or very little, effect on the query optimizer's plan selection.
 As detailed in Section~\ref{sec:dataset} the dataset should be sufficiently
 complex in terms of indexes, table size and table values.
 Table~\ref{table:dataset} presents the number of indexes, the number of rows and
-the size in MB of the entire database and all tables involved in the benchmarking.
+the size in MB of the entire database and all tables involved in the
+benchmarking, the names of the tables have anonymized and are referred to by an
+identifier such as ``mm'' or ``book''.
 
 \begin{table}
   \begin{center}
@@ -134,7 +136,6 @@ the size in MB of the entire database and all tables involved in the benchmarkin
       mm & 6 & 64882651 & 9448 \\
       book & 6 & 51709 & 10 \\
       resamb & 3 & 40598 & 5 \\
-      bti & 3 & 0 & 0.05 \\
       cmm & 2 & 17335822 & 1219 \\
       cmt & 9 & 52808814 & 12811 \\
       t & 35 & 115851469 & 92633 \\
@@ -150,7 +151,7 @@ the size in MB of the entire database and all tables involved in the benchmarkin
   \end{center}
 \end{table}
 
-The original dataset was saved in a MySQL database, which was ported to
+The original dataset was stored in a MySQL database, which was ported to
 PostgreSQL and MariaDB. MariaDB is made as an add-on to MySQL and thus required
 no specific porting, the data was just copied into a fresh install of MariaDB
 using a \textit{mysqldump}. For PostgreSQL
@@ -169,24 +170,21 @@ indexes and size. As such one query covering all of the most complex tables were
 written, this query can be considered to be the most complex query for the
 dataset. Subsets are then used to simulate simpler scenarios.
 
-The metrics of all queries can be seen in Table~\ref{table:queries}, which shows
-the number of \sql{JOIN}s involved and which tables are queried. Refer to
-Table~\ref{table:dataset} for the metrics of the individual tables.
+The original query used for evaluation can be seen in
+Figure~\ref{fig:sql:query1}, the table names are once again anonymized. For the
+metrics of the tables involved see Figure~\ref{table:dataset}. The variations of
+the query simply remove one or more tables involved.
 
-\begin{table}
-  \begin{center}
-    \begin{tabu} {c c c c}
-      \toprule
-      number & tables involved & indexes & size (MB) \\
-      \midrule
-      database total & 1130 & 305 & 1165290 \\
-      \bottomrule
-    \end{tabu}
-    \caption[The metrics for the queries]{The metrics for the queries used for
-      evaluation of the databases. For the metrics of the tables referred to,
-      see Table~\ref{table:dataset}.}\label{table:queries}
-  \end{center}
-\end{table}
+\begin{figure}[ht]
+\begin{minted}[breaklines]{clojure}
+SELECT *
+FROM ct JOIN t JOIN mt JOIN mm JOIN book JOIN cmt JOIN cmm JOIN est JOIN resamb
+WHERE ct.key = :KEY
+\end{minted}
+    \caption[ The original query used for evaluation ]{The query used for
+      evaluation, simplified and anonymized. The tables are joined on rows in
+      common.}\label{fig:sql:query1}
+\end{figure}
 
 \section{Implementation}\label{sec:implementation}
 This section will cover the implementation details of the tool used for

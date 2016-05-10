@@ -1,8 +1,12 @@
 EXJOBB -*- mode: org -*-
 * Data collection
-** TODO Add the evaluation for postgresql for the full query
-** TODO Subset the query for more variations
+** DONE Add the evaluation for postgresql for the full query
+CLOSED: [2016-05-09 Mon 15:34]
+** DONE Subset the query for more variations
+CLOSED: [2016-05-09 Mon 15:34]
 ** TODO Test MariaDB and PostgreSQL on the subsets
+** DONE Update the first query, removing bti
+CLOSED: [2016-05-10 Tue 13:24]
 * Report - Method
 ** DONE Go through all text and see that it makes sense
 CLOSED: [2016-05-03 Tue 16:19]
@@ -14,14 +18,26 @@ CLOSED: [2016-05-04 Wed 14:09]
 CLOSED: [2016-05-04 Wed 14:09]
 ** DONE Send it to John for feedback
 CLOSED: [2016-05-04 Wed 14:09]
-** TODO Add the actual metrics to the queries part
-** TODO Add back all tables data for the MariaDB query
-** TODO Add the results for the subsets of the original query
+** DONE Add the actual metrics to the queries part
+CLOSED: [2016-05-09 Mon 15:33]
+** DONE Add the metrics for all the queries used
+CLOSED: [2016-05-10 Tue 10:32]
+** DONE Clarify that mt, ct etc are table names
+CLOSED: [2016-05-10 Tue 09:44]
 * Report - Results
-** TODO What goes here?
+** TODO Add tables showing the results for all queries
 * Report - Discussion
-** TODO Lay down what my basic findings are as well as future work
+** DONE Lay down what my basic findings are as well as future work
+CLOSED: [2016-05-10 Tue 13:24]
+** DONE Motivate the validity of these findings
+CLOSED: [2016-05-10 Tue 13:24]
+** TODO Write a draft for the discussion once all results are found
+* Report - Conclusions
+** DONE Write down the basic conclusions found so far
+CLOSED: [2016-05-10 Tue 13:57]
 * Report
 ** TODO Ensure the terminology is consistent
 ** TODO Use the term access path or query plan consistently
 ** TODO Rephrase from index selection to access method (seq scan vs index is also relevant)
+
+** TODO Don't refer to "parameter value" but rather predicate

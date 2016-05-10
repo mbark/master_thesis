@@ -62,7 +62,7 @@ WHERE   WEIGHT = 90
         AND
         HEIGHT > 190
 \end{minted}
-\caption[The \textit{WHERE} clause of a query with two potential matching columns]{The \textit{WHERE} clause of a query with two potential matching columns.}\label{fig:sql:indexslice}
+\caption[The \sql{WHERE} clause of a query with two potential matching columns]{The \sql{WHERE} clause of a query with two potential matching columns.}\label{fig:sql:indexslice}
 \end{figure}
 
 If there exists an index on only \sql{HEIGHT}, no values for \sql{WEIGHT} can be discarded in the index slice. If an index is added for \sql{WEIGHT}, the thickness of the index slice will decrease as only values fulfilling both the \sql{HEIGHT} and \sql{WEIGHT} requirements remain.

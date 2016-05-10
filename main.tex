@@ -46,6 +46,22 @@
 
 \newcommand{\clj}[1]{\mintinline{clojure}{#1}}
 \newcommand{\sql}[1]{\mintinline{sql}{#1}}
+\newenvironment{indexgraph}{
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar,
+      legend style={at={(0.5,-0.15)},
+        anchor=north,legend columns=-1},
+      symbolic x coords={mm,book,resamb,cmm,cmt,t,est,ct,mt},
+      ylabel={\#index},
+      xtick=data,
+      nodes near coords,
+      nodes near coords align={vertical},
+      width=12cm]
+} {
+  \legend{possible indexes, ambiguous indexes}
+\end{axis}
+\end{tikzpicture}}
 
 \frontmatter
 \pagestyle{empty}
@@ -80,11 +96,12 @@
     \input{Content/6_results}
 \chapter{Discussion} \label{chap:discussion}
     \input{Content/7_discussion}
+\chapter{Conclusions} \label{chap:conclusions}
+    \input{Content/8_conclusions}
 \nocite{*}
 \printbibliography
 
 \appendix
-\addappheadtotoc
 \chapter{Source code}\label{appendix:sourcecode}
 
 The appendix.

@@ -1,1 +1,97 @@
-A discussion.
+In this chapter we discuss the results, the validity of these in more general terms. Finally some ideas for future research are presented.
+
+\section{Validity}\label{sec:validity}
+Two main criticisms concerning the validity of the results can be raised:
+\begin{enumerate}
+\item Only a few number of queries were used for evaluation;
+\item And only one dataset was used for evaluation.
+\end{enumerate}
+
+Both of these criticisms will be answered in turn below. Following this an
+additional motivation as to the validity of the results is provided.
+
+\subsection{Only a few queries were used}
+\textit{Only one single query and subsets of that query were used, this is hardly a
+large set of tests for evaluation.}
+
+To answer this criticism its important to
+consider the important fact that the possibility for ambiguous indexes depends
+on the criteria outlined in Section~\ref{sec:dataset}. The tables fulfilling
+these queries are few, reducing the possibility to use multiple queries as they
+will only involve the same tables anyway.
+
+Furthermore, the query constructed can be considered to be sufficiently complex
+as to capture a problematic query that the problem would realistically arise
+for. From this it can be generalized as to say that if the problem does not
+arise for this query, it is highly unlikely that any simpler query would cause
+problems and more complex queries would be unnecessary contrived.
+
+So while only one query and subsets of it are used, these queries cover a good
+range of queries from simple to more complex for the query optimizer. This means
+that the results from these can be considered valid.
+
+\subsection{Only one dataset was used}
+\textit{Only one dataset was used for evaluation, the results found for the
+  problem studied could be very different for another dataset.}
+
+This criticism is one bound to the problem of evaluating databases in general:
+the performance of the database is often dependent on the dataset used for
+testing. While it is correct that the results could vary depending on dataset,
+any study of databases will suffer from this problem and the results should be
+considered an indication more than anything else.
+
+Furthermore, the dataset used to test the databases is one taken from the real
+world, making it more realistic than those often otherwise used. As such, the
+validity of the results of this study are well on par with those of other
+studies using less realistic datasets like TPC-H.
+
+While only one dataset is used for evaluation, the results found can be seen as
+an indication of a specific behavior and should warrant future research.
+Additionally, the results found are based on a dataset taken from the real
+world further giving validity to the results.
+
+\subsection{Further motivation}
+Studying databases is problematic because it is out of necessity bound to the
+underlying dataset. This problem is unavoidable and can only be limited by the
+creation of more datasets for testing.
+
+Maybe the most important motivation to the validity of the results is the fact
+that the behavior seen is present. How common the problem of incorrect index
+selection is is hard to say, but that it does exist the results seem to
+indicate. Therefore the results can be seen as an indication of an existing
+problem, but not an indication of how common they are.
+
+\section{Ambiguous indexes}
+- index selections tend to not be ambiguous, the optimizer remains consistent regardless of sample size used
+- ambiguous indexes in terms of parameter values are however present
+
+\section{Future research}
+This section will cover some suggestions for future research on the topic of
+databases, both in general and specifically for the problem of index selection.
+
+As discussed in Section~\ref{sec:validity} one problem when evaluating
+databases is the dataset used for evaluation. In this study a dataset based on a
+product for the company TriOptima was used to provide an example of a real-world
+dataset. However, this dataset can't be made public.
+
+Other datasets like TPC-H or to more recently create JOB suffer from the problem
+that they are simpler than a database used by a company; as an example both of
+them have only one index per relation on the primary key.
+
+One important area of research in databases would therefore be to create one or
+more realistic datasets with complex data, relations and indexes that could be
+used for research. Using these datasets for evaluation would then provide
+results more general and correct.
+
+The most important results indicated by this study is that query optimizer
+selects different indexes depending on the parameter value for queries. If this
+is the correct choice or not to do is not evaluated as a performance study is
+beyond the scope of this thesis. A study, evaluating the performance of the
+different indexes used should be conducted to see if being sensitive to query
+parameters is correct.
+
+Finally it is important to also note that the problem of ambiguous indexes
+because of small sample size, or incorrect estimation of statistics, seem to not
+be common. As such, future study into the area should probably avoid this topic
+in favor of other topics, for example that of optimizers being sensitive to
+parameter values.
