@@ -4,9 +4,14 @@ EXJOBB -*- mode: org -*-
 CLOSED: [2016-05-09 Mon 15:34]
 ** DONE Subset the query for more variations
 CLOSED: [2016-05-09 Mon 15:34]
-** TODO Test MariaDB and PostgreSQL on the subsets
+** DONE Test MariaDB and PostgreSQL on the subsets
+CLOSED: [2016-05-11 Wed 15:18]
 ** DONE Update the first query, removing bti
 CLOSED: [2016-05-10 Tue 13:24]
+** DONE Test MariaDB with many repetitions and small sample size
+CLOSED: [2016-05-11 Wed 16:23]
+** TODO Test PostgreSQL with many repetitions and small sample size
+** TODO Write down exactly which tests should be done
 * Report - Method
 ** DONE Go through all text and see that it makes sense
 CLOSED: [2016-05-03 Tue 16:19]
@@ -41,3 +46,6 @@ CLOSED: [2016-05-10 Tue 13:57]
 ** TODO Rephrase from index selection to access method (seq scan vs index is also relevant)
 
 ** TODO Don't refer to "parameter value" but rather predicate
+** TODO Add some quotes starting the other chapters as well
+** TODO Write a more proper title
+** TODO Write the abstract

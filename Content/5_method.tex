@@ -427,3 +427,67 @@ first ensure that MariaDB will not use some other stats than those we gather,
 then set the statistics target and finally analyze all tables involved in the query.}
 \label{fig:sql:resamplemdb}
 \end{figure}
+
+\section{Evaluation}
+In order to evaluate the database the dataset described in~\ref{sec:dataset} and
+the queries described in~\ref{sec:queries} were used. The program supports
+several options to be set, the values used for the evaluation done can be seen
+in Table~\ref{table:evaluation1}, which shows the initial tests conducted. The
+results from these tests warranted further evaluation and the options for these
+tests can be seen in Table~\ref{table:evaluation2}. The same values were used
+when testing both PostgreSQL and MariaDB.
+
+\begin{table}
+  \begin{center}
+    \begin{tabu} {c c c c}
+      \toprule
+      query & repetitions & sample sizes \\
+      \midrule
+      \#1 & 1000 & 1 \\
+      \#1 & 1000 & 100 \\
+      \bottomrule
+    \end{tabu}
+    \caption[The number of repetitions and sample size used for evaluation]{The
+      number of repetitions and sample size used for the evaluation. Two tests
+      with a large number of repetitions were done for the original, and the
+      other queries evaluated with a lesser number of
+      repetitions.}\label{table:evaluation1}
+  \end{center}
+\end{table}
+
+In order to find a possible correlation between sample size and the number of
+ambiguous indexes the tests were done with a very small sample size and a very
+large number of repetitions to catch all realistically chosen query plans. This
+was only done for the original query as it is more complex than the others
+making testing these unnecessary. The options used can be seen in Table~\ref{table:evaluation1}.
+
+Additional tests were on the remaining subsets to further evaluate the behavior
+identified in the first two tests. The number of repetitions is kept small here
+as it was found not be relevant. The values used for these evaluations can be
+seen in Table~\ref{table:evaluation2}.
+
+\begin{table}
+  \begin{center}
+    \begin{tabu} {c c c c}
+      \toprule
+      query & repetitions & sample sizes \\
+      \midrule
+      \#1 & 10 & 1, 100 \\
+      \#1 & 10 & 1, 10, 100 \\
+      \#2 & 10 & 1, 10, 100 \\
+      \#3 & 10 & 1, 10, 100 \\
+      \#4 & 10 & 1, 10, 100 \\
+      \#5 & 10 & 1, 10, 100 \\
+      \#6 & 10 & 1, 10, 100 \\
+      \#7 & 10 & 1, 10, 100 \\
+      \#8 & 10 & 1, 10, 100 \\
+      \#9 & 10 & 1, 10, 100 \\
+      \bottomrule
+    \end{tabu}
+    \caption[The number of repetitions and sample size used for evaluation]{The
+      number of repetitions and sample size used for the evaluation. Two tests
+      with a large number of repetitions were done for the original, and the
+      other queries evaluated with a lesser number of
+      repetitions.}\label{table:evaluation2}
+  \end{center}
+\end{table}

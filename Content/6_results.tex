@@ -1,32 +1,22 @@
 This chapter contains the results of using the tool to evaluate the two
-databases. First is a section showing the results for the evaluation of MariaDB,
-following this is the results of PostgreSQL. Each of these sections contain the
-results for all variations of the query as well as the different sample sizes used.
+databases. This chapter will start with a section showing the results when
+evaluating the databases to identify a correlation between sample size and
+ambiguous indexes. Following this are further results showing the results when
+evaluating subsets of the original query.
 
-\subsection{MariaDB}
-The evaluation of query variant 1 of the query for MariaDB can be seen in
-Figure~\ref{fig:plot:mariadb:query1}.
+\section{Correlation between sample size and ambiguous indexes}
+This section contains the results for the queries done. The evaluation for query
+\#1 can be seen in Figure~\ref{fig:plot:query1}.
 
 \begin{figure}
 \begin{indexgraph}
-  \addplot coordinates {(mm,1) (book,1) (resamb,1) (cmm,1) (cmt,1) (t,1) (est,1) (ct,5) (mt, 2)};
-  \addplot coordinates {(mm,1) (book,1) (resamb,1) (cmm,1) (cmt,1) (t,1) (est,1) (ct,3) (mt, 1)};
+  \addplot coordinates {(ct,5) (t,1) (mt,2) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
+  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
+  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
 \end{indexgraph}
-\caption[The index selections for MariaDB for query \#1.]{The different
-  indexes selected for MariaDB and the query variant 1, the possible index
-  selections --- as in those considered by the query optimizer --- are shown next to
-those actually selected.}\label{fig:plot:mariadb:query1}
+\caption[The index selections for query \#1.]{The index selections for query \#1
+are shown next to each other, showing the actual index selections next to the
+possible index selections.}\label{fig:plot:query1}
 \end{figure}
 
-\subsection{PostgreSQL}
-The evaluation of query variation 1 for PostgreSQL can be seen in Figure~\ref{fig:plot:postgresql:query1}.
-\begin{figure}
-\begin{indexgraph}
-  \addplot coordinates {(mm,1) (book,1) (resamb,1) (cmm,1) (cmt,1) (t,1) (est,1) (ct,5) (mt, 2)};
-  \addplot coordinates {(mm,1) (book,1) (resamb,1) (cmm,1) (cmt,1) (t,1) (est,1) (ct,1) (mt, 1)};
-\end{indexgraph}
-\caption[The index selections for PostgreSQL for query \#1.]{The different
-  indexes selected for PostgreSQL and query variation 1, the possible index
-  selections --- as in those considered by the query optimizer --- are shown next to
-those actually selected.}\label{fig:plot:postgresql:query1}
-\end{figure}
+\section{Evaluating subsets of the query}
