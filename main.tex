@@ -24,10 +24,9 @@
 \usepackage[section]{minted}
 \usepackage{standalone}
 
-\title{Evaluating the effect of cardinality estimates on index selection in
-  relational databases}
+\title{Evaluating the effect of cost estimation on two state-of-the-art query optimizer's selection of access method}
 
-\subtitle{Studying how PostgreSQL and MariaDB select index in a real-world scenario}
+\subtitle{Studying how MariaDB's and PostgreSQL's respective query optimizers select access method in correlation to the sample size used when gathering statistics.}
 \foreigntitle{Lorem ipsum dolor sit amet, sed diam nonummy nibh eui
               mod tincidunt ut laoreet dol}
 \author{Martin Barksten}
@@ -59,7 +58,7 @@
       nodes near coords align={vertical},
       width=14cm]
 } {
-  \legend{postgresql, mariadb, ambiguous indexes}
+  \legend{Possible access methods, MariaDB, PostgreSQL}
 \end{axis}
 \end{tikzpicture}}
 

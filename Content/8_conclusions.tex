@@ -2,29 +2,30 @@ This thesis concerns the evaluation of two modern, state-of-the-art database's,
 and the effect of estimating statistics on the index selection. The thesis question was:
 \textit{How much effect does the cost estimation have on the query optimizers selection of indexes during the join enumeration?}
 
-Two databases - PostgreSQL and MariaDB - were chosen as a good representation of state-of-the-art query
-optimizers. A large enterprise dataset was ported to both of these two
-databases. Finally, a query was constructed to test against the most complex
-tables in the dataset in order to put the optimizers to the test.
+Two databases --- PostgreSQL and MariaDB --- were chosen as a good representation of
+state-of-the-art query optimizers. A large enterprise dataset was ported to both
+of these two databases. Finally, a query was constructed using the most complex
+tables in the dataset.
 
-A tool was then implemented in Clojure to allow the two databases to be evaluated.
-With the tool the index selections for a given query can be tested
+A tool was then implemented in Clojure to allow the two databases to be
+evaluated. With the tool the index selections for a given query can be tested
 for a number of different sample sizes. By testing over an increasing sample
 size the cost estimation can be simulated to range from bad to good, allowing
 the testing of databases in a realistic scenario.
 
 Using the tool to evaluate the databases with the query we find that the cost
 estimation have little effect on the index selection. For all the queries used,
-regardless of sample size no correlation is found between the sample size and the number of
-different indexes used to access the same relation.
+regardless of sample size, no correlation is found between the sample size and
+the number of different indexes used to access the same relation.
 
-Instead the results indicate that parameter value can cause the database's to
+Instead the results indicate that predicate values can cause the databases to
 select different indexes. Furthermore, it is found that this behavior is
 different for the two databases with neither being sensitive to the same value
-as the other. This indicates that the two optimizers behave differently,
-potentially meaning one of the two behaviors provide better performance.
+as the other. This shows that the query optimizer's perform different for the
+two databases, indicating that further study should be done to identify which of
+the two behaviors might be considered best.
 
 In conclusion we have found results indicating that the cost estimations have
-little effect on the query optimizers index selection. We have also found
+little effect on the query optimizers selection of access method. We have also found
 results indicating that instead the parameter values used for filtering does
 effect the index selection.

@@ -11,7 +11,8 @@ CLOSED: [2016-05-10 Tue 13:24]
 ** DONE Test MariaDB with many repetitions and small sample size
 CLOSED: [2016-05-11 Wed 16:23]
 ** TODO Test PostgreSQL with many repetitions and small sample size
-** TODO Write down exactly which tests should be done
+** DONE Write down exactly which tests should be done
+CLOSED: [2016-05-16 Mon 14:04]
 * Report - Method
 ** DONE Go through all text and see that it makes sense
 CLOSED: [2016-05-03 Tue 16:19]
@@ -36,16 +37,21 @@ CLOSED: [2016-05-10 Tue 09:44]
 CLOSED: [2016-05-10 Tue 13:24]
 ** DONE Motivate the validity of these findings
 CLOSED: [2016-05-10 Tue 13:24]
-** TODO Write a draft for the discussion once all results are found
+** TODO Write the ambiguous indexes section once the results are in
 * Report - Conclusions
 ** DONE Write down the basic conclusions found so far
 CLOSED: [2016-05-10 Tue 13:57]
 * Report
+** DONE Go through the discussion section improving it
+CLOSED: [2016-05-16 Mon 12:55]
+** DONE Go through the conclusion improving it
+CLOSED: [2016-05-16 Mon 12:55]
 ** TODO Ensure the terminology is consistent
 ** TODO Use the term access path or query plan consistently
 ** TODO Rephrase from index selection to access method (seq scan vs index is also relevant)
 
 ** TODO Don't refer to "parameter value" but rather predicate
 ** TODO Add some quotes starting the other chapters as well
-** TODO Write a more proper title
+** DONE Write a more proper title
+CLOSED: [2016-05-16 Mon 13:06]
 ** TODO Write the abstract

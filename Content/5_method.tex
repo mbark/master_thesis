@@ -431,7 +431,7 @@ then set the statistics target and finally analyze all tables involved in the qu
 \section{Evaluation}
 In order to evaluate the database the dataset described in~\ref{sec:dataset} and
 the queries described in~\ref{sec:queries} were used. The program supports
-several options to be set, the values used for the evaluation done can be seen
+several options to be set, the values used for the evaluation can be seen
 in Table~\ref{table:evaluation1}, which shows the initial tests conducted. The
 results from these tests warranted further evaluation and the options for these
 tests can be seen in Table~\ref{table:evaluation2}. The same values were used
@@ -443,8 +443,7 @@ when testing both PostgreSQL and MariaDB.
       \toprule
       query & repetitions & sample sizes \\
       \midrule
-      \#1 & 1000 & 1 \\
-      \#1 & 1000 & 100 \\
+      \#1 & 500 & 1, 100 \\
       \bottomrule
     \end{tabu}
     \caption[The number of repetitions and sample size used for evaluation]{The
@@ -462,26 +461,19 @@ was only done for the original query as it is more complex than the others
 making testing these unnecessary. The options used can be seen in Table~\ref{table:evaluation1}.
 
 Additional tests were on the remaining subsets to further evaluate the behavior
-identified in the first two tests. The number of repetitions is kept small here
-as it was found not be relevant. The values used for these evaluations can be
-seen in Table~\ref{table:evaluation2}.
+identified in the first two tests.  As can be seen a small number of repetitions
+is used and the sample size is minimal, this is as neither of these two options
+seemed to affect the query plans chosen. For a further discussion about this see
+Section~\ref{sec:ambigindexes}, where the results found for the initial tests is
+discussed in detail.
 
 \begin{table}
   \begin{center}
     \begin{tabu} {c c c c}
       \toprule
-      query & repetitions & sample sizes \\
+      queries & repetitions & sample sizes \\
       \midrule
-      \#1 & 10 & 1, 100 \\
-      \#1 & 10 & 1, 10, 100 \\
-      \#2 & 10 & 1, 10, 100 \\
-      \#3 & 10 & 1, 10, 100 \\
-      \#4 & 10 & 1, 10, 100 \\
-      \#5 & 10 & 1, 10, 100 \\
-      \#6 & 10 & 1, 10, 100 \\
-      \#7 & 10 & 1, 10, 100 \\
-      \#8 & 10 & 1, 10, 100 \\
-      \#9 & 10 & 1, 10, 100 \\
+      \#1 --- \#9  & 1 & 1 \\
       \bottomrule
     \end{tabu}
     \caption[The number of repetitions and sample size used for evaluation]{The
