@@ -1,57 +1,19 @@
 EXJOBB -*- mode: org -*-
 * Data collection
-** DONE Add the evaluation for postgresql for the full query
-CLOSED: [2016-05-09 Mon 15:34]
-** DONE Subset the query for more variations
-CLOSED: [2016-05-09 Mon 15:34]
-** DONE Test MariaDB and PostgreSQL on the subsets
-CLOSED: [2016-05-11 Wed 15:18]
-** DONE Update the first query, removing bti
-CLOSED: [2016-05-10 Tue 13:24]
-** DONE Test MariaDB with many repetitions and small sample size
-CLOSED: [2016-05-11 Wed 16:23]
-** TODO Test PostgreSQL with many repetitions and small sample size
-** DONE Write down exactly which tests should be done
-CLOSED: [2016-05-16 Mon 14:04]
-* Report - Method
-** DONE Go through all text and see that it makes sense
-CLOSED: [2016-05-03 Tue 16:19]
-** DONE Write down the statistics of the database and tables
-CLOSED: [2016-05-03 Tue 13:14]
-** DONE Improve the implementation part as well
-CLOSED: [2016-05-04 Wed 14:09]
-** DONE Let Bjorn read it and give feedback
-CLOSED: [2016-05-04 Wed 14:09]
-** DONE Send it to John for feedback
-CLOSED: [2016-05-04 Wed 14:09]
-** DONE Add the actual metrics to the queries part
-CLOSED: [2016-05-09 Mon 15:33]
-** DONE Add the metrics for all the queries used
-CLOSED: [2016-05-10 Tue 10:32]
-** DONE Clarify that mt, ct etc are table names
-CLOSED: [2016-05-10 Tue 09:44]
-* Report - Results
-** TODO Add tables showing the results for all queries
-* Report - Discussion
-** DONE Lay down what my basic findings are as well as future work
-CLOSED: [2016-05-10 Tue 13:24]
-** DONE Motivate the validity of these findings
-CLOSED: [2016-05-10 Tue 13:24]
-** TODO Write the ambiguous indexes section once the results are in
-* Report - Conclusions
-** DONE Write down the basic conclusions found so far
-CLOSED: [2016-05-10 Tue 13:57]
+** TODO Do the 50rep tests
+** TODO Do the 1rep tests
 * Report
 ** DONE Go through the discussion section improving it
 CLOSED: [2016-05-16 Mon 12:55]
 ** DONE Go through the conclusion improving it
 CLOSED: [2016-05-16 Mon 12:55]
-** TODO Ensure the terminology is consistent
-** TODO Use the term access path or query plan consistently
-** TODO Rephrase from index selection to access method (seq scan vs index is also relevant)
-
-** TODO Don't refer to "parameter value" but rather predicate
-** TODO Add some quotes starting the other chapters as well
+** DONE Don't refer to "parameter value" but rather predicate
+CLOSED: [2016-05-18 Wed 11:05]
 ** DONE Write a more proper title
 CLOSED: [2016-05-16 Mon 13:06]
+** DONE Rewrite the later parts to clarify what cardinality estimate is
+CLOSED: [2016-05-18 Wed 11:02]
+** TODO Ensure chapters >5 tie together better with earlier chapters
+** TODO Use the term access path or query plan consistently
+** TODO Remove the concept of ambiguous indexes, use access method instead
 ** TODO Write the abstract

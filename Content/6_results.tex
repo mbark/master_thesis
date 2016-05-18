@@ -5,10 +5,26 @@ ambiguous indexes. Following this are further results showing the results when
 evaluating subsets of the original query.
 
 \section{Correlation between sample size and ambiguous indexes}
-This section contains the results for the queries done. The evaluation for query
-\#1 can be seen in Figure~\ref{fig:plot:query1}. As can be seen all queries have
-at least one usable index, typically on the primary key. And some tables, most
-notably tables \texttt{ct} and \texttt{mt} have more.
+This section contains the results of the evaluation done in order to determine a
+correlation between sample size and the number of different access methods used
+to access the same relation. The evaluation consisted of a total of four tests,
+two tests per database. For the options used in the tests see
+Section~\ref{sec:evaluation} and more specifically
+Table~\ref{table:evaluation1}. The results will be presented in the form of two
+bar charts, one for each of the sample sizes used.
+
+The first test done can be seen in Figure~\ref{fig:plot:eval1:test1}. Each
+relation involved in the query is represented by a three different bars --- one
+for the number of possible access methods and one for the actual access methods
+used for either of the two databases. From the figure it can be seen that there
+are six possible access methods for \texttt{ct} (these are one full table scan and five
+usable indexes) and that MariaDB will vary between three of these methods,
+whereas PostgreSQL consistently selects the same one.
+
+The second evaluation of query \#1, using a high sample size, can be seen in
+Figure~\ref{fig:plot:eval1:test2}, which can be read in the same way as the
+previous figure. The graph has three bars per relation once again. From this
+graph it can be seen that\ldots
 
 \begin{figure}
 \begin{indexgraph}
@@ -16,15 +32,26 @@ notably tables \texttt{ct} and \texttt{mt} have more.
   \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
   \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
 \end{indexgraph}
-\caption[The index selections for query \#1.]{The index selections for query \#1
+\caption[The access methods used with a low sample size.]{The index selections for query \#1
 are shown next to each other, showing the actual index selections next to the
-possible index selections.}\label{fig:plot:eval1:query1}
+possible index selections.}\label{fig:plot:eval1:test1}
+\end{figure}
+
+\begin{figure}
+\begin{indexgraph}
+  \addplot coordinates {(ct,6) (t,2) (mt,3) (mm,2) (book,2) (cmt,2) (cmm,2) (est,2) (resamb,2)};
+  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
+  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
+\end{indexgraph}
+\caption[The access methods used with a high sample size.]{The index selections for query \#1
+are shown next to each other, showing the actual index selections next to the
+possible index selections.}\label{fig:plot:eval1:test2}
 \end{figure}
 
 \section{Evaluating subsets of the query}
-This section contains the results for the second evaluation done. The evaluation
-was done queries \#1 through \#9, where \#2 --- \#9 are subsets of query \#1,
-and the results can be seen in Figure~\ref{fig:plot:query2}.
+This section contains the results for the second evaluation conducted. The evaluation
+was done on queries \#1 through \#9, where \#2 through \#9 are subsets of query \#1,
+and the results can be seen in Figure~\ref{fig:plot:eval2:test1}.
 
 \begin{figure}
 \begin{indexgraph}
@@ -34,5 +61,15 @@ and the results can be seen in Figure~\ref{fig:plot:query2}.
 \end{indexgraph}
 \caption[The index selections for query \#1.]{The index selections for query \#1
 are shown next to each other, showing the actual index selections next to the
-possible index selections.}\label{fig:plot:eval2:query1}
+possible index selections.}\label{fig:plot:eval2:test1}
+\end{figure}
+\begin{figure}
+\begin{indexgraph}
+  \addplot coordinates {(ct,6) (t,2) (mt,3) (mm,2) (book,2) (cmt,2) (cmm,2) (est,2) (resamb,2)};
+  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
+  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,2) (cmm,2) (est,2) (resamb,1)};
+\end{indexgraph}
+\caption[The index selections for query \#1.]{The index selections for query \#1
+are shown next to each other, showing the actual index selections next to the
+possible index selections.}\label{fig:plot:eval2:test9}
 \end{figure}

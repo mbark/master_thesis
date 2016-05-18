@@ -1,5 +1,5 @@
 \epigraph{An SQL query walks into a bar and sees two tables.\\
-He walks up to them and asks 'Can I join you?'}{\textit{– Source: Unknown, from~\cite{join_tjo}}}
+He walks up to them and asks ``Can I join you?''}{\textit{– Source: Unknown, from~\cite{join_tjo}}}
 
 In this chapter a background is given to relational databases with more focus on
 the areas of interest for this thesis. The first section will give a high-level
@@ -58,7 +58,7 @@ be found in Figure~\ref{fig:sql:joinop}.
 SELECT *
 FROM   EMPLOYEES, DEPARTMENTS
 WHERE  EMPLOYEES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID
-AND    EMPLOYEES.NAME = "John";
+AND    EMPLOYEES.NAME = 'John';
 \end{minted}
 \caption[An example of an SQL query]{An SQL query that will find the all employees by the name of John and info about their department.}\label{fig:sql:joinop}
 \end{figure}
@@ -76,10 +76,10 @@ See Figure~\ref{fig:vennjoin} for a visualization of the joins using Venn diagra
 
 \begin{figure}[ht]
 \includegraphics[scale=0.4]{Images/SQL-Join-Venn-Diagrams.jpg}
-\caption[Illustration of join operations using Venn diagrams]{The four join operations illustrated using Venn diagrams, image taken from \cite{brian_2014_better_bqj}.}\label{fig:vennjoin}
+\caption[Illustration of join operations using Venn diagrams]{The four join operations illustrated using Venn diagrams, image taken from~\cite{brian_2014_better_bqj}.}\label{fig:vennjoin}
 \end{figure}
 
-\subsection{Implementation of operators} \label{sec:opimpl}
+\subsection{Implementation of operators}\label{sec:opimpl}
 
 Operators can be divided into three classes:
 \begin{enumerate}
@@ -270,7 +270,7 @@ The conditions for when these rules are applicable naturally varies a lot depend
 \end{forest}
 \caption{\label{fig:pushop:b}}
 \end{subfigure}
-\caption[Illustrating how operators can be pushed and pulled up and down the tree]{An expression tree representing a query to find which stars worked for which studios in 1996, example taken \cite[p. 774]{garcia-molina_2002_database_dstcb}. The selection operator in Figure \ref{fig:pushop:a} is first pulled up the tree, allowing it to then be pushed down an additional branch as illustrated in Figure \ref{fig:pushop:b}.}\label{fig:pushop}
+\caption[Illustrating how operators can be pushed and pulled up and down the tree]{An expression tree representing a query to find which stars worked for which studios in 1996, example taken~\cite[p. 774]{garcia-molina_2002_database_dstcb}. The selection operator in Figure~\ref{fig:pushop:a} is first pulled up the tree, allowing it to then be pushed down an additional branch as illustrated in Figure~\ref{fig:pushop:b}.}\label{fig:pushop}
 \end{figure}
 
 \subsubsection{Eliminating operators via an index}
@@ -312,7 +312,7 @@ Most modern query optimizers use a dynamic programming algorithm first proposed 
 One final optimization done during this step is also to heuristically prune subtrees that the heuristic consider too bad to even consider~\cite{ono_1990_measuring_mtcojeiqo}.
 
 \subsection{Monitoring}
-It is often useful to monitor and see what decisions the query optimizer make and why; most databases implement the ability to do so via an SQL statement~\cite[p. 34]{lahdenmaki_2005_relational_rdidatodossea}. In PostgreSQL and MariaDB the statement is called \sql{EXPLAIN} \cite{postgresql_pd9e}~\cite{explain_emkb}, but it is also called \sql{SHOW PLAN} or \sql{EXPLAIN PLAN}. For an example of how \sql{EXPLAIN} is used see Figure~\ref{fig:sql:explainquery}, which shows the code for a query, and Figure~\ref{fig:sql:explaintrace}, which shows the corresponding trace.
+It is often useful to monitor and see what decisions the query optimizer make and why; most databases implement the ability to do so via an SQL statement~\cite[p. 34]{lahdenmaki_2005_relational_rdidatodossea}. In PostgreSQL and MariaDB the statement is called \sql{EXPLAIN}~\cite{postgresql_pd9e}~\cite{explain_emkb}, but it is also called \sql{SHOW PLAN} or \sql{EXPLAIN PLAN}. For an example of how \sql{EXPLAIN} is used see Figure~\ref{fig:sql:explainquery}, which shows the code for a query, and Figure~\ref{fig:sql:explaintrace}, which shows the corresponding trace.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{sql}

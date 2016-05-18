@@ -58,7 +58,7 @@ used. However, the results found in this study show indicate two things:
 \begin{itemize}
 \item Different access methods are used to access the same relation;
 \item And the behavior of when this is done differs between MariaDB and
-  PostgreSQL.
+  PostgreSQL.\@
 \end{itemize}
 
 These results will be discussed in more detail in
@@ -75,13 +75,14 @@ describing the second set of results identified: the correlation between
 predicate values and access methods used.
 
 \subsection{Sample size vs access methods used}
-- index selections tend to not be ambiguous, the optimizer remains consistent regardless of sample size used
+- index selections tend to not be ambiguous, the optimizer remains consistent
+regardless of sample size used
 
 \subsection{Predicate value vs access methods used}
 One finding that is clear from the results is that the access method used often
 depend on the predicate value used, rather than the statistics causing the query
 optimizer to pick the incorrect one. An example of this can be seen in
-Figure~\ref{fig:plot:eval2:query1} where several different access methods are
+Figure~\ref{fig:plot:eval1:test1} where several different access methods are
 used for MariaDB depending on the predicate value used. A total of three
 different access methods are used out of a total of 6 possible.
 
@@ -92,12 +93,12 @@ for accessing the same relation.
 
 A clear different can be seen between the two databases as PostgreSQL, while
 sensitive to predicate value always selects the same access method for the
-tables where MariaDB differs. Instead PostgreSQL sometimes deems all indexes
+relations where MariaDB differs. Instead PostgreSQL sometimes deems all indexes
 insufficient and opts instead to just do a full table scan. This is another
 contrast between the two as MariaDB always picks an index if one exists, never
 opting to do a full table scan.
 
-As can be seen in Figure~\ref{fig:plot:eval2:query9} this behavior remains
+As can be seen in Figure~\ref{fig:plot:eval2:test9} this behavior remains
 consistent for both databases' query optimizers regardless of the complexity of
 the query in terms of number of joins and tables involved. This indicates that
 the behavior is intended, and not the cause of incorrect statistics.

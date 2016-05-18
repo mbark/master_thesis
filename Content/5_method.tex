@@ -17,8 +17,8 @@ The following three sections will answer these questions in order, motivating
 choice of databases, dataset and implementation.
 
 \subsection{Choice of databases}\label{sec:choiceofdatabases}
-The two database chosen to evaluated are PostgreSQL and MariaDB. The choice was
-made, as they both are:
+The two databases chosen to evaluated are PostgreSQL and MariaDB.\@ The choice was
+made based on the the fact that they are:
 \begin{enumerate}
 \item Modern databases with widespread use and active development;
 \item Open-source projects allowing anyone to read and modify the source code;
@@ -27,9 +27,9 @@ made, as they both are:
 
 In addition to this they both cover two common use-cases: academia and
 enterprises. All research papers mentioned in Chapter~\ref{chap:relatedwork} that have
-implemented new algorithms or modified old ones have done so in PostgreSQL.
+implemented new algorithms or modified old ones have done so in PostgreSQL.\@
 On the other hand MariaDB is compatible with MySQL, making it a common
-alternative for enterprises.
+alternative for companies to use.
 
 An evaluation of both of these database will give a good indication of the
 performance of a modern state-of-the-art query optimizer. Furthermore, as
@@ -38,43 +38,42 @@ one performs better than the other the code can be studied to identify areas of
 improvement.
 
 \subsection{Choice of dataset}\label{sec:dataset}
-The primary focus when selecting the dataset used was to use a dataset which
+The primary focus when selecting the dataset was to use a dataset which
 could capture the complexity of a real-world database and provide a realistic
 challenge for the query optimizer. The primary requirements are that the dataset
 feature:
 \begin{enumerate}
-\item Many tables with multiple indexes;
-\item Not just indexes on a single row, but also compound indexes covering
-  several;
-\item Skewed and non-uniform data that is not trivial to correctly estimate
-  based on sampling;
-\item A large amount of data forcing the database to estimate the data.
+\item Many relations with multiple indexes each;
+\item\label{item:dataset:req2} More than just trivial indexes on a single row;
+\item Skewed and non-uniform data for which the cardinality is not trivially
+  estimated;
+\item A sufficiently large amount of data such that the database must estimate
+  cardinality;
 \end{enumerate}
 
 The datasets most commonly used for evaluation of database implementations are
 TPC-H~\cite{tpc_th}, TPC-DS~\cite{tpc_tha} and more recently
-JOB~\cite{leis_2015_how_hgaqor}. None of these datasets however feature the
-several indexes on the same table or compound indexes, making the problem of
-index selection trivial for all of them.
+JOB~\cite{leis_2015_how_hgaqor}. However, none of these datasets meet
+requirement~\ref{item:dataset:req2} making the problem of selecting access
+methods for these databases trivial.
 
 Instead, the dataset chosen was one taken from the real world: the dataset for
-TriOptima's product triReduce. This database fulfill all of the requirements, as
-can be seen in Table~\ref{table:dataset}. The metrics of the dataset are
-presented in more detail in Section~\ref{sec:benchmark}.
+TriOptima's product triReduce which fulfill all the requirement. The metrics of
+the dataset are presented in more detail in Section~\ref{sec:benchmark}.
 
 Another important aspect of the dataset is the queries used for evaluation.
 Selecting these was done based on the following critera:
 \begin{itemize}
-\item The tables queried must be sufficiently large to require the cardinality to be
-  estimated via sampling;
+\item The relations involved in the query must be sufficiently large as to require the
+  cardinality to be estimated via sampling;
 \item The data most be accessible via one or more index so that the actual index
   selection is not trivial for the query optimizer.
 \end{itemize}
 
-The two criteria are not fulfilled for more than a few tables in a database,
+The two criteria are not fulfilled for more than a few relations in a database,
 reducing the amount of queries relevant for evaluation. However, the queries
 that do fulfill the above requirements are also those that are most interesting
-to study for a database as they are the ones that will take the most execution time.
+to study for a database as they are the ones that will have the longest execution time.
 
 \subsection{Choice of implementation}\label{sec:implchoice}
 The focus when implementing the tool used to evaluate the databases was to find
@@ -97,22 +96,21 @@ specification of the hardware that the tests were ran on. Following this is
 first a description of the metrics of the dataset used.
 
 \subsection{Hardware specs}
-All evaluation tests were ran on a dedicated computer running only the databases
-and tests. The most important part of the hardware is to ensure that there is
-sufficient data for both the databases and the results of the tests. For all
-evaluations three hard drives were used, one for each database and one for the
-tool itself.
+All evaluations were ran on a dedicated computer running only the databases.
+The most important part of the hardware is to ensure that there is sufficient
+data for both the databases and the results of the tests. For all evaluations
+three hard drives were used, one for each database and one for the tool itself.
 
 The exact specifications are:
 \begin{itemize}
 \item 2 \textit{Intel® Xeon® Processor E5-2643 (10M Cache, 3.30 GHz, 8.00 GT/s Intel®
     QPI)}, featuring 4 cores each;
 \item 1 \textit{Seagate Savvio 15K.3 ST9146853SS 146GB 15000 RPM 64MB Cache SAS 6Gb/s
-    2.5"}, used to store the project itself on;
+    2.5''}, used to store the project itself on;
 \item 1 \textit{Seagate Constellation ES.3 ST4000NM0023 4TB 7200 RPM 128MB Cache SAS
-    6Gb/s 3.5"}, used to store the PostgreSQL database on;
+    6Gb/s 3.5''}, used to store the PostgreSQL database on;
 \item And 1 \textit{Seagate Constellation ES ST2000NM0001 2TB 7200 RPM 64MB Cache SAS 6Gb/s
-    3.5"}, used to store the MariaDB database on.
+    3.5''}, used to store the MariaDB database on.
 \end{itemize}
 
 As a final note it is worth pointing out that the effect of the hardware should
@@ -122,15 +120,15 @@ have none, or very little, effect on the query optimizer's plan selection.
 As detailed in Section~\ref{sec:dataset} the dataset should be sufficiently
 complex in terms of indexes, table size and table values.
 Table~\ref{table:dataset} presents the number of indexes, the number of rows and
-the size in MB of the entire database and all tables involved in the
-benchmarking, the names of the tables have anonymized and are referred to by an
+the size in MB of the entire database and all relations involved in the
+benchmarking, the names of the relations have anonymized and are referred to by an
 identifier such as ``mm'' or ``book''.
 
 \begin{table}
   \begin{center}
     \begin{tabu} {c c c c}
       \toprule
-      name & \#index & \#rows & size (MB) \\
+      & \#index & \#rows & size (MB) \\
       \midrule
       database total & 1130 & 305 & 1165290 \\
       mm & 6 & 64882651 & 9448 \\
@@ -146,34 +144,35 @@ identifier such as ``mm'' or ``book''.
     \end{tabu}
     \caption[The metrics for the dataset]{The metrics for the dataset used for
       evaluation of the databases. Both the metrics for the entire database and
-      those of individual tables are shown. Note that the table names have been
+      those of individual relations are shown. Note that the relation names have been
       anonymized and are only referred to by an identifier.}\label{table:dataset}
   \end{center}
 \end{table}
 
-The original dataset was stored in a MySQL database, which was ported to
-PostgreSQL and MariaDB. MariaDB is made as an add-on to MySQL and thus required
-no specific porting, the data was just copied into a fresh install of MariaDB
-using a \textit{mysqldump}. For PostgreSQL
+The original dataset was stored in a MySQL database and was ported to
+PostgreSQL and MariaDB.\@ MariaDB is made as an add-on to MySQL and thus required
+no tooling, the data was just copied into a fresh install of MariaDB using a
+\textit{mysqldump}. For PostgreSQL
 \textit{py-mysql2pgsql}~\cite{philipsoutham_p} was used to create a dump of the
 MySQL database with all MySQL specific data types converted to their most
-similar PostgreSQL equivalents. The data was then read into a fresh install of PostgreSQL.
+similar PostgreSQL equivalents. The data was then read into a fresh install of
+PostgreSQL.\@
 
 In the copying process all indexes and relations were maintained, thus
 maintaining the same metrics for both of the copies as for the original.
 
 \subsection{The queries}\label{sec:queries}
-To evaluate the databases only one query was used. The
-reason is that, as described in Section~\ref{sec:dataset}, there are few tables that can be
+To evaluate the databases only one query was used. The reason is that, as
+described in Section~\ref{sec:dataset}, there are few relations that can be
 involved in the query as they must fulfill the important critera in terms of
-indexes and size. As such one query covering all of the most complex tables were
-written, this query can be considered to be the most complex query for the
+indexes and size. As such one query covering all of the most complex relations were
+constructed, this query can be considered to be the most complex query for the
 dataset. Subsets are then used to simulate simpler scenarios.
 
 The original query used for evaluation can be seen in
-Figure~\ref{fig:sql:query1}, the table names are once again anonymized. For the
-metrics of the tables involved see Figure~\ref{table:dataset}. The variations of
-the query simply remove one or more tables involved.
+Figure~\ref{fig:sql:query1}, the relation names are once again anonymized. For the
+metrics of the relations involved see Figure~\ref{table:dataset}. The variations of
+the query simply remove one or more relations involved.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{clojure}
@@ -182,7 +181,7 @@ FROM ct JOIN t JOIN mt JOIN mm JOIN book JOIN cmt JOIN cmm JOIN est JOIN resamb
 WHERE ct.key = :KEY
 \end{minted}
     \caption[ The original query used for evaluation ]{The query used for
-      evaluation, simplified and anonymized. The tables are joined on rows in
+      evaluation, simplified and anonymized. The relations are joined on rows in
       common.}\label{fig:sql:query1}
 \end{figure}
 
@@ -190,15 +189,14 @@ WHERE ct.key = :KEY
 This section will cover the implementation details of the tool used for
 evaluation. The section starts with a general overview of the process of
 evaluation, breaking it down into steps. Following this is a description of the
-tool developed, showing how it is used and what technologies are used.
-The next three sections then cover the steps of evaluation and specific
-implementation details for each. Finally implementation details are provided for
-PostgreSQL and MariaDB.
+tool developed, showing how it is used and what technologies are used. After
+this section is three sections describing each of the three steps of evaluation.
+Finally implementation details are provided for PostgreSQL and MariaDB.\@
 
 Evaluating a database for a given query can be broken down into three primary steps:
 \begin{enumerate}
-\item Repeatedly executing the query with different sample sizes to generate
-  query plans;
+\item Repeatedly forcing the database to re-estimate the cardinalities and then
+  generate query plans;
 \item Parsing the query plans to find what access methods are used for all
   relations;
 \item And finally analyzing the parsed plans to find the number of unique access
@@ -206,7 +204,7 @@ Evaluating a database for a given query can be broken down into three primary st
 \end{enumerate}
 
 These three steps must be executed in order, but they can be executed
-independently of each other; it is possible to only generate plans at a time and
+independently of each other --- it is possible to only generate plans at a time and
 save them for later parsing and analysis.
 
 \subsection{Overview of the tool}
@@ -238,32 +236,32 @@ generated plan is parsed and analyzed.
     generated file containing query plans.}\label{fig:cmd:runtool2}
 \end{figure}
 
-The full code of the tool can be seen in Appendix~\ref{appendix:sourcecode} and is
-open-source and can be found at~\cite{barksten_mbark_m}. The repository has
-further documentation regarding project structure etc.
+The tool is open-source and can be found at~\cite{barksten_mbark_m}. The
+repository has further documentation regarding project structure etc.
 
 \subsection{Generating plans}\label{sec:generatingplans}
 The task of generating query plans can be broken down in the following steps:
 \begin{enumerate}
-\item Set the statistics target for the database;
-\item Generate new statistics for all tables involved in the query used for evaluation;
-\item Find the query plan for each parameter value of the query.
+\item Set the sample size used to estimate cardinalities;
+\item Generate new statistics, and thus new cardinality estimates, for all
+  relations involved in the query used for evaluation;
+\item Find the query plan for each possible predicate value of the query.
 \end{enumerate}
-These steps can then be repeated a number of times to ensure that all query plans are
-found.
+These steps are then repeated a number of times to ensure that all query plans
+are found.
 
 The most relevant parts of the code used to generate plans can be found in
-Figure~\ref{fig:clj:generating}. In the Figure two functions can be seen:
+Figure~\ref{fig:clj:generating}. In the figure two functions can be seen:
 \clj{generate-plans} and \clj{sample-and-query}, additional functions are
-referenced but not seen, for a full reference see Appendix~\ref{appendix:sourcecode}.
+referenced but not seen.
 
 The generation step is handled by \clj{generate-plans}, which is provided the
-options for the evaluation. This function will then for each sample size,
-repeated the number of times specified call \clj{sample-and-query}.
+options for the evaluation. This function will then for each sample size to use,
+repeated the number of times specified, call \clj{sample-and-query}.
 
 The \clj{sample-and-query} function will in turn perform all of the steps
 outlined above; set the statistics target and generate new statistics via
-\clj{resample-with!} and then find the query plan for all possible parameter
+\clj{resample-with!} and then find the query plan for all possible predicate
 values via repeated calls to \clj{explain-query}.
 
 Each plan found is directly saved to file for later use in parsing.
@@ -285,10 +283,9 @@ Each plan found is directly saved to file for later use in parsing.
                           :sample-size sample-size
                           :connection db-con))))))
    \end{minted}
-   \caption[The clojure code to generate a query]{The relevant parts of the
+   \caption[The Clojure code to generate all query plans]{The relevant parts of the
      Clojure code used to generate the query plans. Some function definitions
-     have been removed to improve readability, see the
-     Appendix~\ref{appendix:sourcecode} for the full code}
+     have been removed to improve readability.}
 \label{fig:clj:generating}
 \end{figure}
 
@@ -302,7 +299,7 @@ Parsing a plan is done with the function \clj{parse-plan}, which will find all
 access methods with \clj{find-relation-accesses} and group these by their relation
 with \clj{group-by-relation}. Finding the access methods in the query plan is
 done by traversing the plan as a tree and calling \clj{save-if-relation-access}
-on each value --- storing it if it described an access.
+on each value --- storing it, if it describes an access method.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{clj}
@@ -325,7 +322,7 @@ on each value --- storing it if it described an access.
   (let [db-id (access-key db)]
     (group-by-relation db-id (find-relation-accesses db-id plan))))
    \end{minted}
-   \caption[The clojure code to parse a query]{The clojure code used to parser
+   \caption[The Clojure code to parse a query]{The Clojure code used to parse
      the query plan output from the generation step.}
 \label{fig:clj:parsing}
 \end{figure}
@@ -343,11 +340,11 @@ be seen in Figure~\ref{fig:clj:analyzing}.
 Analyzing all generated plans for a sample size is done by the function
 \clj{analyze-plans}, which is provided an identifier for the database evaluated,
 a function to read the next plan and the total number of plans to read. The
-analysis is done by generating map, reading the next plan and merging it with
-the previous one. If the same relation is found in both (which will always be
-the case) the function \clj{conj-distinct} will add only the new access methods
-found that are distinct from those previous found. Only the index used is
-considered in terms of two plans being distinct from each other.
+analysis is done by reading the next plan and merging it with the previous one.
+If the same relation is found in both the function \clj{conj-distinct} will add
+only the new access methods found that are distinct from those previously found.
+Only the index used is considered in terms of two plans being distinct from each
+other.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{clj}
@@ -381,8 +378,8 @@ access methods is saved for study.
 
 \subsection{PostgreSQL}\label{sec:postgresql}
 In PostgreSQL the SQL commands used are quite straightforward, one is used to
-delete all previously gathered statistics, one to set the statistics target and
-finally an \sql{ANALYZE} is called for each table involved in the query being
+delete all previously gathered statistics, one to set the sample size and
+finally an \sql{ANALYZE} is called for each relation involved in the query being
 evaluated. The specific commands used can be seen in
 Figure~\ref{fig:sql:pganalyze}, the value of the sample size is provided as a
 host variable, as it will depend on the options used when evaluating a database
@@ -395,22 +392,23 @@ and query.
   ANALYZE table1;
   ANALYZE table2;
 \end{minted}
-\caption[The SQL commands used to resample inPostgreSQL.]{The SQL commands used
-  to first delete all statistics in PostgreSQL, set the statistics target and
-  finally analyze all tables involved in the query.}
+\caption[The SQL commands used to generate new cardinality estimates
+PostgreSQL.]{The SQL commands used to first delete all statistics in PostgreSQL,
+  set the statistics target and finally analyze all relations involved in the
+  query.}
 \label{fig:sql:pganalyze}
 \end{figure}
 
 \subsection{MariaDB}\label{sec:mariadb}
-In MariaDB the commands used to resample the data are storage engine specific,
-in this case InnoDB supports the storage. It is worth noting that InnoDB only
-supports MariaDB with statistics, it is then MariaDB that performs the actual
+In MariaDB the commands used to estimate cardinality are storage engine specific,
+in this case InnoDB is the storage engine used. It is worth noting that InnoDB only
+supports MariaDB with estimates, it is then MariaDB that performs the actual
 query optimization.
 
 It is necessary in InnoDB to ensure that the statistics used are those
 generated, to do this no persistent statistics are saved. Furthermore, no data
-is deleted between resampling as it is neither possible nor necessary, the old
-statistics are overwritten by the new. Finally the tables are all analyzed in
+is deleted between estimates as it is neither possible nor necessary --- the old
+statistics are overwritten by the new. Finally the relations are all analyzed in
 one single \sql{ANALYZE} call.
 
 The specific commands used can be seen in Figure~\ref{fig:sql:resamplemdb}.
@@ -424,18 +422,18 @@ The specific commands used can be seen in Figure~\ref{fig:sql:resamplemdb}.
 \end{minted}
 \caption[The SQL commands used to resample in MariaDB.]{The SQL commands used to
 first ensure that MariaDB will not use some other stats than those we gather,
-then set the statistics target and finally analyze all tables involved in the query.}
+then set the statistics target and finally analyze all relations involved in the query.}
 \label{fig:sql:resamplemdb}
 \end{figure}
 
-\section{Evaluation}
+\section{Evaluation}\label{sec:evaluation}
 In order to evaluate the database the dataset described in~\ref{sec:dataset} and
-the queries described in~\ref{sec:queries} were used. The program supports
-several options to be set, the values used for the evaluation can be seen
+the queries described in~\ref{sec:queries} were used. The tool supports
+several options to be set and the values used for the evaluation can be seen
 in Table~\ref{table:evaluation1}, which shows the initial tests conducted. The
 results from these tests warranted further evaluation and the options for these
 tests can be seen in Table~\ref{table:evaluation2}. The same values were used
-when testing both PostgreSQL and MariaDB.
+when testing both PostgreSQL and MariaDB.\@
 
 \begin{table}
   \begin{center}
@@ -443,7 +441,7 @@ when testing both PostgreSQL and MariaDB.
       \toprule
       query & repetitions & sample sizes \\
       \midrule
-      \#1 & 500 & 1, 100 \\
+      \#1 & 50 & 1, 100 \\
       \bottomrule
     \end{tabu}
     \caption[The number of repetitions and sample size used for evaluation]{The
@@ -455,17 +453,18 @@ when testing both PostgreSQL and MariaDB.
 \end{table}
 
 In order to find a possible correlation between sample size and the number of
-ambiguous indexes the tests were done with a very small sample size and a very
+ambiguous indexes the tests were done with a very small sample size and a
 large number of repetitions to catch all realistically chosen query plans. This
-was only done for the original query as it is more complex than the others
-making testing these unnecessary. The options used can be seen in Table~\ref{table:evaluation1}.
+was only done for the original query as it is the most complex, making tests on
+the subsets unnecessary. The options used can be seen in
+Table~\ref{table:evaluation1}.
 
-Additional tests were on the remaining subsets to further evaluate the behavior
-identified in the first two tests.  As can be seen a small number of repetitions
-is used and the sample size is minimal, this is as neither of these two options
-seemed to affect the query plans chosen. For a further discussion about this see
-Section~\ref{sec:ambigindexes}, where the results found for the initial tests is
-discussed in detail.
+Additional tests done were on the subsets to further evaluate the behavior
+identified in the first evaluation. As can be seen in the table, a small number
+of repetitions is used and the sample size is minimal, this is as neither of
+these two options seemed to affect the query plans chosen. For a further
+discussion about this see Section~\ref{sec:ambigindexes}, where the results
+found for the initial tests is discussed in detail.
 
 \begin{table}
   \begin{center}
