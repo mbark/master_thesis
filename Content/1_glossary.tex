@@ -1,134 +1,214 @@
-The terminology of databases often varies across literature and database vendors, this section therefore defines the terms used through this thesis. When it is the case that something commonly goes by other names as well, they will be included to a great an extent as possible.
+The terminology of databases often varies across literature and database
+vendors, this section therefore defines the terms used through this thesis. When
+it is the case that something commonly goes by other names as well, they will be
+included to a great an extent as possible.
 
 \subsection*{Database}
-No distinction is made between the database and the Database Management Systems (DBMS) in this thesis as it is not relevant to separate them. If it is relevant to distinguish between the two it will be done explicitly.
+No distinction is made between the database and the Database Management Systems
+(DBMS) in this thesis as it is not relevant to separate them. If it is relevant
+to distinguish between the two it will be done explicitly.
 
 \subsection*{Data}
-The \textit{data} in a database is the values stored in the rows and columns of the database. This does not include additional information stored in the database such as indexes.
+The \textit{data} in a database is the values stored in the rows and columns of
+the database. This does not include additional information stored in the
+database such as indexes.
 
 \subsection*{Dataset}
-A \textit{dataset} is all information stored in the database, including both data and additional information such as indexes, primary and foreign keys etc.
+A \textit{dataset} is all information stored in the database, including both
+data and additional information such as indexes, primary and foreign keys etc.
 
 \subsection*{Query optimizer}
-The terms query optimizer and optimizer are used interchangeably throughout the thesis. If an optimizer of some other kind is used this will be made explicit.
+The terms query optimizer and optimizer are used interchangeably throughout the
+thesis. If an optimizer of some other kind is used this will be made explicit.
 
 \subsection*{Host variable}
-A \textit{host variable} is a variable declared in the program in which the SQL statement is embedded~\cite[p. 151]{chamberlin_1998_complete_acgtdud}. Host variables are distinguished from normal columns by the fact that they begin with a colon. An example of a host variable is \sql{:HEIGHT} in Figure~\ref{fig:sql:hostvar}.
+A \textit{host variable} is a variable declared in the program in which the SQL
+statement is embedded~\cite[p. 151]{chamberlin_1998_complete_acgtdud}. Host
+variables are distinguished from normal columns by the fact that they begin with
+a colon. An example of a host variable is \sql{:HEIGHT} in
+Figure~\ref{fig:sql:hostvar}.
 
 \begin{figure}[ht]
-\begin{minted}[breaklines]{sql}
-SELECT  NAME
-FROM    PERSONS
-WHERE   HEIGHT = :HEIGHT
-\end{minted}
-\caption[A query with a host variable]{A simple query using a host variable.}\label{fig:sql:hostvar}
+  \begin{minted}[breaklines]{sql}
+    SELECT  NAME
+    FROM    PERSONS
+    WHERE   HEIGHT = :HEIGHT
+  \end{minted}
+  \caption[A query with a host variable]{A simple query using a host
+    variable.}\label{fig:sql:hostvar}
 \end{figure}
 
 \subsection*{Predicate}
-In order to get the data you need, you must be able to specify what conditions the data should fulfill to be relevant, this is done by specifying predicates. To illustrate, consider Figure~\ref{fig:sql:predicate} taken from~\cite{lahdenmaki_2005_relational_rdidatodossea}.
+In order to get the data you need, you must be able to specify what conditions
+the data should fulfill to be relevant, this is done by specifying predicates.
+To illustrate, consider Figure~\ref{fig:sql:predicate} taken
+from~\cite{lahdenmaki_2005_relational_rdidatodossea}.
 
 \begin{figure}[ht]
-\begin{minted}[breaklines]{sql}
-WHERE   SEX = 'M'
-        AND
-        (WEIGHT = 90
-        OR
-        HEIGHT > 190)
-\end{minted}
-\caption[The \sql{WHERE} clause of a query containing three predicates and two compound predicates]{The \sql{WHERE} clause an SQL query containing three predicates and two compound predicates.}\label{fig:sql:predicate}
+  \begin{minted}[breaklines]{sql}
+    WHERE   SEX = 'M'
+    AND
+    (WEIGHT = 90
+    OR
+    HEIGHT > 190)
+  \end{minted}
+  \caption[The \sql{WHERE} clause of a query containing three predicates and two
+  compound predicates]{The \sql{WHERE} clause an SQL query containing three
+    predicates and two compound predicates.}\label{fig:sql:predicate}
 \end{figure}
 
-The \sql{WHERE} clause in Figure~\ref{fig:sql:predicate} contains three predicates:
+The \sql{WHERE} clause in Figure~\ref{fig:sql:predicate} contains three
+predicates:
 \begin{enumerate}
-    \item \sql{SEX = 'M'}
-    \item \sql{WEIGHT = 90}
-    \item \sql{HEIGHT > 190}
+\item \sql{SEX = 'M'}
+\item \sql{WEIGHT = 90}
+\item \sql{HEIGHT > 190}
 \end{enumerate}
 
-A \textit{compound predicate} is two or more predicates that are tied together in the form \sql{AND}, \sql{OR} or other similar operators. The \sql{WHERE} clause in Figure~\ref{fig:sql:predicate} can be considered to have two different compound predicates:
+A \textit{compound predicate} is two or more predicates that are tied together
+in the form \sql{AND}, \sql{OR} or other similar operators. The \sql{WHERE}
+clause in Figure~\ref{fig:sql:predicate} can be considered to have two different
+compound predicates:
 \begin{enumerate}
-    \item \sql{WEIGHT = 90 OR HEIGHT > 190}
-    \item \sql{SEX = 'M' AND (WEIGHT = 90 OR HEIGHT > 190)}
+\item \sql{WEIGHT = 90 OR HEIGHT > 190}
+\item \sql{SEX = 'M' AND (WEIGHT = 90 OR HEIGHT > 190)}
 \end{enumerate}
 
 \subsection*{Index slice}
-The term \textit{index slice} comes from~\cite{lahdenmaki_2005_relational_rdidatodossea} and is defined as the number of index rows that need to be read for a predicate; the thinner the slice the less amount of index rows that need to be read, and consequently the number of reads to the table.
+The term \textit{index slice} comes
+from~\cite{lahdenmaki_2005_relational_rdidatodossea} and is defined as the
+number of index rows that need to be read for a predicate; the thinner the slice
+the less amount of index rows that need to be read, and consequently the number
+of reads to the table.
 
-The thickness of the index slice will depend on the number of \textit{matching columns}, that is the number of columns that exist both in the \sql{WHERE} clause and the index. To illustrate why consider the query in Figure~\ref{fig:sql:indexslice}.
+The thickness of the index slice will depend on the number of \textit{matching
+  columns}, that is the number of columns that exist both in the \sql{WHERE}
+clause and the index. To illustrate why consider the query in
+Figure~\ref{fig:sql:indexslice}.
 
 \begin{figure}[ht]
-\begin{minted}[breaklines]{sql}
-WHERE   WEIGHT = 90
-        AND
-        HEIGHT > 190
-\end{minted}
-\caption[The \sql{WHERE} clause of a query with two potential matching columns]{The \sql{WHERE} clause of a query with two potential matching columns.}\label{fig:sql:indexslice}
+  \begin{minted}[breaklines]{sql}
+    WHERE   WEIGHT = 90
+    AND
+    HEIGHT > 190
+  \end{minted}
+  \caption[The \sql{WHERE} clause of a query with two potential matching
+  columns]{The \sql{WHERE} clause of a query with two potential matching
+    columns.}\label{fig:sql:indexslice}
 \end{figure}
 
-If there exists an index on only \sql{HEIGHT}, no values for \sql{WEIGHT} can be discarded in the index slice. If an index is added for \sql{WEIGHT}, the thickness of the index slice will decrease as only values fulfilling both the \sql{HEIGHT} and \sql{WEIGHT} requirements remain.
+If there exists an index on only \sql{HEIGHT}, no values for \sql{WEIGHT} can be
+discarded in the index slice. If an index is added for \sql{WEIGHT}, the
+thickness of the index slice will decrease as only values fulfilling both the
+\sql{HEIGHT} and \sql{WEIGHT} requirements remain.
 
 \subsection*{Indexable predicate}
-A \textit{indexable predicate} is a predicate that can be evaluated when the index is accessed (allowing a matching index scan)~\cite{2014_summary_sopp, 2013_ibm_ikcianp}. Revisiting the example from earlier, both of the predicates in Figure~\ref{fig:sql:indexslice} are examples of indexable predicates.
+A \textit{indexable predicate} is a predicate that can be evaluated when the
+index is accessed (allowing a matching index scan)~\cite{2014_summary_sopp,
+  2013_ibm_ikcianp}. Revisiting the example from earlier, both of the predicates
+in Figure~\ref{fig:sql:indexslice} are examples of indexable predicates.
 
 \subsection*{Matching predicate}
-A \textit{matching predicate} is an indexable predicate with the corresponding necessary indexes~\cite{2013_ibm_ikcianp}. In Figure~\ref{fig:sql:indexslice} both predicates are indexable and would be matching if there exists an index for \sql{WEIGHT} and \sql{HEIGHT} respectively.
+A \textit{matching predicate} is an indexable predicate with the corresponding
+necessary indexes~\cite{2013_ibm_ikcianp}. In Figure~\ref{fig:sql:indexslice}
+both predicates are indexable and would be matching if there exists an index for
+\sql{WEIGHT} and \sql{HEIGHT} respectively.
 
 \subsection*{Non-indexable predicate}
-A \textit{difficult predicate} (also sometimes called \textit{nonsearch arguments}, \textit{index suppression}, \textit{difficult predicate}) is the opposite of an indexable predicate, and can as a consequence not define the index slice~\cite{lahdenmaki_2005_relational_rdidatodossea}. What predicates are non-indexable varies from database to database, but a typical example of one can be seen in Figure~\ref{fig:sql:nonindexable}.
+A \textit{difficult predicate} (also sometimes called \textit{nonsearch
+  arguments}, \textit{index suppression}, \textit{difficult predicate}) is the
+opposite of an indexable predicate, and can as a consequence not define the
+index slice~\cite{lahdenmaki_2005_relational_rdidatodossea}. What predicates are
+non-indexable varies from database to database, but a typical example of one can
+be seen in Figure~\ref{fig:sql:nonindexable}.
 
 \begin{figure}[ht]
-\begin{minted}[breaklines]{sql}
-COL1 NOT BETWEEN :hv1 AND :hv2
-\end{minted}
-\caption[An example of a non-indexable predicate]{A example of a commonly used non-indexable predicate.}\label{fig:sql:nonindexable}
+  \begin{minted}[breaklines]{sql}
+    COL1 NOT BETWEEN :hv1 AND :hv2
+  \end{minted}
+  \caption[An example of a non-indexable predicate]{A example of a commonly used
+    non-indexable predicate.}\label{fig:sql:nonindexable}
 \end{figure}
 
 \subsection*{Boolean term predicate}
-A \textit{boolean term predicate} (BT predicate) is one that can reject a row because it does not match the predicate~\cite{lahdenmaki_2005_relational_rdidatodossea}. Conversely a non-BT predicate is a predicate that cannot reject a row. Non-BT predicates are typically the result of using \sql{OR}. To illustrate when a predicate is BT respectively non-BT consider, assume there is an index \texttt{(A, B)} on \sql{TABLE} and consider Figure~\ref{fig:sql:btpredicate} and Figure~\ref{fig:sql:nonbtpredicate}.
+A \textit{boolean term predicate} (BT predicate) is one that can reject a row
+because it does not match the
+predicate~\cite{lahdenmaki_2005_relational_rdidatodossea}. Conversely a non-BT
+predicate is a predicate that cannot reject a row. Non-BT predicates are
+typically the result of using \sql{OR}. To illustrate when a predicate is BT
+respectively non-BT consider, assume there is an index \texttt{(A, B)} on
+\sql{TABLE} and consider Figure~\ref{fig:sql:btpredicate} and
+Figure~\ref{fig:sql:nonbtpredicate}.
 
 \begin{figure}[ht]
-\begin{minted}[breaklines]{sql}
-SELECT  A, B, C
-FROM    ATABLE
-WHERE   A > :A
-        AND
-        B > :B
-\end{minted}
-\caption[A query containing a BT predicate]{A query with a BT predicate.}\label{fig:sql:btpredicate}
+  \begin{minted}[breaklines]{sql}
+    SELECT  A, B, C
+    FROM    ATABLE
+    WHERE   A > :A
+    AND
+    B > :B
+  \end{minted}
+  \caption[A query containing a BT predicate]{A query with a BT
+    predicate.}\label{fig:sql:btpredicate}
 \end{figure}
 
 \begin{figure}[ht]
-\begin{minted}[breaklines]{sql}
-SELECT  A, B, C
-FROM    ATABLE
-WHERE   A > :A
-        OR
-        B > :B
-\end{minted}
-\caption[A query containing no BT predicates]{An query with no BT predicates.}\label{fig:sql:nonbtpredicate}
+  \begin{minted}[breaklines]{sql}
+    SELECT  A, B, C
+    FROM    ATABLE
+    WHERE   A > :A
+    OR
+    B > :B
+  \end{minted}
+  \caption[A query containing no BT predicates]{An query with no BT
+    predicates.}\label{fig:sql:nonbtpredicate}
 \end{figure}
 
-For the query in Figure~\ref{fig:sql:btpredicate} if the first predicate \sql{A > :A} evaluates to false for a row the row can be rejected instantly, making it a BT predicate. For the query in Figure~\ref{fig:sql:nonbtpredicate} on the other hand it might be the case that \sql{B > :B} evaluates to true even if \sql{A > :A} does not, making both predicates non-BT predicates.
+For the query in Figure~\ref{fig:sql:btpredicate} if the first predicate \sql{A
+  > :A} evaluates to false for a row the row can be rejected instantly, making
+it a BT predicate. For the query in Figure~\ref{fig:sql:nonbtpredicate} on the
+other hand it might be the case that \sql{B > :B} evaluates to true even if
+\sql{A > :A} does not, making both predicates non-BT predicates.
 
 \subsection*{Index screening}
-A column may be in both the \sql{WHERE} clause and the index, yet be unable to participate in defining the index slice due to other reasons~\cite{lahdenmaki_2005_relational_rdidatodossea}. Even if this is the case the column may still be able to reduce the amount of reads to the table anyway. A column fulfilling these criteria is a \textit{screening column} as the presence of it in the index allows not reading from the table. The process of determining which columns might fulfill this is called \textit{index screening}.
+A column may be in both the \sql{WHERE} clause and the index, yet be unable to
+participate in defining the index slice due to other
+reasons~\cite{lahdenmaki_2005_relational_rdidatodossea}. Even if this is the
+case the column may still be able to reduce the amount of reads to the table
+anyway. A column fulfilling these criteria is a \textit{screening column} as the
+presence of it in the index allows not reading from the table. The process of
+determining which columns might fulfill this is called \textit{index screening}.
 
 \subsection*{Cardinality}
-The \textit{cardinality} is the number of distinct values for a column, or combination of columns~\cite{lahdenmaki_2005_relational_rdidatodossea}. The cardinality of the data is usually used when the query optimizer estimates the cost of different access paths.
+The \textit{cardinality} is the number of distinct values for a column, or
+combination of columns~\cite{lahdenmaki_2005_relational_rdidatodossea}. The
+cardinality of the data is usually used when the query optimizer estimates the
+cost of different access paths.
 
 \subsection*{Filter factor}
-The \textit{filter factor} specifies what proportion of the rows that    satisfy the conditions in a predicate~\cite{lahdenmaki_2005_relational_rdidatodossea}. The filter factor can be seen as the selectivity of a predicate and the lower it is, the more the number of rows that are filtered out by a predicate. For a predicate such as \sql{HEIGHT = :HEIGHT} there are three ways to talk about filter factor:
+The \textit{filter factor} specifies what proportion of the rows that    satisfy
+the conditions in a predicate~\cite{lahdenmaki_2005_relational_rdidatodossea}.
+The filter factor can be seen as the selectivity of a predicate and the lower it
+is, the more the number of rows that are filtered out by a predicate. For a
+predicate such as \sql{HEIGHT = :HEIGHT} there are three ways to talk about
+filter factor:
 \begin{itemize}
-    \item The \textit{value specific filter factor} is the filter factor for one specific value of \sql{:HEIGHT};
-    \item The \textit{average filter factor} is the average value for all value specific filter factors;
-    \item And the \textit{worst-case filter factor} is the highest possible filter factor for a given value of \sql{:HEIGHT}
+\item The \textit{value specific filter factor} is the filter factor for one
+  specific value of \sql{:HEIGHT};
+\item The \textit{average filter factor} is the average value for all value
+  specific filter factors;
+\item And the \textit{worst-case filter factor} is the highest possible filter
+  factor for a given value of \sql{:HEIGHT}
 \end{itemize}
 
 \subsection*{Access path}
-The query optimizers output is an \textit{access path}, which is an abstract representation of the path to access the data.
+The query optimizers output is an \textit{access path}, which is an abstract
+representation of the path to access the data.
 
 \subsection*{Execution plan}
-The \textit{execution plan} corresponds to an access path but describes how to physically access the data.
+The \textit{execution plan} corresponds to an access path but describes how to
+physically access the data.
 
-\subsection*{Ambiguous indexes}
-\textit{Ambiguous indexes} are a set of indexes which the query optimizer have as alternatives at the same place in the access path, and all may can be selected depending on the optimizers cost estimation.
+\subsection*{Query plan}
+The \textit{query plan} is the plan suggested by the database for how to access
+the data. It is the database-specific description of the access path.

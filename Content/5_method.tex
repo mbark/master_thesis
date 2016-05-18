@@ -103,7 +103,7 @@ three hard drives were used, one for each database and one for the tool itself.
 
 The exact specifications are:
 \begin{itemize}
-\item 2 \textit{Intel® Xeon® Processor E5-2643 (10M Cache, 3.30 GHz, 8.00 GT/s Intel®
+\item 2 \textit{Intel\,\textregistered Xeon\,\textregistered Processor E5-2643 (10M Cache, 3.30 GHz, 8.00 GT/s Intel\,\textregistered
     QPI)}, featuring 4 cores each;
 \item 1 \textit{Seagate Savvio 15K.3 ST9146853SS 146GB 15000 RPM 64MB Cache SAS 6Gb/s
     2.5''}, used to store the project itself on;
@@ -180,9 +180,9 @@ SELECT *
 FROM ct JOIN t JOIN mt JOIN mm JOIN book JOIN cmt JOIN cmm JOIN est JOIN resamb
 WHERE ct.key = :KEY
 \end{minted}
-    \caption[ The original query used for evaluation ]{The query used for
-      evaluation, simplified and anonymized. The relations are joined on rows in
-      common.}\label{fig:sql:query1}
+  \caption[ The original query used for evaluation ]{The query used for
+    evaluation, simplified and anonymized. The relations are joined on rows in
+    common.}\label{fig:sql:query1}
 \end{figure}
 
 \section{Implementation}\label{sec:implementation}
@@ -193,7 +193,8 @@ tool developed, showing how it is used and what technologies are used. After
 this section is three sections describing each of the three steps of evaluation.
 Finally implementation details are provided for PostgreSQL and MariaDB.\@
 
-Evaluating a database for a given query can be broken down into three primary steps:
+Evaluating a database for a given query can be broken down into three primary
+steps:
 \begin{enumerate}
 \item Repeatedly forcing the database to re-estimate the cardinalities and then
   generate query plans;
@@ -204,14 +205,14 @@ Evaluating a database for a given query can be broken down into three primary st
 \end{enumerate}
 
 These three steps must be executed in order, but they can be executed
-independently of each other --- it is possible to only generate plans at a time and
-save them for later parsing and analysis.
+independently of each other --- it is possible to only generate plans at a time and save them for later parsing and analysis.
 
 \subsection{Overview of the tool}
 The tool was implemented so as to be executed from the command line, providing
 all the necessary parameters via flags. As mentioned in
 Section~\ref{sec:implchoice} the tool was developed using Clojure and is
-therefore typically ran via Leiningen, as shown in Figure~\ref{fig:cmd:runtool1}.
+therefore typically ran via Leiningen, as shown in
+Figure~\ref{fig:cmd:runtool1}.
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{bash}
@@ -245,7 +246,7 @@ The task of generating query plans can be broken down in the following steps:
 \item Set the sample size used to estimate cardinalities;
 \item Generate new statistics, and thus new cardinality estimates, for all
   relations involved in the query used for evaluation;
-\item Find the query plan for each possible predicate value of the query.
+\item Find the query plan for each possible value of the query.
 \end{enumerate}
 These steps are then repeated a number of times to ensure that all query plans
 are found.
@@ -392,10 +393,9 @@ and query.
   ANALYZE table1;
   ANALYZE table2;
 \end{minted}
-\caption[The SQL commands used to generate new cardinality estimates
-PostgreSQL.]{The SQL commands used to first delete all statistics in PostgreSQL,
-  set the statistics target and finally analyze all relations involved in the
-  query.}
+\caption[Generating new cardinality estimates in PostgreSQL.]{The SQL commands
+  used to first delete all statistics in PostgreSQL, set the statistics target
+  and finally analyze all relations involved in the query.}
 \label{fig:sql:pganalyze}
 \end{figure}
 
@@ -420,7 +420,7 @@ The specific commands used can be seen in Figure~\ref{fig:sql:resamplemdb}.
   SET GLOBAL innodb_stats_transient_sample_pages = :SAMPLE_SIZE;
   ANALYZE TABLE table1, table2;
 \end{minted}
-\caption[The SQL commands used to resample in MariaDB.]{The SQL commands used to
+\caption[Generating new cardinality estimates in MariaDB.]{The SQL commands used to
 first ensure that MariaDB will not use some other stats than those we gather,
 then set the statistics target and finally analyze all relations involved in the query.}
 \label{fig:sql:resamplemdb}
@@ -453,17 +453,17 @@ when testing both PostgreSQL and MariaDB.\@
 \end{table}
 
 In order to find a possible correlation between sample size and the number of
-ambiguous indexes the tests were done with a very small sample size and a
-large number of repetitions to catch all realistically chosen query plans. This
-was only done for the original query as it is the most complex, making tests on
-the subsets unnecessary. The options used can be seen in
+of different access methods for the same relation, the tests were done with a
+very small sample size and a large one, both with a large number of repetitions
+This was only done for the original query as it is the most complex, making
+tests on the subsets unnecessary. The options used can be seen in
 Table~\ref{table:evaluation1}.
 
 Additional tests done were on the subsets to further evaluate the behavior
 identified in the first evaluation. As can be seen in the table, a small number
 of repetitions is used and the sample size is minimal, this is as neither of
 these two options seemed to affect the query plans chosen. For a further
-discussion about this see Section~\ref{sec:ambigindexes}, where the results
+discussion about this see Section~\ref{sec:accessmethods}, where the results
 found for the initial tests is discussed in detail.
 
 \begin{table}

@@ -1,55 +1,127 @@
 \epigraph{The person who gave us this book told us that the book describes a
   secret technology called a database.\\
-We hear that the database is a system that allows everyone to share, manage, and use data.}{\textit{The King of Kod, from~\cite[p. 6]{takahashi_2009_manga_tmgtd}}}
+  We hear that the database is a system that allows everyone to share, manage, and
+  use data.}{\textit{The King of Kod, from~\cite[p.
+    6]{takahashi_2009_manga_tmgtd}}}
 
-If you want to save data, you need a database. And almost every computer program need to save some form of data, consequently requiring them to use a database. The trend is also going towards us generating more and more data, putting higher strain on the databases and requiring better performance. To improve and develop databases is therefore a topic of much relevance in today's society.
+If you want to save data, you need a database. And almost every computer program
+need to save some form of data, consequently requiring them to use a database.
+The trend is also going towards us generating more and more data, putting higher
+strain on the databases and requiring better performance. To improve and develop
+databases is therefore a topic of much relevance in today's society.
 
-One key component of databases is the query optimizer, the part of the database that analyses the users query and finds the optimal path to access it. Or rather, theoretically it finds the optimal path. Work has been done improving query optimizers since the early '70s~\cite{chaudhuri_1998_overview_aooqoirs}, yet optimizers often select a bad access path, causing slow queries~\cite{leis_2015_how_hgaqor}.
+One key component of databases is the query optimizer, the part of the database
+that analyses the users query and finds the optimal path to access it. Or
+rather, theoretically it finds the optimal path. Work has been done improving
+query optimizers since the early '70s~\cite{chaudhuri_1998_overview_aooqoirs},
+yet optimizers often select a bad access path, causing slow
+queries~\cite{leis_2015_how_hgaqor}.
 
 Guy Lohman identifies the cardinality estimate of the data to be main cause for bad plans:
 
-\textit{``The root of all evil, the Achilles Heel of query optimization, is the estimation of the size of intermediate results, known as cardinalities''}
+\textit{``The root of all evil, the Achilles Heel of query optimization, is the
+  estimation of the size of intermediate results, known as cardinalities''}
 
-The estimates can often be wrong by several orders of magnitude~\cite{lohman_query_iqoap}. These incorrect estimates then propagate through the query and grow at an exponential rate~\cite{ioannidis_1991_propagation_otpoeitsojr}, making the query optimizer base its decisions on completely false grounds.
+The estimates can often be wrong by several orders of
+magnitude~\cite{lohman_query_iqoap}. These incorrect estimates then propagate
+through the query and grow at an exponential
+rate~\cite{ioannidis_1991_propagation_otpoeitsojr}, making the query optimizer
+base its decisions on completely false grounds.
 
-The topic of improving the estimations has seen some study, yet the evaluation of new methods is often done on data that is easy to estimate, being uniformly distributed. It is only recently that a study has been done to analyze the performance of the optimizer end-to-end on complex real-world data~\cite{leis_2015_how_hgaqor}. The study found the optimizer to perform unnaturally well on the typically tested uniform data.
+The topic of improving the estimations has seen some study, yet the evaluation
+of new methods is often done on data that is easy to estimate, being uniformly
+distributed. It is only recently that a study has been done to analyze the
+performance of the optimizer end-to-end on complex real-world
+data~\cite{leis_2015_how_hgaqor}. The study found the optimizer to perform
+unnaturally well on the typically tested uniform data.
 
-This thesis will therefore aim to provide further insight into performance of query optimizers by studying a previously unstudied metric and analysing the performance of state-of-the-art optimizers. The performance evaluation will be conducted on both the ``easy'' uniform data and complex real-world data.
+This thesis will therefore aim to provide further insight into performance of
+query optimizers by studying a previously unstudied metric and analysing the
+performance of state-of-the-art optimizers. The performance evaluation will be
+conducted on both the ``easy'' uniform data and complex real-world data.
 
 \section{Problem statement}
-In this thesis two open-source state-of-the-art databases are evaluated: MariaDB~\cite{mariadb_m} and PostgreSQL~\cite{postgresql_ptwmaosd}. One real-world dataset containing a large amount of data and with a complex schema and setup will be used in the evaluation. The database will be analyzed to measure the performance of the query optimizer in order to answer the question:
+In this thesis two open-source state-of-the-art databases are evaluated:
+MariaDB~\cite{mariadb_m} and PostgreSQL~\cite{postgresql_ptwmaosd}. One
+real-world dataset containing a large amount of data and with a complex schema
+and setup will be used in the evaluation. The database will be analyzed to
+measure the performance of the query optimizer in order to answer the question:
 
 \textit{How much effect does the cost estimation have on the query optimizers
   selection of access method during the join enumeration?}
 
-The metric studied to evaluate this will be the size of the ambiguous indexes for a query. This metric gives a good indication to the effect varying cost estimations has on the plan selected by the query optimizer. For a more in-depth description of how the metric is measured, see~\ref{sec:choiceofmethod}.
+The metric studied to evaluate this will be the number of different access methods
+used to access the same relation involved in a query. This metric gives a good
+indication to the cost estimation has on the query plan selected by
+the query optimizer. For a more in-depth description of how the metric is
+measured, see~\ref{sec:choiceofmethod}.
 
-The exact setup and metrics of the dataset is described in Section~\ref{sec:benchmark}. A motivation to why the databases are used is described in Section~\ref{sec:choiceofdatabases}.
+The exact setup and metrics of the dataset is described in
+Section~\ref{sec:benchmark}. A motivation to why the databases are used is
+described in Section~\ref{sec:choiceofdatabases}.
 
 \section{Purpose}~\label{sec:purpose}
-Query optimizers make bad cardinality estimates, and as a consequence bad cost estimations of access paths~\cite{leis_2015_how_hgaqor} – but how much does this affect the actual index selection process? Even though the errors may be large, they may not be large enough to actually influence errors in the index selection.
+Query optimizers make bad cardinality estimates, and as a consequence bad cost
+estimations of access paths~\cite{leis_2015_how_hgaqor} – but how much does this
+affect the actual selection of access method? Even though the errors may be large,
+they may not be large enough to actually cause the optimizer to generate
+different access paths.
 
-There are three steps to the optimization – search space expansion, cost estimation and join enumeration (more about those in Section~\ref{sec:queryopt}) – this thesis will focus on measuring what effect bad performance in the first two steps has on the third and final one. The study will be done by identifying ambiguous indexes to see both how common they are, and of which size the set of indexes is. These two metrics will give a good indication to what effect the bad performance has on the final step of optimization.
+There are three steps to the optimization – search space expansion, cost
+estimation and join enumeration (more about those in Section~\ref{sec:queryopt})
+– this thesis will focus on measuring what effect bad performance in the first
+two steps has on the third and final one. The study will be done by identifying
+the number of different access methods used for the same relation in order in
+order to identify the presence of the problem and if it differs between the
+databases studied. These two findings will give a good indication to what effect
+the cost estimation has on the final step of optimization.
 
 Studying this is of relevance for the following reasons:
 \begin{enumerate}
-    \item\label{item:purpose:tool} The tool developed for evaluation can be used in the future to measure the performance of query optimizers;
-    \item\label{item:purpose:steps} The evaluation will provide insight into what steps in the optimization process produce bad access paths;
-    \item\label{item:purpose:data} The performance of query optimizers has not seen much study using actual real-world data;
-    \item\label{item:purpose:performance} The actual performance of the databases right now will be evident;
-    \item\label{item:purpose:compare} Since both databases compared are open-source, one performing better may guide development for the other.
+\item\label{item:purpose:tool} The tool developed for evaluation can be used
+  in the future to measure the performance of query optimizers;
+\item\label{item:purpose:steps} The evaluation will provide insight into
+  what steps in the optimization process produce bad access paths;
+\item\label{item:purpose:data} The performance of query optimizers has not
+  seen much study using actual real-world data;
+\item\label{item:purpose:performance} The actual performance of the
+  databases right now will be evident;
+\item\label{item:purpose:compare} Since both databases compared are
+  open-source, one performing better may guide development for the other.
 \end{enumerate}
 
-The primary interest for academia is probably reasons~\ref{item:purpose:tool},~\ref{item:purpose:steps} and~\ref{item:purpose:data} whereas database vendors might be more interested in~\ref{item:purpose:performance} and~\ref{item:purpose:compare}. This thesis will thus provide a foundation for further improving query optimizers and that is of relevance for everyone who uses a database.
+The primary interest for academia is probably
+reasons~\ref{item:purpose:tool},~\ref{item:purpose:steps}
+and~\ref{item:purpose:data} whereas database vendors might be more interested
+in~\ref{item:purpose:performance} and~\ref{item:purpose:compare}. This thesis
+will thus provide a foundation for further improving query optimizers and that
+is of relevance for everyone who uses a database.
 
 \section{Outline}
-Below is a brief outline of the chapters in the report and what can be expected to be found in each:
+Below is a brief outline of the chapters in the report and what can be expected
+to be found in each:
 
 \begin{itemize}
-    \item The \nameref{chap:introduction} chapter gives an introduction to the subject of query optimizer, the problem statement discussed, the purpose of the thesis and why it is novel and relevant.
-    \item The \nameref{chap:relatedwork} chapter contains an overview of what previous and relevant work has been done in the area of improving and evaluating the performance of query optimizers.
-    \item The \nameref{chap:theory} chapter gives a background and the information necessary to understand the thesis. The chapter begins with a background on how a modern query optimizer works. It then continues with a description of the individual characteristics of the databases analysed: MariaDB and PostgreSQL.\@ It also defines some important terms used throughout the thesis.
-    \item The \nameref{chap:method} chapter describes the performance tests that were run and how they were implemented. It also describes more in-detail the data used for the databases, the database configurations used and the environment the tests were run in.
-    \item The \nameref{chap:results} chapter displays the results from the performance test in the form of graphs. It also gives some brief commentary on them.
-    \item The \nameref{chap:discussion} chapter discusses the performance of the query optimizers and the consequences of it, as well as the validity of the results. It also answers the problem statement and provides suggestions for future research.
+\item The \nameref{chap:introduction} chapter gives an introduction to the
+  subject of query optimizer, the problem statement discussed, the purpose of
+  the thesis and why it is novel and relevant.
+\item The \nameref{chap:relatedwork} chapter contains an overview of what
+  previous and relevant work has been done in the area of improving and
+  evaluating the performance of query optimizers.
+\item The \nameref{chap:theory} chapter gives a background and the information
+  necessary to understand the thesis. The chapter begins with a background on
+  how a modern query optimizer works. It then continues with a description of
+  the individual characteristics of the databases analysed: MariaDB and
+  PostgreSQL.\@ It also defines some important terms used throughout the thesis.
+\item The \nameref{chap:method} chapter describes the performance tests that
+  were run and how they were implemented. It also describes more in-detail the
+  data used for the databases, the database configurations used and the
+  environment the tests were run in.
+\item The \nameref{chap:results} chapter displays the results from the
+  performance test in the form of graphs. It also gives some brief commentary on
+  them.
+\item The \nameref{chap:discussion} chapter discusses the performance of the
+  query optimizers and the consequences of it, as well as the validity of the
+  results. It also answers the problem statement and provides suggestions for
+  future research.
 \end{itemize}

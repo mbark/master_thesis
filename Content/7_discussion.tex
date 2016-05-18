@@ -15,13 +15,13 @@ is provided as to why the results can be considered usable to draw general concl
 
 \subsection{Only a few queries were used}
 \textit{Only one single query and subsets of that query were used, this is hardly a
-large set of tests for evaluation.}
+  large set of tests for evaluation.}
 
 To answer this criticism it is important to consider the fact that the
-possibility for ambiguous indexes depends on the criteria outlined in
-Section~\ref{sec:dataset}. The tables fulfilling these criteria are few, reducing
-the possibility to use multiple queries as they will only involve the same
-tables anyway.
+possibility for multiple access methods for the same relation depends on the
+criteria outlined in Section~\ref{sec:dataset}. The tables fulfilling these
+criteria are few, reducing the possibility to use multiple queries as they will
+only involve the same tables anyway.
 
 Furthermore, the query constructed can be considered to be sufficiently complex
 as to capture a problematic query that the problem would realistically arise
@@ -62,12 +62,12 @@ used. However, the results found in this study show indicate two things:
 \end{itemize}
 
 These results will be discussed in more detail in
-Section~\ref{sec:ambigindexes}, but both of these results highlight an existing
+Section~\ref{sec:accessmethods}, but both of these results highlight an existing
 behavior in the databases. Having more datasets to test against would not have
 added anything to these findings except for an indication of how common it is
 for the database's to use different access methods.
 
-\section{Selection of access method}\label{sec:ambigindexes}
+\section{Selection of access method}\label{sec:accessmethods}
 This section will discuss the main findings of the evaluation, starting with a
 discussion regarding the correlation between sample size and the number of
 different access methods used for the same relation. Following this a section
@@ -127,8 +127,8 @@ beyond the scope of this thesis. A suggestion for future research would
 therefore be to evaluate the performance of this behavior --- is it the right
 decision to use different indexes depending on predicate values?
 
-Finally it is important to also note that the problem of ambiguous indexes
-because of small sample size, or incorrect estimation of statistics, seem to not
-be common. As such, future study into the area should probably avoid this topic
-in favor of other topics, for example that of optimizers being sensitive to
-predicate values.
+Finally it is important to also note that the problem of different access
+methods for the same relation because of small sample size, or incorrect
+estimation of statistics, seem to not be common. As such, future study into the
+area should probably avoid this topic in favor of other topics, for example that
+of optimizers being sensitive to predicate values.

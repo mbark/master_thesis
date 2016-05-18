@@ -13,7 +13,10 @@ CLOSED: [2016-05-18 Wed 11:05]
 CLOSED: [2016-05-16 Mon 13:06]
 ** DONE Rewrite the later parts to clarify what cardinality estimate is
 CLOSED: [2016-05-18 Wed 11:02]
-** TODO Ensure chapters >5 tie together better with earlier chapters
-** TODO Use the term access path or query plan consistently
-** TODO Remove the concept of ambiguous indexes, use access method instead
+** DONE Use the term access path or query plan consistently
+CLOSED: [2016-05-18 Wed 12:16]
+** DONE Remove the concept of ambiguous indexes, use access method instead
+CLOSED: [2016-05-18 Wed 12:42]
+** TODO Write out the discussion part when results are in
 ** TODO Write the abstract
+** TODO Ensure chapters >5 tie together better with earlier chapters

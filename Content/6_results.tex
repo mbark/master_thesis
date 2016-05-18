@@ -1,10 +1,10 @@
 This chapter contains the results of using the tool to evaluate the two
 databases. This chapter will start with a section showing the results when
 evaluating the databases to identify a correlation between sample size and
-ambiguous indexes. Following this are further results showing the results when
-evaluating subsets of the original query.
+selection of different access methods. Following this are further results
+showing the results when evaluating subsets of the original query.
 
-\section{Correlation between sample size and ambiguous indexes}
+\section{Correlation between sample size and selection of access methods}
 This section contains the results of the evaluation done in order to determine a
 correlation between sample size and the number of different access methods used
 to access the same relation. The evaluation consisted of a total of four tests,
@@ -63,13 +63,14 @@ and the results can be seen in Figure~\ref{fig:plot:eval2:test1}.
 are shown next to each other, showing the actual index selections next to the
 possible index selections.}\label{fig:plot:eval2:test1}
 \end{figure}
+
 \begin{figure}
 \begin{indexgraph}
-  \addplot coordinates {(ct,6) (t,2) (mt,3) (mm,2) (book,2) (cmt,2) (cmm,2) (est,2) (resamb,2)};
-  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
-  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,2) (cmm,2) (est,2) (resamb,1)};
+  \addplot coordinates {(ct,6)};
+  \addplot coordinates {(ct,3)};
+  \addplot coordinates {(ct,1)};
 \end{indexgraph}
-\caption[The index selections for query \#1.]{The index selections for query \#1
+\caption[The index selections for query \#9.]{The index selections for query \#9
 are shown next to each other, showing the actual index selections next to the
 possible index selections.}\label{fig:plot:eval2:test9}
 \end{figure}
