@@ -4,7 +4,7 @@ evaluating the databases to identify a correlation between sample size and
 selection of different access methods. Following this are further results
 showing the results when evaluating subsets of the original query.
 
-\section{Correlation between sample size and selection of access methods}
+\section{Correlation between sample size and selection of access methods}\label{sec:correlation}
 This section contains the results of the evaluation done in order to determine a
 correlation between sample size and the number of different access methods used
 to access the same relation. The evaluation consisted of a total of four tests,
@@ -23,8 +23,9 @@ whereas PostgreSQL consistently selects the same one.
 
 The second evaluation of query \#1, using a high sample size, can be seen in
 Figure~\ref{fig:plot:eval1:test2}, which can be read in the same way as the
-previous figure. The graph has three bars per relation once again. From this
-graph it can be seen that\ldots
+previous figure. The graph has three bars per relation once again. The access
+methods used can not be directly identified from the two graphs but they are the
+same for both Figure~\ref{fig:plot:eval1:test1} and Figure~\ref{fig:plot:eval1:test2}.
 
 \begin{figure}
 \begin{indexgraph}
@@ -48,12 +49,18 @@ are shown next to each other, showing the actual index selections next to the
 possible index selections.}\label{fig:plot:eval1:test2}
 \end{figure}
 
-\section{Evaluating subsets of the query}
+\section{Evaluating subsets of the query}\label{sec:subsets}
 This section contains the results for the second evaluation conducted. The evaluation
-was done on queries \#1 through \#9, where \#2 through \#9 are subsets of query \#1,
-and the results can be seen in Figure~\ref{fig:plot:eval2:test1}.
+was done on queries \#1 through \#9, where \#2 through \#9 are subsets of query
+\#1 and the parameters used for these tests can be seen in Figure~\ref{table:evaluation2}.
 
-\begin{figure}
+The results of the evaluation can be seen in
+Figures~\ref{fig:plot:eval2:test1}~---~\ref{fig:plot:eval2:test9}. The graphs
+are formatted the same as those described in Section~\ref{sec:correlation}.
+Queries \#2 --- \#9 are subsets of the original query and contain fewer tables,
+which is reflected in the fact that the graphs contain successively fewer bars.
+
+\begin{figure}[ht]
 \begin{indexgraph}
   \addplot coordinates {(ct,6) (t,2) (mt,3) (mm,2) (book,2) (cmt,2) (cmm,2) (est,2) (resamb,2)};
   \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};

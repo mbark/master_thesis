@@ -74,11 +74,41 @@ different access methods used for the same relation. Following this a section
 describing the second set of results identified: the correlation between
 predicate values and access methods used.
 
-\subsection{Sample size vs access methods used}
-- index selections tend to not be ambiguous, the optimizer remains consistent
-regardless of sample size used
+\subsection{Sample size in correlation to different access methods used}
+The main purpose of the study was to identify a correlation between the effect
+of cost estimation on the access methods selected by the query optimizer. As a
+way to evaluate this the number of samples used when analyzing the tables and
+generating the cardinality estimates is varied from a low to a high value.
 
-\subsection{Predicate value vs access methods used}
+The results of this evaluation can be seen in Figure~\ref{fig:plot:eval1:test1},
+which is the test done with a low sample size, and
+Figure~\ref{fig:plot:eval1:test2}, which is the test with the high sample size.
+It is directly obvious that MariaDB performs the same regardless of sample size.
+This can be seen by the fact that MariaDB has the same number of different
+access methods for all relations, regardless of sample size, and that these
+access methods remain the same.
+
+This result clearly indicates that while MariaDB selects different access
+methods, it doesn't do so because of varying estimations of the cardinality.
+Rather, it must be something else that determines it. This warranted another
+evaluation and the discussion regarding that can be seen in
+Section~\ref{sec:predicatecorrelation}.
+
+Apart from this finding it is also clear that MariaDB and PostgreSQL don't
+perform in the same way; f.e. MariaDB always selects the same access method for
+the relation \textit{mt} --- whereas PostgreSQL varies between two different access
+methods. This is interesting as this is a clear difference between the two query optimizers.
+
+The difference between the two query optimizers is that MariaDB always uses an
+index if one exists, whereas PostgreSQL will sometimes do a full table scan
+instead of using an index.
+
+Additionally PostgreSQL does not use different indexes for \textit{ct}, unlike
+MariaDB which varies between three different indexes. This behavior is further
+evaluated in Section~\ref{sec:subsets} and the evaluation is discussed in
+Section~\ref{sec:predicatecorrelation}.
+
+\subsection{Predicate value in correlation to different access methods used}\label{sec:predicatecorrelation}
 One finding that is clear from the results is that the access method used often
 depend on the predicate value used, rather than the statistics causing the query
 optimizer to pick the incorrect one. An example of this can be seen in

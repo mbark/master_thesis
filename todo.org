@@ -1,9 +1,15 @@
 EXJOBB -*- mode: org -*-
 * Data collection
-** TODO Do the 50rep tests
-** TODO Do the 1rep tests
+** DONE Do the 50rep tests for MariaDB
+CLOSED: [2016-05-19 Thu 12:42]
+** DONE Do the 1rep tests for MariaDB
+CLOSED: [2016-05-19 Thu 12:42]
+** TODO Do the 50rep tests for PostgreSQL
+** TODO Do the 1rep tests for PostgreSQL
 * Report
+** DONE Write the discussion part when results are in
+CLOSED: [2016-05-19 Thu 16:28]
+** TODO Finish up the results and discussion when postgres is done
 ** TODO Go through the report and check consistency
-** TODO Write out the discussion part when results are in
 ** TODO Ensure chapters >5 tie together better with earlier chapters
 ** TODO Write the abstract
