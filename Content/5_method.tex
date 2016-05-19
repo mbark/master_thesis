@@ -103,8 +103,9 @@ three hard drives were used, one for each database and one for the tool itself.
 
 The exact specifications are:
 \begin{itemize}
-\item 2 \textit{Intel\,\textregistered Xeon\,\textregistered Processor E5-2643 (10M Cache, 3.30 GHz, 8.00 GT/s Intel\,\textregistered
-    QPI)}, featuring 4 cores each;
+\item 2 \textit{Intel\,\textregistered{} Xeon\,\textregistered{} Processor
+    E5\-2643 (10M Cache, 3.30 GHz, 8.00 GT/s Intel\,\textregistered{} QPI)},
+  featuring 4 cores each;
 \item 1 \textit{Seagate Savvio 15K.3 ST9146853SS 146GB 15000 RPM 64MB Cache SAS 6Gb/s
     2.5''}, used to store the project itself on;
 \item 1 \textit{Seagate Constellation ES.3 ST4000NM0023 4TB 7200 RPM 128MB Cache SAS
@@ -122,7 +123,7 @@ complex in terms of indexes, table size and table values.
 Table~\ref{table:dataset} presents the number of indexes, the number of rows and
 the size in MB of the entire database and all relations involved in the
 benchmarking, the names of the relations have anonymized and are referred to by an
-identifier such as ``mm'' or ``book''.
+identifier such as \textit{mm} or \textit{book}.
 
 \begin{table}
   \begin{center}
@@ -441,14 +442,15 @@ when testing both PostgreSQL and MariaDB.\@
       \toprule
       query & repetitions & sample sizes \\
       \midrule
-      \#1 & 50 & 1, 100 \\
+      \#1 & 50 & 1 \\
+      \#1 & 50 & 100 \\
       \bottomrule
     \end{tabu}
-    \caption[The number of repetitions and sample size used for evaluation]{The
-      number of repetitions and sample size used for the evaluation. Two tests
-      with a large number of repetitions were done for the original, and the
-      other queries evaluated with a lesser number of
-      repetitions.}\label{table:evaluation1}
+    \caption[The number of repetitions and sample size used for the first evaluation]{The
+      number of repetitions and sample size used for the evaluation. The tests
+      are conducted with a low and high value for the sample size in order to
+      capture the difference when analyzing cardinality with few samples versus
+      many samples.}\label{table:evaluation1}
   \end{center}
 \end{table}
 
@@ -459,12 +461,12 @@ This was only done for the original query as it is the most complex, making
 tests on the subsets unnecessary. The options used can be seen in
 Table~\ref{table:evaluation1}.
 
-Additional tests done were on the subsets to further evaluate the behavior
-identified in the first evaluation. As can be seen in the table, a small number
-of repetitions is used and the sample size is minimal, this is as neither of
-these two options seemed to affect the query plans chosen. For a further
-discussion about this see Section~\ref{sec:accessmethods}, where the results
-found for the initial tests is discussed in detail.
+Additional tests were conducted on subsets of the query to further evaluate the behavior
+identified in the first evaluation. As can be seen in the table the number of
+repetitions and sample size is set to 1, the reason is that neither of these two
+options appeared to affect the query plans chosen. For a further discussion about
+this see Section~\ref{sec:accessmethods}, where the results found for the
+initial tests are discussed in detail.
 
 \begin{table}
   \begin{center}
@@ -475,7 +477,7 @@ found for the initial tests is discussed in detail.
       \#1 --- \#9  & 1 & 1 \\
       \bottomrule
     \end{tabu}
-    \caption[The number of repetitions and sample size used for evaluation]{The
+    \caption[The number of repetitions and sample size used for second evaluation]{The
       number of repetitions and sample size used for the evaluation. Two tests
       with a large number of repetitions were done for the original, and the
       other queries evaluated with a lesser number of

@@ -61,11 +61,12 @@
 } {
   \legend{Possible access methods, MariaDB, PostgreSQL}
 \end{axis}
-\end{tikzpicture}}
+\end{tikzpicture}
+}
 
 \frontmatter
 \pagestyle{empty}
-\removepagenumbers
+\removepagenumbers{}
 \maketitle
 \selectlanguage{english}
 \begin{abstract}
@@ -79,27 +80,27 @@
 \tableofcontents*
 \clearpage
 \listoffigures
-\mainmatter
+\mainmatter{}
 \pagestyle{newchap}
 
-\chapter{Glossary} \label{chap:glossary}
+\chapter{Glossary}\label{chap:glossary}
     \input{Content/1_glossary}
-\chapter{Introduction} \label{chap:introduction}
+\chapter{Introduction}\label{chap:introduction}
     \input{Content/2_introduction}
-\chapter{Related work} \label{chap:relatedwork}
+\chapter{Related work}\label{chap:relatedwork}
     \input{Content/3_related_work}
-\chapter{Theory} \label{chap:theory}
+\chapter{Theory}\label{chap:theory}
     \input{Content/4_theory}
-\chapter{Method} \label{chap:method}
+\chapter{Method}\label{chap:method}
     \input{Content/5_method}
-\chapter{Results} \label{chap:results}
+\chapter{Results}\label{chap:results}
     \input{Content/6_results}
-\chapter{Discussion} \label{chap:discussion}
+\chapter{Discussion}\label{chap:discussion}
     \input{Content/7_discussion}
-\chapter{Conclusions} \label{chap:conclusions}
+\chapter{Conclusions}\label{chap:conclusions}
     \input{Content/8_conclusions}
 \nocite{*}
-\printbibliography
+\printbibliography{}
 
 \appendix
 \chapter{Source code}\label{appendix:sourcecode}

@@ -3,20 +3,7 @@ EXJOBB -*- mode: org -*-
 ** TODO Do the 50rep tests
 ** TODO Do the 1rep tests
 * Report
-** DONE Go through the discussion section improving it
-CLOSED: [2016-05-16 Mon 12:55]
-** DONE Go through the conclusion improving it
-CLOSED: [2016-05-16 Mon 12:55]
-** DONE Don't refer to "parameter value" but rather predicate
-CLOSED: [2016-05-18 Wed 11:05]
-** DONE Write a more proper title
-CLOSED: [2016-05-16 Mon 13:06]
-** DONE Rewrite the later parts to clarify what cardinality estimate is
-CLOSED: [2016-05-18 Wed 11:02]
-** DONE Use the term access path or query plan consistently
-CLOSED: [2016-05-18 Wed 12:16]
-** DONE Remove the concept of ambiguous indexes, use access method instead
-CLOSED: [2016-05-18 Wed 12:42]
+** TODO Go through the report and check consistency
 ** TODO Write out the discussion part when results are in
-** TODO Write the abstract
 ** TODO Ensure chapters >5 tie together better with earlier chapters
+** TODO Write the abstract
