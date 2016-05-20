@@ -1,0 +1,35 @@
+{
+    "steps": [
+        "generate",
+        "parse",
+        "analyze"
+    ],
+    "query": "postgresql7",
+    "samplesizes": [
+        1
+    ],
+    "repetitions": 1,
+    "database": "postgresql"
+}
+{
+    "mt": [
+        {
+            "Node Type": "Seq Scan",
+            "Alias": "mt",
+        }
+    ],
+    "ct": [
+        {
+            "Node Type": "Index Scan",
+            "Index Name": "\"NoneCycleTrade_match_view_ref\"",
+            "Alias": "ct",
+        }
+    ],
+    "t": [
+        {
+            "Node Type": "Index Scan",
+            "Index Name": "\"NoneTrade_trade_key_pkey\"",
+            "Alias": "t",
+        }
+    ]
+}

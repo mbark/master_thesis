@@ -1,0 +1,22 @@
+{
+    "steps": [
+        "generate",
+        "parse",
+        "analyze"
+    ],
+    "query": "postgresql9",
+    "samplesizes": [
+        1
+    ],
+    "repetitions": 1,
+    "database": "postgresql"
+}
+{
+    "ct": [
+        {
+            "Node Type": "Index Scan",
+            "Index Name": "\"NoneCycleTrade_match_view_ref\"",
+            "Alias": "ct",
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 This chapter contains a discussion regarding the validity of the results and the
 ability to use these to draw more general conclusions. Furthermore the results
-and the conclusions that can be drawn from these are discussed. Finally some
+and what conclusions can be drawn from these are discussed. Finally, some
 suggestions for future research is given.
 
 \section{Validity of the results}\label{sec:validity}
@@ -108,30 +108,53 @@ MariaDB which varies between three different indexes. This behavior is further
 evaluated in Section~\ref{sec:subsets} and the evaluation is discussed in
 Section~\ref{sec:predicatecorrelation}.
 
+The maybe most important difference that can be seen from the results
+is that MariaDB consistently selects the same access methods regardless of
+the estimated cardinalities. However, PostgreSQL is more sensitive to estimated
+cardinalities, and for example the relation \textit{cmt} has different access methods
+with a low sample size but only one when the cardinality can be better estimated.
+
 \subsection{Predicate value in correlation to different access methods used}\label{sec:predicatecorrelation}
-One finding that is clear from the results is that the access method used often
-depend on the predicate value used, rather than the statistics causing the query
-optimizer to pick the incorrect one. An example of this can be seen in
-Figure~\ref{fig:plot:eval1:test1} where several different access methods are
-used for MariaDB depending on the predicate value used. A total of three
-different access methods are used out of a total of 6 possible.
+From the first evaluation it is clear that both databases will sometimes select different
+access methods regardless of the sample size used when estimating cardinalities.
+To further evaluate this tests were done with only one repetition, but still
+for each possible value for the predicate.
 
-The fact that the query optimizer is sensitive to predicate value can be seen as
+This evaluation done shows two things:
+\begin{enumerate}
+\item The access method used can depend on the predicate value;
+\item The behavior differs between the two databases;
+\item And the behavior is consistent regardless of the complexity of the query.
+\end{enumerate}
+
+Firstly, that the access method depend on the predicate value used can be seen in
+Figure~\ref{fig:plot:eval2:test1} where MariaDB has three different access
+methods for \textit{ct} and PostgreSQL has 2 different for \textit{cmt}. Since
+there is no repetitions the only varying parameter is the predicate value.
+
+The fact that the query optimizer is sensitive to the predicate value can be seen as
 both intuitive and unintuitive --- the filter factor might vary considerably
-between different predicate values but the same index should always be the best
-for accessing the same relation.
+depending on the predicate value. At the same time, there should always exist
+one index that is the best for accessing the same relation.
 
-A clear different can be seen between the two databases as PostgreSQL, while
-sensitive to predicate value always selects the same access method for the
-relations where MariaDB differs. Instead PostgreSQL sometimes deems all indexes
-insufficient and opts instead to just do a full table scan. This is another
-contrast between the two as MariaDB always picks an index if one exists, never
-opting to do a full table scan.
+Secondly, the behavior differing between the two databases, can be seen in that
+MariaDB switches between what using different indexes whereas PostgreSQL will
+switch between using an index or doing a full table scan. This behavior can be
+seen for the relation \textit{cmm} which has two possible access methods --- via
+an index on the primary key or a full table scan; PostgreSQL will switch between
+the two while MariaDB will consistently use only the index.
 
-As can be seen in Figure~\ref{fig:plot:eval2:test9} this behavior remains
-consistent for both databases' query optimizers regardless of the complexity of
-the query in terms of number of joins and tables involved. This indicates that
-the behavior is intended, and not the cause of incorrect statistics.
+Thirdly and finally, the behavior being consistent regardless of the complexity
+of the query, can be seen in Figure~\ref{fig:plot:eval2:test9} which is a simple
+query on a single relation. Even so, MariaDB will still switch between three
+different indexes based only on the predicate value. For PostgreSQL the behavior
+can be observed in Figure~\ref{fig:plot:eval2:test4}, which is the least complex
+query used involving the relation \textit{cmt}.
+
+The fact that the behavior can be seen even for simpler queries indicates that the
+is not caused by the query optimizer acting incorrectly due to the query being
+too complex. Instead it seems to be a deliberate choice by both of the query
+optimizers --- which leads to the question of which behavior is the best.
 
 \section{Future research}
 This section will cover some suggestions for future research on the topic of

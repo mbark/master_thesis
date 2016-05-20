@@ -1,6 +1,7 @@
 This thesis concerns the evaluation of two modern, state-of-the-art database's,
 and the effect of estimating statistics on the index selection. The thesis question was:
-\textit{How much effect does the cost estimation have on the query optimizers selection of indexes during the join enumeration?}
+\textit{How much effect does the cost estimation have on the query optimizers
+  selection of access method during the join enumeration?}
 
 Two databases --- PostgreSQL and MariaDB --- were chosen as a good representation of
 state-of-the-art query optimizers. A large enterprise dataset was ported to both
@@ -14,18 +15,21 @@ size the cost estimation can be simulated to range from bad to good, allowing
 the testing of databases in a realistic scenario.
 
 Using the tool to evaluate the databases with the query we find that the cost
-estimation have little effect on the index selection. For all the queries used,
-regardless of sample size, no correlation is found between the sample size and
-the number of different indexes used to access the same relation.
+estimation seem to have little effect on the index selection. For MariaDB the
+sample size used when estimating cardinality did not have any effect on what
+access methods were used, this was mainly because MariaDB will always use an
+index if one exists. For PostgreSQL the sample size of the cardinality estimate
+effected how often the query optimizer would opt to do a full table scan instead
+of using an index.
 
-Instead the results indicate that predicate values can cause the databases to
-select different indexes. Furthermore, it is found that this behavior is
+The results also indicate that predicate values cause the query optimizers to
+select different access methods. Furthermore, it is found that this behavior is
 different for the two databases with neither being sensitive to the same value
-as the other. This shows that the query optimizer's perform different for the
+as the other. This shows that the query optimizers' perform different for the
 two databases, indicating that further study should be done to identify which of
 the two behaviors might be considered best.
 
-In conclusion we have found results indicating that the cost estimations have
+In conclusion we have found results indicating that the cost estimation have
 little effect on the query optimizers selection of access method. We have also found
 results indicating that instead the predicate value used for filtering does
 effect the index selection.

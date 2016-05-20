@@ -11,7 +11,8 @@ to access the same relation. The evaluation consisted of a total of four tests,
 two tests per database. For the options used in the tests see
 Section~\ref{sec:evaluation} and more specifically
 Table~\ref{table:evaluation1}. The results will be presented in the form of two
-bar charts, one for each of the sample sizes used.
+bar charts, one for each of the sample sizes used. The full output of the
+program, showing which access methods are actually used, can be seen in Appendix~\ref{appendix:output}.
 
 The first test done can be seen in Figure~\ref{fig:plot:eval1:test1}. Each
 relation involved in the query is represented by a three different bars --- one
@@ -23,9 +24,7 @@ whereas PostgreSQL consistently selects the same one.
 
 The second evaluation of query \#1, using a high sample size, can be seen in
 Figure~\ref{fig:plot:eval1:test2}, which can be read in the same way as the
-previous figure. The graph has three bars per relation once again. The access
-methods used can not be directly identified from the two graphs but they are the
-same for both Figure~\ref{fig:plot:eval1:test1} and Figure~\ref{fig:plot:eval1:test2}.
+previous figure. The graph has three bars per relation once again.
 
 \begin{figure}
 \begin{indexgraph}
@@ -33,20 +32,20 @@ same for both Figure~\ref{fig:plot:eval1:test1} and Figure~\ref{fig:plot:eval1:t
   \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
   \addplot coordinates {(ct,1) (t,1) (mt,2) (mm,1) (book,1) (cmt,2) (cmm,2) (est,2) (resamb,1)};
 \end{indexgraph}
-\caption[The access methods used with a low sample size.]{The index selections for query \#1
-are shown next to each other, showing the actual index selections next to the
-possible index selections.}\label{fig:plot:eval1:test1}
+\caption[The access methods used with a low sample size.]{The test conducted in
+  the first evaluation using a small sample size and many repetitions. See
+  Table~\ref{table:evaluation1} for the exact values used.}\label{fig:plot:eval1:test1}
 \end{figure}
 
 \begin{figure}
 \begin{indexgraph}
   \addplot coordinates {(ct,6) (t,2) (mt,3) (mm,2) (book,2) (cmt,2) (cmm,2) (est,2) (resamb,2)};
   \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
-  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
+  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,2) (est,1) (resamb,1)};
 \end{indexgraph}
-\caption[The access methods used with a high sample size.]{The index selections for query \#1
-are shown next to each other, showing the actual index selections next to the
-possible index selections.}\label{fig:plot:eval1:test2}
+\caption[The access methods used with a high sample size.]{The test conducted in
+  the first evaluation using a large sample size and many repetitions. See
+  Table~\ref{table:evaluation1} for the exact values used.}\label{fig:plot:eval1:test2}
 \end{figure}
 
 \section{Evaluating subsets of the query}\label{sec:subsets}

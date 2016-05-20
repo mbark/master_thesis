@@ -1,0 +1,32 @@
+{
+    "steps": [
+        "generate",
+        "parse",
+        "analyze"
+    ],
+    "query": "mariadb9",
+    "samplesizes": [
+        1
+    ],
+    "repetitions": 1,
+    "database": "mariadb"
+}
+{
+    "ct": [
+        {
+            "table": "ct",
+            "key": "match_view_ref",
+            "possible_keys": "match_view_ref,match_view_ref_2,CycleTrade_match_view_ref"
+        },
+        {
+            "table": "ct",
+            "key": "match_view_ref_2",
+            "possible_keys": "match_view_ref,match_view_ref_2,CycleTrade_match_view_ref"
+        },
+        {
+            "table": "ct",
+            "key": "CycleTrade_match_view_ref",
+            "possible_keys": "match_view_ref,match_view_ref_2,CycleTrade_match_view_ref"
+        }
+    ]
+}
