@@ -9,22 +9,24 @@ This section contains the results of the evaluation done in order to determine a
 correlation between sample size and the number of different access methods used
 to access the same relation. The evaluation consisted of a total of four tests,
 two tests per database. For the options used in the tests see
-Section~\ref{sec:evaluation} and more specifically
-Table~\ref{table:evaluation1}. The results will be presented in the form of two
+Section~\ref{sec:evaluation}. The results will be presented in the form of two
 bar charts, one for each of the sample sizes used. The full output of the
-program, showing which access methods are actually used, can be seen in Appendix~\ref{appendix:output}.
+program, showing which access methods are actually used, can be seen in
+Appendix~\ref{appendix:output}.
 
-The first test done can be seen in Figure~\ref{fig:plot:eval1:test1}. Each
-relation involved in the query is represented by a three different bars --- one
-for the number of possible access methods and one for the actual access methods
-used for either of the two databases. From the figure it can be seen that there
-are six possible access methods for \texttt{ct} (one full table scan and five
-usable indexes) and that MariaDB will vary between three of these methods,
-whereas PostgreSQL consistently selects the same one.
+The first test done can be seen in Figure~\ref{fig:plot:eval1:test1}, the test
+was done with 50 repetitions and a sample size of 1 (as described in
+Table~\ref{table:evaluation1}). Each relation involved in the query is
+represented by a three different bars --- one for the number of possible access
+methods and one for the actual access methods used for either of the two
+databases. From the figure it can be seen that there are six possible access
+methods for \texttt{ct} (one full table scan and five usable indexes) and that
+MariaDB will vary between three of these methods, whereas PostgreSQL
+consistently selects the same one.
 
-The second evaluation of query \#1, using a high sample size, can be seen in
-Figure~\ref{fig:plot:eval1:test2}, which can be read in the same way as the
-previous figure. The graph has three bars per relation once again.
+The second evaluation of query \#1, using a sample size of 100 instead, can be
+seen in Figure~\ref{fig:plot:eval1:test2}, which can be read in the same way as
+the previous figure. The graph has three bars per relation once again.
 
 \begin{figure}
 \begin{indexgraph}
@@ -51,7 +53,7 @@ previous figure. The graph has three bars per relation once again.
 \section{Evaluating subsets of the query}\label{sec:subsets}
 This section contains the results for the second evaluation conducted. The evaluation
 was done on queries \#1 through \#9, where \#2 through \#9 are subsets of query
-\#1 and the parameters used for these tests can be seen in Figure~\ref{table:evaluation2}.
+\#1, tested with 1 repetition and a sample size of 1 (as described in Table~\ref{table:evaluation2}).
 
 The results of the evaluation can be seen in
 Figures~\ref{fig:plot:eval2:test1}~---~\ref{fig:plot:eval2:test9}. The graphs

@@ -11,9 +11,12 @@ CLOSED: [2016-05-20 Fri 11:23]
 * Report
 ** DONE Write the discussion part when results are in
 CLOSED: [2016-05-19 Thu 16:28]
-** TODO Finish up the results and discussion when postgres is done
-** TODO Improve the explanations in the results section
-** TODO Add the json or something showing the index selections etc
+** DONE Finish up the results and discussion when postgres is done
+CLOSED: [2016-05-20 Fri 14:35]
+** DONE Improve the explanations in the results section
+CLOSED: [2016-05-20 Fri 14:35]
+** DONE Add the json or something showing the index selections etc
+CLOSED: [2016-05-20 Fri 14:35]
 ** TODO Go through the report and check consistency
 ** TODO Ensure chapters >5 tie together better with earlier chapters
 ** TODO Write the abstract

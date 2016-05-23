@@ -459,7 +459,9 @@ of different access methods for the same relation, the tests were done with a
 very small sample size and a large one, both with a large number of repetitions
 This was only done for the original query as it is the most complex, making
 tests on the subsets unnecessary. The options used can be seen in
-Table~\ref{table:evaluation1}.
+Table~\ref{table:evaluation1}. The repetition size is set to 50 due to time
+constraints, evaluating PostgreSQL with the parameters given results in an
+execution time of roughly 100 hours for the tool.
 
 Additional tests were conducted on subsets of the query to further evaluate the behavior
 identified in the first evaluation. As can be seen in the table the number of
