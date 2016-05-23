@@ -17,6 +17,10 @@ CLOSED: [2016-05-20 Fri 14:35]
 CLOSED: [2016-05-20 Fri 14:35]
 ** DONE Add the json or something showing the index selections etc
 CLOSED: [2016-05-20 Fri 14:35]
-** TODO Go through the report and check consistency
-** TODO Ensure chapters >5 tie together better with earlier chapters
+** DONE Go through the report and check consistency
+CLOSED: [2016-05-23 Mon 17:25]
+** DONE Ensure chapters >5 tie together better with earlier chapters
+CLOSED: [2016-05-23 Mon 17:25]
+** TODO Cost estimation -> cardinality estimate
+** TODO Refer more clearly to how PostgreSQL is sensitive to sample size
 ** TODO Write the abstract

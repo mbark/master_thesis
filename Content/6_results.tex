@@ -1,8 +1,8 @@
 This chapter contains the results of using the tool to evaluate the two
-databases. This chapter will start with a section showing the results when
+databases. This chapter starts with a section showing the results when
 evaluating the databases to identify a correlation between sample size and
-selection of different access methods. Following this are further results
-showing the results when evaluating subsets of the original query.
+selection of different access methods. Following this is a section containing the
+results of the second evaluation conducted.
 
 \section{Correlation between sample size and selection of access methods}\label{sec:correlation}
 This section contains the results of the evaluation done in order to determine a
@@ -17,8 +17,8 @@ Appendix~\ref{appendix:output}.
 The first test done can be seen in Figure~\ref{fig:plot:eval1:test1}, the test
 was done with 50 repetitions and a sample size of 1 (as described in
 Table~\ref{table:evaluation1}). Each relation involved in the query is
-represented by a three different bars --- one for the number of possible access
-methods and one for the actual access methods used for either of the two
+represented by three different bars --- one for the number of possible access
+methods and one for the actual access methods used for each of the two
 databases. From the figure it can be seen that there are six possible access
 methods for \texttt{ct} (one full table scan and five usable indexes) and that
 MariaDB will vary between three of these methods, whereas PostgreSQL
@@ -57,7 +57,7 @@ was done on queries \#1 through \#9, where \#2 through \#9 are subsets of query
 
 The results of the evaluation can be seen in
 Figures~\ref{fig:plot:eval2:test1}~---~\ref{fig:plot:eval2:test9}. The graphs
-are formatted the same as those described in Section~\ref{sec:correlation}.
+are formatted in the same way as those described in Section~\ref{sec:correlation}.
 Queries \#2 --- \#9 are subsets of the original query and contain fewer tables,
 which is reflected in the fact that the graphs contain successively fewer bars.
 

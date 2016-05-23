@@ -34,7 +34,7 @@ conducted on the selected access path.
 Evaluating a query optimizer's cardinality estimation is often done through a
 comparison with the actual cardinality. Calculating the exact cardinality can
 however be very costly for complex queries and datasets. A more efficient method
-that can find the exact cardinalities by studying a subset of all expressions i
+that can find the exact cardinalities by studying a subset of all expressions is
 presented in~\cite{chaudhuri_2009_exact_ecqofot}.
 
 One novel way of studying and analyzing the plans chosen by the query optimizer
@@ -89,7 +89,7 @@ directly in the PostgreSQL query
 optimizer~\cite{abhirama_2010_stability_otsopcatcops}. Their results agree with
 those found by Harish  et\ al.\ in that the performance is improved. The results
 they present show that robut plans often reduced the adverse effects of
-selectivity errors by more two-thirds while only providing a minor overhead in
+selectivity errors by more than two-thirds, while only providing a minor overhead in
 terms of time and memory.
 
 \subsection{Improving cardinality estimates}

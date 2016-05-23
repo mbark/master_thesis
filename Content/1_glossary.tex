@@ -1,5 +1,5 @@
 The terminology of databases often varies across literature and database
-vendors, this section therefore defines the terms used through this thesis. When
+vendors, this section therefore defines the terms used in this thesis. When
 it is the case that something commonly goes by other names as well, they will be
 included to a great an extent as possible.
 
@@ -24,9 +24,8 @@ thesis. If an optimizer of some other kind is used this will be made explicit.
 \subsection*{Host variable}
 A \textit{host variable} is a variable declared in the program in which the SQL
 statement is embedded~\cite[p. 151]{chamberlin_1998_complete_acgtdud}. Host
-variables are distinguished from normal columns by the fact that they begin with
-a colon. An example of a host variable is \sql{:HEIGHT} in
-Figure~\ref{fig:sql:hostvar}.
+variables are by the fact that they begin with a colon. An example of a host
+variable is \sql{:HEIGHT} in Figure~\ref{fig:sql:hostvar}.
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{sql}
@@ -66,7 +65,7 @@ predicates:
 \end{enumerate}
 
 A \textit{compound predicate} is two or more predicates that are tied together
-in the form \sql{AND}, \sql{OR} or other similar operators. The \sql{WHERE}
+in the form of \sql{AND}, \sql{OR} or other similar operators. The \sql{WHERE}
 clause in Figure~\ref{fig:sql:predicate} can be considered to have two different
 compound predicates:
 \begin{enumerate}
@@ -82,8 +81,8 @@ the less amount of index rows that need to be read, and consequently the number
 of reads to the table.
 
 The thickness of the index slice will depend on the number of \textit{matching
-  columns}, that is the number of columns that exist both in the \sql{WHERE}
-clause and the index. To illustrate why consider the query in
+  columns} --- the number of columns that exist both in the \sql{WHERE}
+clause and the index. To illustrate why, consider the query in
 Figure~\ref{fig:sql:indexslice}.
 
 \begin{figure}[ht]
@@ -205,10 +204,14 @@ filter factor:
 The query optimizers output is an \textit{access path}, which is an abstract
 representation of the path to access the data.
 
+\subsection*{Query plan}
+The \textit{query plan} will be used to refer to the concrete representation
+given by an database to describe the underlying access path.
+
 \subsection*{Execution plan}
 The \textit{execution plan} corresponds to an access path but describes how to
 physically access the data.
 
-\subsection*{Query plan}
-The \textit{query plan} is the plan suggested by the database for how to access
-the data. It is the database-specific description of the access path.
+\subsection*{Relation}
+The words \textit{relation} and \textit{table} are synonymous and used
+interchangeably throughout the thesis.

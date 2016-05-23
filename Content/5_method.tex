@@ -2,8 +2,9 @@ In this chapter, the method used to investigate the problem statement is
 presented. First, the choice of method is described, motivating the dataset and
 technologies used. Following this the problems used for benchmarking are
 presented, including a more in-depth description of the dataset. After these
-motivations, the actual implementation details are presented, showing how the
-database's are evaluated.
+motivations, the actual implementation details are presented. Finally the
+evaluations done are described, providing the parameters used for the tests
+conducted.
 
 \section{Choice of method}\label{sec:choiceofmethod}
 This section will motivate the methods' three primary questions:
@@ -13,7 +14,7 @@ This section will motivate the methods' three primary questions:
 \item How are the databases evaluated?
 \end{enumerate}
 
-The following three sections will answer these questions in order, motivating
+The following three sections will answer these questions, motivating
 choice of databases, dataset and implementation.
 
 \subsection{Choice of databases}\label{sec:choiceofdatabases}
@@ -47,8 +48,8 @@ feature:
 \item\label{item:dataset:req2} More than just trivial indexes on a single row;
 \item Skewed and non-uniform data for which the cardinality is not trivially
   estimated;
-\item A sufficiently large amount of data such that the database must estimate
-  cardinality;
+\item And a sufficiently large amount of data such that the database must estimate
+  cardinality.
 \end{enumerate}
 
 The datasets most commonly used for evaluation of database implementations are
@@ -58,8 +59,9 @@ requirement~\ref{item:dataset:req2} making the problem of selecting access
 methods for these databases trivial.
 
 Instead, the dataset chosen was one taken from the real world: the dataset for
-TriOptima's product triReduce which fulfill all the requirement. The metrics of
-the dataset are presented in more detail in Section~\ref{sec:benchmark}.
+TriOptima's product triReduce~\cite{portfolio_pcsfoddt|t} which fulfill all the
+requirement. The metrics of the dataset are presented in more detail in
+Section~\ref{sec:benchmark}.
 
 Another important aspect of the dataset is the queries used for evaluation.
 Selecting these was done based on the following critera:
@@ -73,30 +75,30 @@ Selecting these was done based on the following critera:
 The two criteria are not fulfilled for more than a few relations in a database,
 reducing the amount of queries relevant for evaluation. However, the queries
 that do fulfill the above requirements are also those that are most interesting
-to study for a database as they are the ones that will have the longest execution time.
+to study as they are the ones that will have the longest execution time.
 
 \subsection{Choice of implementation}\label{sec:implchoice}
 The focus when implementing the tool used to evaluate the databases was to find
 a tool that would allow a high-level description of the data transformations
 necessary. Additionally the language must be sufficiently stable and be able to
-handle potentially large amounts of simultaneous data.
+handle potentially large amounts of data.
 
 The language chosen that fulfill these requirements is Clojure. Clojure compiles
 to bytecode that runs on the JVM, which is stable and well-used. Additionally
 the language is well-suited to describing data transformations as it provides
 many high-level functions for doing so.
 
-More information regarding Clojure and the tool developed will be presented in
-Section~\ref{sec:implementation}, which also shows how some of the data
-transformations are done in practice.
+More information regarding Clojure, the tool developed and how the data is
+transformed in practice is presented in Section~\ref{sec:implementation}
 
 \section{Benchmark problems}\label{sec:benchmark}
-This section describe the problems used for benchmarking, starting with
+This section describes the problems used for benchmarking, starting with
 specification of the hardware that the tests were ran on. Following this is
-first a description of the metrics of the dataset used.
+a description of the metrics of the dataset used. Finally the metrics for the
+queries used for the evaluation are presented.
 
 \subsection{Hardware specs}
-All evaluations were ran on a dedicated computer running only the databases.
+All evaluations were done on a dedicated computer running only the databases.
 The most important part of the hardware is to ensure that there is sufficient
 data for both the databases and the results of the tests. For all evaluations
 three hard drives were used, one for each database and one for the tool itself.
@@ -122,8 +124,8 @@ As detailed in Section~\ref{sec:dataset} the dataset should be sufficiently
 complex in terms of indexes, table size and table values.
 Table~\ref{table:dataset} presents the number of indexes, the number of rows and
 the size in MB of the entire database and all relations involved in the
-benchmarking, the names of the relations have anonymized and are referred to by an
-identifier such as \textit{mm} or \textit{book}.
+benchmarking, the names of the relations have been anonymized and are referred
+to by an identifier such as \textit{mm} or \textit{book}.
 
 \begin{table}
   \begin{center}
@@ -160,23 +162,24 @@ similar PostgreSQL equivalents. The data was then read into a fresh install of
 PostgreSQL.\@
 
 In the copying process all indexes and relations were maintained, thus
-maintaining the same metrics for both of the copies as for the original.
+maintaining essentially the same metrics for both of the copies as for the original.
 
 \subsection{The queries}\label{sec:queries}
 To evaluate the databases only one query was used. The reason is that, as
 described in Section~\ref{sec:dataset}, there are few relations that can be
 involved in the query as they must fulfill the important critera in terms of
-indexes and size. As such one query covering all of the most complex relations were
-constructed, this query can be considered to be the most complex query for the
-dataset. Subsets are then used to simulate simpler scenarios.
+indexes and size. As such one query covering all of the most complex relations was
+constructed. This query can be considered to be the most complex query for the
+dataset and subsets of it are used to simulate simpler scenarios.
 
 The original query used for evaluation can be seen in
-Figure~\ref{fig:sql:query1}, the relation names are once again anonymized. For the
-metrics of the relations involved see Figure~\ref{table:dataset}. The variations of
-the query simply remove one or more relations involved.
+Figure~\ref{fig:sql:query1}, the relation names are once again anonymized. The
+query is constructed so that the predicate used for filtering is an indexable
+one. For the metrics of the relations involved see Figure~\ref{table:dataset}.
+The variations of the query simply remove one or more relations involved.
 
 \begin{figure}[ht]
-\begin{minted}[breaklines]{clojure}
+\begin{minted}[breaklines]{sql}
 SELECT *
 FROM ct JOIN t JOIN mt JOIN mm JOIN book JOIN cmt JOIN cmm JOIN est JOIN resamb
 WHERE ct.key = :KEY
@@ -191,7 +194,7 @@ This section will cover the implementation details of the tool used for
 evaluation. The section starts with a general overview of the process of
 evaluation, breaking it down into steps. Following this is a description of the
 tool developed, showing how it is used and what technologies are used. After
-this section is three sections describing each of the three steps of evaluation.
+this section comes three sections describing each of the three steps of evaluation.
 Finally implementation details are provided for PostgreSQL and MariaDB.\@
 
 Evaluating a database for a given query can be broken down into three primary
@@ -202,11 +205,12 @@ steps:
 \item Parsing the query plans to find what access methods are used for all
   relations;
 \item And finally analyzing the parsed plans to find the number of unique access
-  methods used for each relation;
+  methods used for each relation.
 \end{enumerate}
 
 These three steps must be executed in order, but they can be executed
-independently of each other --- it is possible to only generate plans at a time and save them for later parsing and analysis.
+independently of each other --- it is possible to only generate plans and save
+them for later parsing and analysis.
 
 \subsection{Overview of the tool}
 The tool was implemented so as to be executed from the command line, providing
@@ -254,8 +258,7 @@ are found.
 
 The most relevant parts of the code used to generate plans can be found in
 Figure~\ref{fig:clj:generating}. In the figure two functions can be seen:
-\clj{generate-plans} and \clj{sample-and-query}, additional functions are
-referenced but not seen.
+\clj{generate-plans} and \clj{sample-and-query}.
 
 The generation step is handled by \clj{generate-plans}, which is provided the
 options for the evaluation. This function will then for each sample size to use,
@@ -376,7 +379,7 @@ other.
 \end{figure}
 
 The analysis is done for each sample size, and the resulting map of relation to
-access methods is saved for study.
+access methods is saved for later study.
 
 \subsection{PostgreSQL}\label{sec:postgresql}
 In PostgreSQL the SQL commands used are quite straightforward, one is used to
@@ -403,7 +406,7 @@ and query.
 \subsection{MariaDB}\label{sec:mariadb}
 In MariaDB the commands used to estimate cardinality are storage engine specific,
 in this case InnoDB is the storage engine used. It is worth noting that InnoDB only
-supports MariaDB with estimates, it is then MariaDB that performs the actual
+provides MariaDB with statistics --- it is MariaDB that does the actual
 query optimization.
 
 It is necessary in InnoDB to ensure that the statistics used are those
@@ -454,21 +457,21 @@ when testing both PostgreSQL and MariaDB.\@
   \end{center}
 \end{table}
 
-In order to find a possible correlation between sample size and the number of
+In order to find a possible correlation between sample size and the number
 of different access methods for the same relation, the tests were done with a
 very small sample size and a large one, both with a large number of repetitions
 This was only done for the original query as it is the most complex, making
 tests on the subsets unnecessary. The options used can be seen in
 Table~\ref{table:evaluation1}. The repetition size is set to 50 due to time
-constraints, evaluating PostgreSQL with the parameters given results in an
-execution time of roughly 100 hours for the tool.
+constraints when evaluating --- for example, evaluating PostgreSQL with a sample
+size of 100 and 50 repetitions takes roughly 100 hours.
 
 Additional tests were conducted on subsets of the query to further evaluate the behavior
 identified in the first evaluation. As can be seen in the table the number of
-repetitions and sample size is set to 1, the reason is that neither of these two
-options appeared to affect the query plans chosen. For a further discussion about
-this see Section~\ref{sec:accessmethods}, where the results found for the
-initial tests are discussed in detail.
+repetitions and sample size is set to 1, this to test the effect of predicate
+value rather than sample size. For a further discussion about this see
+Section~\ref{sec:accessmethods}, where the results found for the initial tests
+are discussed in detail.
 
 \begin{table}
   \begin{center}

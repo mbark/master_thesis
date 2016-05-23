@@ -1,5 +1,5 @@
-This chapter contains a discussion regarding the validity of the results and the
-ability to use these to draw more general conclusions. Furthermore the results
+This chapter starts with a discussion regarding the validity of the results and the
+possibility of using these to draw more general conclusions. Furthermore the results
 and what conclusions can be drawn from these are discussed. Finally, some
 suggestions for future research is given.
 
@@ -11,7 +11,8 @@ Two main criticisms concerning the validity of the results can be raised:
 \end{enumerate}
 
 Both of these criticisms will be answered in turn below. Finally a motivation
-is provided as to why the results can be considered usable to draw general conclusions from.
+is provided as to why the results can be considered possible to draw general
+conclusions from.
 
 \subsection{Only a few queries were used}
 \textit{Only one single query and subsets of that query were used, this is hardly a
@@ -24,13 +25,14 @@ criteria are few, reducing the possibility to use multiple queries as they will
 only involve the same tables anyway.
 
 Furthermore, the query constructed can be considered to be sufficiently complex
-as to capture a problematic query that the problem would realistically arise
-for. From this it can be said that if the problem does not arise for that query,
-then it is highly unlikely that it would for any simpler query.
+to be problematic for the query optimizer, while not being unreasonably
+contrived. This means that if the problem does not arise for the query, it is
+highly unlikely to do so for a simpler query --- and of little interest if it
+does for a more complex query.
 
-So while only one query and subsets of it are used, these queries cover a good
-range of queries from simple to more complex for the query optimizer. This means
-that the results from these can be considered valid.
+So while only one query and subsets of it are used, they cover a good interval
+of simple to reasonably complex for the query optimizer to handle. This means that the
+results from these can be considered valid.
 
 \subsection{Only one dataset was used}
 \textit{Only one dataset was used for evaluation, the results found for the
@@ -46,73 +48,70 @@ world, making it more realistic than those often otherwise used. As such, the
 validity of the results of this study are well on par with those of other
 studies using less realistic datasets like TPC-H.
 
-While only one dataset is used for evaluation, the results found can be seen as
-an indication of a specific behavior and should warrant future research.
-Additionally, the results found are based on a dataset taken from the real
-world further giving validity to the results.
+So while only one dataset is used, the results found are realistic and well on
+par with that of other studies on the subject of databases.
 
 \subsection{Applicability}
 The results found in this study do, as all other studies of databases do, suffer
 from the problem of the possibility of the results depending on the dataset
-used. However, the results found in this study show indicate two things:
+used. However, the results found in this study show two things:
 \begin{itemize}
 \item Different access methods are used to access the same relation;
 \item And the behavior of when this is done differs between MariaDB and
   PostgreSQL.\@
 \end{itemize}
 
-These results will be discussed in more detail in
-Section~\ref{sec:accessmethods}, but both of these results highlight an existing
-behavior in the databases. Having more datasets to test against would not have
-added anything to these findings except for an indication of how common it is
-for the database's to use different access methods.
+Neither of these results is tied to the specific dataset used, instead they are
+both show behavior that will very likely arise for more datasets. Adding more
+datasets could only answer the question of the prevalence of the behavior.
 
 \section{Selection of access method}\label{sec:accessmethods}
 This section will discuss the main findings of the evaluation, starting with a
 discussion regarding the correlation between sample size and the number of
 different access methods used for the same relation. Following this a section
 describing the second set of results identified: the correlation between
-predicate values and access methods used.
+predicate value and access methods used.
 
 \subsection{Sample size in correlation to different access methods used}
 The main purpose of the study was to identify a correlation between the effect
 of cost estimation on the access methods selected by the query optimizer. As a
-way to evaluate this the number of samples used when analyzing the tables and
+way to evaluate this the number of samples used when analyzing and
 generating the cardinality estimates is varied from a low to a high value.
 
 The results of this evaluation can be seen in Figure~\ref{fig:plot:eval1:test1},
-which is the test done with a low sample size, and
-Figure~\ref{fig:plot:eval1:test2}, which is the test with the high sample size.
-It is directly obvious that MariaDB performs the same regardless of sample size.
-This can be seen by the fact that MariaDB has the same number of different
-access methods for all relations, regardless of sample size, and that these
-access methods remain the same.
+which shows the test done with a low sample size, and
+Figure~\ref{fig:plot:eval1:test2}, which shows the test with the high sample size.
+It is clear that MariaDB performs the same regardless of sample size as the
+access methods used for all relations remain the same, regardless of sample size.
 
 This result clearly indicates that while MariaDB selects different access
-methods, it doesn't do so because of varying estimations of the cardinality.
-Rather, it must be something else that determines it. This warranted another
-evaluation and the discussion regarding that can be seen in
+methods, it doesn't seem to do so because of varying estimations of the
+cardinality. Rather, it must be something else that determines it. This
+warranted another evaluation and the discussion regarding that can be seen in
 Section~\ref{sec:predicatecorrelation}.
 
 Apart from this finding it is also clear that MariaDB and PostgreSQL don't
-perform in the same way; f.e. MariaDB always selects the same access method for
+perform in the same way; for example MariaDB always selects the same access method for
 the relation \textit{mt} --- whereas PostgreSQL varies between two different access
-methods. This is interesting as this is a clear difference between the two query optimizers.
+methods.
 
-The difference between the two query optimizers is that MariaDB always uses an
+Another difference between the two query optimizers is that MariaDB always uses an
 index if one exists, whereas PostgreSQL will sometimes do a full table scan
 instead of using an index.
 
 Additionally PostgreSQL does not use different indexes for \textit{ct}, unlike
 MariaDB which varies between three different indexes. This behavior is further
-evaluated in Section~\ref{sec:subsets} and the evaluation is discussed in
-Section~\ref{sec:predicatecorrelation}.
+evaluated in the second evaluation (see Section~\ref{sec:subsets} for the
+results), which is discussed in Section~\ref{sec:predicatecorrelation}.
 
 The maybe most important difference that can be seen from the results
 is that MariaDB consistently selects the same access methods regardless of
 the estimated cardinalities. However, PostgreSQL is more sensitive to estimated
 cardinalities, and for example the relation \textit{cmt} has different access methods
-with a low sample size but only one when the cardinality can be better estimated.
+with a low sample size but only one when the cardinality can be better
+estimated. This differing behavior leads to the question of which is the best
+--- always using indexes if they exist, or varying between full table scans and
+indexes depending on cardinality estimates?
 
 \subsection{Predicate value in correlation to different access methods used}\label{sec:predicatecorrelation}
 From the first evaluation it is clear that both databases will sometimes select different
@@ -120,17 +119,17 @@ access methods regardless of the sample size used when estimating cardinalities.
 To further evaluate this tests were done with only one repetition, but still
 for each possible value for the predicate.
 
-This evaluation done shows two things:
+This evaluation shows two things:
 \begin{enumerate}
 \item The access method used can depend on the predicate value;
 \item The behavior differs between the two databases;
 \item And the behavior is consistent regardless of the complexity of the query.
 \end{enumerate}
 
-Firstly, that the access method depend on the predicate value used can be seen in
+Firstly, that the access method depends on the predicate value used can be seen in
 Figure~\ref{fig:plot:eval2:test1} where MariaDB has three different access
-methods for \textit{ct} and PostgreSQL has 2 different for \textit{cmt}. Since
-there is no repetitions the only varying parameter is the predicate value.
+methods for \textit{ct} and PostgreSQL has two different for \textit{cmt}. Since
+there are no repetitions, the only varying parameter is the predicate value.
 
 The fact that the query optimizer is sensitive to the predicate value can be seen as
 both intuitive and unintuitive --- the filter factor might vary considerably
@@ -138,7 +137,7 @@ depending on the predicate value. At the same time, there should always exist
 one index that is the best for accessing the same relation.
 
 Secondly, the behavior differing between the two databases, can be seen in that
-MariaDB switches between what using different indexes whereas PostgreSQL will
+MariaDB switches between using different indexes whereas PostgreSQL will
 switch between using an index or doing a full table scan. This behavior can be
 seen for the relation \textit{cmm} which has two possible access methods --- via
 an index on the primary key or a full table scan; PostgreSQL will switch between
@@ -146,25 +145,25 @@ the two while MariaDB will consistently use only the index.
 
 Thirdly and finally, the behavior being consistent regardless of the complexity
 of the query, can be seen in Figure~\ref{fig:plot:eval2:test9} which is a simple
-query on a single relation. Even so, MariaDB will still switch between three
+query on a single relation. Even so, MariaDB will still vary between three
 different indexes based only on the predicate value. For PostgreSQL the behavior
 can be observed in Figure~\ref{fig:plot:eval2:test4}, which is the least complex
 query used involving the relation \textit{cmt}.
 
-The fact that the behavior can be seen even for simpler queries indicates that the
+The fact that the behavior can be seen even for simpler queries indicate that it
 is not caused by the query optimizer acting incorrectly due to the query being
 too complex. Instead it seems to be a deliberate choice by both of the query
-optimizers --- which leads to the question of which behavior is the best.
+optimizers.
 
 \section{Future research}
 This section will cover some suggestions for future research on the topic of
-databases, both in general and specifically for the problem of index selection.
+databases, both in general and specifically for the problem of selecting access method.
 
 As discussed in Section~\ref{sec:validity} one problem when evaluating
 databases is the dataset used for evaluation. In this study a dataset based on a
 product for the company TriOptima was used to evaluate the databases with a real-world
-dataset. However, this dataset can't be made public. Other datasets like TPC-H
-or to more recently create JOB suffer from the problem that they are simpler
+dataset. However, this dataset can't be made public. Other datasets, like TPC-H
+or the more recent JOB, suffer from the problem that they are simpler
 than a database used by a company; as an example both of them have only one
 index per relation on the primary key.
 
@@ -173,15 +172,15 @@ more realistic datasets with complex data, relations and indexes that could be
 used for research. Using these datasets for evaluation would then provide
 results that could be considered more general and correct.
 
-The most important results indicated by this study is that query optimizer
-selects different access methods depending on the predicate values. If this
-is the correct choice or not to do is not evaluated as a performance study is
-beyond the scope of this thesis. A suggestion for future research would
-therefore be to evaluate the performance of this behavior --- is it the right
-decision to use different indexes depending on predicate values?
+The focus of this thesis was the correlation between the quality of the
+statistics used in the cost estimation and the access methods chosen. The
+results found for this show that MariaDB consistently selects indexes if they
+exist, never opting to do a full table scan. On the other hand, PostgreSQL is more
+sensitive to cardinality estimates and will sometimes opt to do a full table
+scan instead. This shows a clear difference in behavior and one that could be
+further evaluated --- which is the best behavior out of the two?
 
-Finally it is important to also note that the problem of different access
-methods for the same relation because of small sample size, or incorrect
-estimation of statistics, seem to not be common. As such, future study into the
-area should probably avoid this topic in favor of other topics, for example that
-of optimizers being sensitive to predicate values.
+Finally this study show that both database's query optimizers select
+different access methods depending on predicate value and that the two do so
+differently. This also leads to the question of if this is the correct behavior
+or not.

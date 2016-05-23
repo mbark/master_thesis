@@ -43,8 +43,8 @@ phases~\cite{selinger_1979_access_apsiardms}:
   blocks;
 \item \textit{Optimization}, in which an optimized way to access the data is
   found, called an \textit{access path};
-\item \textit{Code generation}, in which the access path is transformed a way to
-  execute it, an \textit{execution plan};
+\item \textit{Code generation}, in which the access path is transformed into a way to
+  execute it, the \textit{execution plan};
 \item And \textit{execution}, when the code is executed;
 \end{enumerate}
 
@@ -73,7 +73,7 @@ be found in Figure~\ref{fig:sql:joinop}.
 
 There are four kinds of joins typically supported in databases. To illustrate
 this assume we have the following \texttt{Join(A, B)}, where \texttt{A} and
-\texttt{B} are tables and \texttt{Join} is one of the join operations.
+\texttt{B} are relations and \texttt{Join} is one of the join operations.
 \begin{itemize}
 \item An inner join will return all rows in common between \texttt{A} and
   \texttt{B};
@@ -104,16 +104,16 @@ Operators can be divided into three classes:
 \end{enumerate}
 In general index-based methods are variations of class~\ref{item:classop:sort}
 or~\ref{item:classop:hash} that utilize indexes to speed up parts of the
-algorithm. Most notably when there exists an index, for example B-trees, that
-allows the data to be accessed sorted joins can be done very efficiently.
+algorithm. Most notably when there exists an index --- for example B-trees ---
+that allows the data to be accessed sorted, joins can be done very efficiently.
 
-Furthermore the algorithms for the operators can be divided by the number of
+Furthermore the algorithms for the operators can be grouped by the number of
 passes the algorithm does:
 \begin{enumerate}
 \item \textit{One-pass algorithms} read the data from disk only once;
-\item \textit{Two-pass algorithms} reads the data once, processes it and saves
-  it in some way before doing another pass;
-\item And algorithms that do three or more passes, which are essentially
+\item \textit{Two-pass algorithms} read the data once, process and then save
+  it before doing another pass;
+\item And algorithms that do three or more passes and are essentially
   generalizations of two-pass algorithms.
 \end{enumerate}
 
@@ -131,11 +131,11 @@ table, \texttt{B}, as the \textit{inner table}.
 
 \subsubsection{Nested loop join}\label{sec:nestedloopjoin}
 A nested loop join is essentially two nested loops, one over the outer table and
-inside it one over the inner table~\cite[p.
-718-722]{garcia-molina_2002_database_dstcb}. The nested loop join is a bit of a
-special case as it is not necessarily of any of the classes. The number of
-passes it does can also be considered to be ``one-and-a-half'' as the outer
-table's tuples is read only once, while the inner table's tuples are read
+inside it one over the inner
+table~\cite[p.~718-722]{garcia-molina_2002_database_dstcb}. The nested loop join
+is a bit of a special case as it is not necessarily of any of the classes. The
+number of passes it does can also be considered to be ``one-and-a-half'' as the
+outer table's tuples is read only once, while the inner table's tuples are read
 repeatedly.
 
 If an index exists for the inner table the nested loop join could be considered
@@ -146,7 +146,7 @@ to be of class~\ref{item:classop:index} and is then called a \textit{index
 A merge join (sometimes also called \textit{sort-merge join}) is a variation of
 a nested loop join that requires both tables to be sorted. The two tables can
 then be scanned in parallel, allowing each row to only be scanned
-once~\cite[p. 723-730]{garcia-molina_2002_database_dstcb}. The sorting of the
+once~\cite[p.~723-730]{garcia-molina_2002_database_dstcb}. The sorting of the
 tables can be achieved through an explicit sort step or through an index.
 
 A merge join can be considered to be a two-pass algorithm of
@@ -181,8 +181,8 @@ what to store as the data in the data entry:
 Which alternative is used depends on how the index is created and what kind of
 an index it is.
 
-\subsection{Composite indexes}
-Composite indexes are indexes containing more than one fields. A composite index
+\subsection{Compound indexes}
+Compound indexes are indexes containing more than one fields. A compound index
 can support a broader range of queries than a normal index and since they also
 contain more columns, they contain more information about the data saved.
 
@@ -222,8 +222,8 @@ topic~\cite{chaudhuri_1998_overview_aooqoirs}.
 
 Query evaluation is handled by two components: the \textit{query optimizer} and
 the \textit{query execution engine}. The input to the query optimizer is a
-parsed representation of the SQL query and the output is an execution plan that
-the query execution engine then performs.
+parsed representation of the SQL query and the output is an access path, that is
+transformed into a query plan that the query execution engine then performs.
 
 In order for the query optimizer to find an access path it must be able to:
 \begin{enumerate}
@@ -259,8 +259,8 @@ see~\cite{chaudhuri_1998_overview_aooqoirs}.
 \subsubsection{Join reordering}
 One important rule is that both inner join and full join are:
 \begin{itemize}
-\item commutative: \texttt{Join(R1, R2)} is equivalent to \texttt{Join(R2, R1)};
-\item Associative, \texttt{Join(R1, Join(R2, R3))} is equivalent to
+\item \textit{Commutative}, \texttt{Join(R1, R2)} is equivalent to \texttt{Join(R2, R1)};
+\item And \textit{associative}, \texttt{Join(R1, Join(R2, R3))} is equivalent to
   \texttt{Join(Join(R1, R2), R3)}.
 \end{itemize}
 This means that the joins can be grouped and reordered as the optimizer finds
@@ -349,7 +349,7 @@ description of the rules and conditions.
   \end{subfigure}
   \caption[Illustrating how operators can be pushed and pulled up and down the
   tree]{An expression tree representing a query to find which stars worked for
-    which studios in 1996, example taken~\cite[p.
+    which studios in 1996, example taken from~\cite[p.
     774]{garcia-molina_2002_database_dstcb}. The selection operator in
     Figure~\ref{fig:pushop:a} is first pulled up the tree, allowing it to then
     be pushed down an additional branch as illustrated in
@@ -360,23 +360,24 @@ description of the rules and conditions.
 Several operations such as \sql{GROUP BY}, \sql{ORDER BY}, \sql{MAX} etc can be
 eliminated because the the relation is known to already fulfill these
 criteria~\cite[p. 777-779]{garcia-molina_2002_database_dstcb}. One of the more
-common criteria is than index that allows the data to be retrieved sorted
-exists.
+common criteria is the existence of an index that allows the data to be
+retrieved sorted.
+
 
 In combination with the ability to move operators up and down the tree this can
 be very powerful as potentially costly operations can be eliminated.
 
 \subsubsection{Accessing table data}
 For each read from a table there will be generated one access path per usable
-index, as well as one for a full table scan~\cite[p.
-827-829]{garcia-molina_2002_database_dstcb}.
+index, as well as one for a full table
+scan~\cite[p.~827-829]{garcia-molina_2002_database_dstcb}.
 
 \subsection{Cost estimation}
 The second task of the query optimizer is to be able to assign a cost to a given
-search plan. This cost estimation will be repeated several times as it is called
-for each operator tree in the search space that the query optimizer considers
-relevant, thus it is important that the estimation is efficient. The cost
-estimation is done in three steps:
+search plan. This cost estimation will be repeated several times for each
+operator tree in the search space that the query optimizer considers relevant,
+thus it is important that the estimation is efficient. The cost estimation is
+done in three steps:
 \begin{enumerate}
 \item Collect statistics of stored data;
 \item For each node in the tree calculate the cost of applying the operation;
@@ -428,14 +429,13 @@ plans can be discarded quickly later on~\cite{nica_2012_analyzing_aqoppojea}.
 
 Most modern query optimizers use a dynamic programming algorithm first proposed
 in 1979 for the System R database~\cite{selinger_1979_access_apsiardms}. The
-algorithm is built on the observation that the join methods are independent,
-that is the best join method for joining the composite to relation $i$ is
-independent of joining of the first $i-1$ relations. The method used is then to
-construct a tree with all permutations of joins by searching from smaller to
-successively larger subsets.
+algorithm is built on the observation that the \sql{JOIN}s are independent ---
+the $i$th \sql{JOIN} is independent of how the first $i-1$ relations were
+joined. Based on this it is possible to construct a tree of all permutations of
+joins by searching from smaller to successively larger subsets.
 
-One final optimization done during this step is also to heuristically prune
-subtrees that the heuristic consider too bad to even
+One final optimization done during this step is to heuristically prune
+subtrees that the are deemed too bad to even
 consider~\cite{ono_1990_measuring_mtcojeiqo}.
 
 \subsection{Monitoring}
@@ -484,7 +484,7 @@ in~\cite[Ch. 14]{lahdenmaki_2005_relational_rdidatodossea}.
 
 \subsubsection{The optimizer can't see the best path}
 One reason the query optimizer cannot find the best path is because it is unable
-to see all alternatives because the query is too complicated for it.
+to see all alternatives because the query is too complicated.
 
 \begin{itemize}
 \item If a predicate is non-indexable it cannot by definition participate in
@@ -492,7 +492,7 @@ to see all alternatives because the query is too complicated for it.
   predicate is even more difficult that the the optimizer is unable to perform
   an index screening, forcing it to read a table row.
 \item If a compound predicate contains \sql{OR} it may become non-BT, which in
-  turn mean the predicate cannot be used to define the index slice. This means
+  turn means the predicate cannot be used to define the index slice. This means
   the query optimizer cannot make full use of potential indexes that exist.
 \item Sometimes the optimizer will add an \sql{ORDER BY} to data that is already
   sorted thanks to an index.
@@ -508,11 +508,11 @@ path.
   default value which often results in a poor estimate. However, if the filter
   facotr is estimated evewry time the query is executed it adds a large
   overhead.
-\item If the optimizer is unaware of the true distribution of the data it might
-  make a guess based on the cardinality, if the distribution is skewed this
-  guess may very well become very incorrect.
+\item If the optimizer is unaware of the true distribution of the data it is
+  forced to guess cardinality, a guess that tends to be wrong if the
+  distribution of the data is skewed;
 \item In a compound predicate such as \sql{HEIGHT = :HEIGHT AND WEIGHT =
     :WEIGHT} the optimizer can only produce a good estimate of the filter factor
-  only if it knows the cardinality of the combination of the \sql{HEIGHT} and
-  \sql{WEIGHT} columns. If it does not, it must somehow estimate this.
+  if it knows the cardinality of the combination of the \sql{HEIGHT} and
+  \sql{WEIGHT} columns. If it does not, it must estimate this.
 \end{itemize}
