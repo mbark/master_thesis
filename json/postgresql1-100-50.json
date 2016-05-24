@@ -1,86 +1,33 @@
 {
-    "steps": [
-        "generate",
-        "parse",
-        "analyze"
-    ],
-    "query": "postgresql1",
-    "samplesizes": [
-        100
-    ],
-    "repetitions": 50,
-    "database": "postgresql"
-}
-{
     "mm": [
-        {
-            "Node Type": "Index Only Scan",
-            "Index Name": "\"NoneMasterMatch_master_match_key_pkey\"",
-            "Alias": "mm",
-        }
+        {"Node Type": "Index Only Scan", "Index Name": "\"NoneMasterMatch_master_match_key_pkey\"", "Alias": "mm"}
     ],
     "book": [
-        {
-            "Node Type": "Seq Scan",
-            "Alias": "book",
-        }
+        {"Node Type": "Seq Scan", "Alias": "book"}
     ],
     "resamb": [
-        {
-            "Node Type": "Seq Scan",
-            "Alias": "resamb",
-        }
+        {"Node Type": "Seq Scan", "Alias": "resamb"}
     ],
     "bti": [
-        {
-            "Node Type": "Seq Scan",
-            "Alias": "bti",
-        }
+        {"Node Type": "Seq Scan", "Alias": "bti"}
     ],
     "cmm": [
-        {
-            "Node Type": "Index Scan",
-            "Index Name": "\"NoneCycleMasterMatch_cycle_master_match_key_pkey\"",
-            "Alias": "cmm",
-        },
-        {
-            "Node Type": "Seq Scan",
-            "Alias": "cmm",
-        }
+        {"Node Type": "Index Scan", "Index Name": "\"NoneCycleMasterMatch_cycle_master_match_key_pkey\"", "Alias": "cmm"},
+        {"Node Type": "Seq Scan", "Alias": "cmm"}
     ],
     "cmt": [
-        {
-            "Node Type": "Index Scan",
-            "Index Name": "\"NoneCycleMasterTrade_cycle_master_trade_key_pkey\"",
-            "Alias": "cmt",
-        }
+        {"Node Type": "Index Scan", "Index Name": "\"NoneCycleMasterTrade_cycle_master_trade_key_pkey\"", "Alias": "cmt"}
     ],
     "t": [
-        {
-            "Node Type": "Index Scan",
-            "Index Name": "\"NoneTrade_trade_key_pkey\"",
-            "Alias": "t",
-        }
+        {"Node Type": "Index Scan", "Index Name": "\"NoneTrade_trade_key_pkey\"", "Alias": "t"}
     ],
     "est": [
-        {
-            "Node Type": "Index Scan",
-            "Index Name": "\"NoneExternalServiceTrade_cycle_master_trade_ref_external_servic\"",
-            "Alias": "est",
-        }
+        {"Node Type": "Index Scan", "Index Name": "\"NoneExternalServiceTrade_cycle_master_trade_ref_external_servic\"", "Alias": "est"}
     ],
     "ct": [
-        {
-            "Node Type": "Index Scan",
-            "Index Name": "\"NoneCycleTrade_match_view_ref\"",
-            "Alias": "ct",
-        }
+        {"Node Type": "Index Scan", "Index Name": "\"NoneCycleTrade_match_view_ref\"", "Alias": "ct"}
     ],
     "mt": [
-        {
-            "Node Type": "Index Scan",
-            "Index Name": "\"NoneMasterTrade_master_trade_key_pkey\"",
-            "Alias": "mt",
-        }
+        {"Node Type": "Index Scan", "Index Name": "\"NoneMasterTrade_master_trade_key_pkey\"", "Alias": "mt"}
     ]
 }

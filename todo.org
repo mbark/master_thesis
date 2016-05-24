@@ -8,6 +8,8 @@ CLOSED: [2016-05-19 Thu 12:42]
 CLOSED: [2016-05-20 Fri 11:23]
 ** DONE Do the 1rep tests for PostgreSQL
 CLOSED: [2016-05-20 Fri 11:23]
+** TODO redo 1rep tests with sample size = 100
+** TODO Do test with sample siz = 50
 * Report
 ** DONE Write the discussion part when results are in
 CLOSED: [2016-05-19 Thu 16:28]
@@ -21,6 +23,19 @@ CLOSED: [2016-05-20 Fri 14:35]
 CLOSED: [2016-05-23 Mon 17:25]
 ** DONE Ensure chapters >5 tie together better with earlier chapters
 CLOSED: [2016-05-23 Mon 17:25]
+** DONE Write the abstract
+CLOSED: [2016-05-24 Tue 10:36]
+** DONE Move glossary from its own chapter
+CLOSED: [2016-05-24 Tue 10:37]
+** DONE Write more text about the bar charts in results
+CLOSED: [2016-05-24 Tue 15:45]
+** DONE Add the output of the program to highlight how different they are
+CLOSED: [2016-05-24 Tue 15:45]
+** DONE Write more text about the graphs that are actually in the results
+CLOSED: [2016-05-24 Tue 15:48]
+** TODO Add a test for sample size of 50
+** TODO Test some of the subsets with a higher sample size
 ** TODO Cost estimation -> cardinality estimate
-** TODO Refer more clearly to how PostgreSQL is sensitive to sample size
-** TODO Write the abstract
+** TODO Improve conclusions to show what we've actually learned
+** TODO Be more clear on the fact that Postgres = sensitive, MariaDB = not
+** TODO What are the consequences of being sensitive? Good vs. bad

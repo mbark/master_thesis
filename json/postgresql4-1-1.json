@@ -1,17 +1,4 @@
 {
-    "steps": [
-        "generate",
-        "parse",
-        "analyze"
-    ],
-    "query": "postgresql4",
-    "samplesizes": [
-        1
-    ],
-    "repetitions": 1,
-    "database": "postgresql"
-}
-{
     "mt": [
         {
             "Node Type": "Seq Scan",

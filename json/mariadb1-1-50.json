@@ -1,95 +1,34 @@
 {
-    "steps": [
-        "generate",
-        "parse",
-        "analyze"
-    ],
-    "query": "mariadb1",
-    "samplesizes": [
-        1
-    ],
-    "repetitions": 50,
-    "database": "mariadb"
-}
-{
     "mm": [
-        {
-            "table": "mm",
-            "key": "PRIMARY",
-            "possible_keys": "PRIMARY"
-        }
+        {"table": "mm", "key": "PRIMARY", "possible_keys": "PRIMARY"}
     ],
     "book": [
-        {
-            "table": "book",
-            "key": "PRIMARY",
-            "possible_keys": "PRIMARY"
-        }
+        {"table": "book", "key": "PRIMARY", "possible_keys": "PRIMARY"}
     ],
     "resamb": [
-        {
-            "table": "resamb",
-            "key": "master_trade_ref",
-            "possible_keys": "master_trade_ref"
-        }
+        {"table": "resamb", "key": "master_trade_ref", "possible_keys": "master_trade_ref"}
     ],
     "bti": [
-        {
-            "table": "bti",
-            "key": "cycle_trade_ref",
-            "possible_keys": "cycle_trade_ref"
-        }
+        {"table": "bti", "key": "cycle_trade_ref", "possible_keys": "cycle_trade_ref"}
     ],
     "cmm": [
-        {
-            "table": "cmm",
-            "key": "PRIMARY",
-            "possible_keys": "PRIMARY"
-        }
+        {"table": "cmm", "key": "PRIMARY", "possible_keys": "PRIMARY"}
     ],
     "cmt": [
-        {
-            "table": "cmt",
-            "key": "PRIMARY",
-            "possible_keys": "PRIMARY"
-        }
+        {"table": "cmt", "key": "PRIMARY", "possible_keys": "PRIMARY"}
     ],
     "t": [
-        {
-            "table": "t",
-            "key": "PRIMARY",
-            "possible_keys": "PRIMARY"
-        }
+        {"table": "t", "key": "PRIMARY", "possible_keys": "PRIMARY"}
     ],
     "est": [
-        {
-            "table": "est",
-            "key": "cycle_master_trade_ref",
-            "possible_keys": "cycle_master_trade_ref"
-        }
+        {"table": "est", "key": "cycle_master_trade_ref", "possible_keys": "cycle_master_trade_ref"}
     ],
     "ct": [
-        {
-            "table": "ct",
-            "key": "match_view_ref",
-            "possible_keys": "match_view_ref,match_view_ref_2,CycleTrade_master_trade_ref,CycleTrade_trade_ref,CycleTrade_match_view_ref"
-        },
-        {
-            "table": "ct",
-            "key": "match_view_ref_2",
-            "possible_keys": "match_view_ref,match_view_ref_2,CycleTrade_master_trade_ref,CycleTrade_trade_ref,CycleTrade_match_view_ref"
-        },
-        {
-            "table": "ct",
-            "key": "CycleTrade_match_view_ref",
-            "possible_keys": "match_view_ref,match_view_ref_2,CycleTrade_master_trade_ref,CycleTrade_trade_ref,CycleTrade_match_view_ref"
-        }
+        {"table": "ct", "key": "match_view_ref", "possible_keys": "match_view_ref,match_view_ref_2,CycleTrade_master_trade_ref,CycleTrade_trade_ref,CycleTrade_match_view_ref"},
+        {"table": "ct", "key": "match_view_ref_2", "possible_keys": "match_view_ref,match_view_ref_2,CycleTrade_master_trade_ref,CycleTrade_trade_ref,CycleTrade_match_view_ref"},
+        {"table": "ct", "key": "CycleTrade_match_view_ref", "possible_keys": "match_view_ref,match_view_ref_2,CycleTrade_master_trade_ref,CycleTrade_trade_ref,CycleTrade_match_view_ref"}
     ],
     "mt": [
-        {
-            "table": "mt",
-            "key": "PRIMARY",
-            "possible_keys": "PRIMARY,MasterTrade_master_match_ref"
-        }
+        {"table": "mt", "key": "PRIMARY", "possible_keys": "PRIMARY,MasterTrade_master_match_ref"}
     ]
 }

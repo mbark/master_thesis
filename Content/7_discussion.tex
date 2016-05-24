@@ -80,7 +80,7 @@ generating the cardinality estimates is varied from a low to a high value.
 
 The results of this evaluation can be seen in Figure~\ref{fig:plot:eval1:test1},
 which shows the test done with a low sample size, and
-Figure~\ref{fig:plot:eval1:test2}, which shows the test with the high sample size.
+Figure~\ref{fig:plot:eval1:test3}, which shows the test with the high sample size.
 It is clear that MariaDB performs the same regardless of sample size as the
 access methods used for all relations remain the same, regardless of sample size.
 
@@ -144,10 +144,10 @@ an index on the primary key or a full table scan; PostgreSQL will switch between
 the two while MariaDB will consistently use only the index.
 
 Thirdly and finally, the behavior being consistent regardless of the complexity
-of the query, can be seen in Figure~\ref{fig:plot:eval2:test9} which is a simple
+of the query, can be seen in Figure~\ref{fig:plot:eval2:test3} which is a simple
 query on a single relation. Even so, MariaDB will still vary between three
 different indexes based only on the predicate value. For PostgreSQL the behavior
-can be observed in Figure~\ref{fig:plot:eval2:test4}, which is the least complex
+can be observed in Figure~\ref{fig:plot:eval2:test2}, which is the least complex
 query used involving the relation \textit{cmt}.
 
 The fact that the behavior can be seen even for simpler queries indicate that it

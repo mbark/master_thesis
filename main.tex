@@ -47,7 +47,7 @@
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 \newcommand{\json}[5]{
-  \inputminted[breaklines, breakanywhere]{json}{#1}
+  \inputminted[breaklines, breakanywhere, fontsize=\footnotesize]{json}{#1}
   \captionof{listing}{The output when testing #2 with query #3, a sample size of
   #4 and #5 repetitions.}
 }
@@ -90,7 +90,7 @@
 \mainmatter{}
 \pagestyle{newchap}
 
-\chapter{Glossary}\label{chap:glossary}
+\chapter*{Glossary}\label{chap:glossary}
     \input{Content/1_glossary}
 \chapter{Introduction}\label{chap:introduction}
     \input{Content/2_introduction}

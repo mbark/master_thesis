@@ -1,17 +1,4 @@
 {
-    "steps": [
-        "generate",
-        "parse",
-        "analyze"
-    ],
-    "query": "mariadb9",
-    "samplesizes": [
-        1
-    ],
-    "repetitions": 1,
-    "database": "mariadb"
-}
-{
     "ct": [
         {
             "table": "ct",

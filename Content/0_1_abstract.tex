@@ -1,9 +1,17 @@
-This is a skeleton for KTH theses. More documentation regarding the KTH thesis class file can be found in the package documentation.
+This master thesis concern relational databases and their query optimizer's
+sensitivity to cardinality estimates and the effect the quality of the estimate
+has on the number of different access methods used for the same relation. Two
+databases are evaluated --- PostgreSQL and MariaDB --- on a real-world dataset
+to provide realistic problems. The evaluation was done via a tool implemented in
+Clojure and tests were conducted on a query and subsets of it with varying
+sample sizes used when estimating cardinality.
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris
-purus. Fusce tempor. Nulla facilisi. Sed at turpis. Phasellus eu
-ipsum. Nam porttitor laoreet nulla. Phasellus massa massa, auctor
-rutrum, vehicula ut, porttitor a, massa. Pellentesque fringilla. Duis
-nibh risus, venenatis ac, tempor sed, vestibulum at, tellus. Class
-aptent taciti sociosqu ad litora torquent per conubia nostra, per
-inceptos hymenaeos.
+The results indicate that MariaDB's query optimizer is less sensitive to
+cardinality estimates and for all tests select the same access methods,
+regardless of the quality of the cardinality estimate. This stands in contrast
+to PostgreSQL's query optimizer which will vary between using an index or doing
+a full table scan depending on the estimated cardinality. Finally, it is also
+found that the predicate value used in the query affects the access method used.
+Both PostgreSQL and MariaDB are found sensitive to this property, with MariaDB
+having the largest number of different access methods used depending on
+predicate value.
