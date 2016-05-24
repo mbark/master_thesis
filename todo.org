@@ -36,6 +36,6 @@ CLOSED: [2016-05-24 Tue 15:48]
 ** TODO Add a test for sample size of 50
 ** TODO Test some of the subsets with a higher sample size
 ** TODO Cost estimation -> cardinality estimate
-** TODO Improve conclusions to show what we've actually learned
+** TODO Clarify the effect of cardinality estimate on access method
 ** TODO Be more clear on the fact that Postgres = sensitive, MariaDB = not
 ** TODO What are the consequences of being sensitive? Good vs. bad

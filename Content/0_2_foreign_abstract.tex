@@ -1,0 +1,15 @@
+Detta masterexamensarbete behandlar relationella databaseer och hur stor
+påverkan kvaliteten på den uppskattade kardinaliteten har på antalet olika
+metoder som används för att hämta data från samma relation. Två databaser
+testades --- PostgreSQL och MariaDB --- på ett verkligt dataset för att ge
+realistiska resultat. Utvärderingen gjordes med hjälp av ett verktyg
+implementerat i Clojure och testerna gjordes på en query, och delvarianter av
+den, med varierande stora sample sizes för kardinalitetsuppskattningen.
+
+Resultaten indikerar att MariaDBs query optimizer påverkas lite av
+kardinalitetsuppskattningen, för alla testerna valde den samma metod för att
+hämta datan. Detta skiljer sig mot PostgreSQLs query optimizer som varierade
+mellan att använda sig av index eller göra en full table scan beroende på den
+uppskattade kardinaliteten. Slutligen, pekade även resultaten på ett båda
+databasernas query optimizers varierade metod för att hämta data beroende på
+värdet i predikatet som används för att filtrera bort rader.
