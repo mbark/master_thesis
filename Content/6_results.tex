@@ -10,9 +10,8 @@ correlation between sample size and the number of different access methods used
 to access the same relation.  For the options used in the tests see
 Section~\ref{sec:evaluation}. The results are presented in the form of a graph
 and the relevant excerpts of the tool's output showing which access methods are
-used. The graphs contain three bars per relation --- one showing the number of
-possible access methods, one for the access methods used by MariaDB and for the
-access methods used by PostgreSQL.
+used. The bars show the number of access methods used by the databases
+evaluated, thus there are two per relation --- one for MariaDB and one for PostgreSQL.\@
 
 \subsection{Test 1}
 The first test done can be seen in Figure~\ref{fig:plot:eval1:test1}, the test
@@ -25,7 +24,7 @@ PostgreSQL will vary between two different for the relations \textit{cmt},
 
 The access methods used for the relations with many access methods can be seen
 in Figure~\ref{fig:json:eval1:test1:mariadb} for MariaDB and
-Figure~\ref{fig:json:eval1:test1:postgresql} for PostgreSQL. From these it can
+Figure~\ref{fig:json:eval1:test1:postgresql} for PostgreSQL.\@ From these it can
 be seen that MariaDB varies between three different indexes for the same
 relation. For PostgreSQL it can be seen that all of the relations with many
 different access methods it is always the case that it varies between a full
@@ -33,15 +32,15 @@ table scan (called a \textit{seq scan}) or an index.
 
 \begin{figure}[ht]
 \begin{indexgraph}
-  \addplot coordinates {(ct,6) (t,2) (mt,3) (mm,2) (book,2) (cmt,2) (cmm,2) (est,2) (resamb,2)};
   \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
   \addplot coordinates {(ct,1) (t,1) (mt,2) (mm,1) (book,1) (cmt,2) (cmm,2) (est,2) (resamb,1)};
 \end{indexgraph}
-\caption[The access methods used when evaluating with a sample size
-of 1.]{The test conducted in the first evaluation using a sample size of 1 and
-  50 repetitions. The graph shows that MariaDB varies between three different
-  access methods for the relation \textit{ct,} whereas PostgreSQL does so for the
-  relations \textit{cmt}, \textit{cmm} and \textit{est}.}\label{fig:plot:eval1:test1}
+\caption[The access methods used for the test with 50 repetitions and a sample
+size of 1.]{The test conducted in the first evaluation using a sample size of 1
+  and 50 repetitions. The graph shows that MariaDB varies between three
+  different access methods for the relation \textit{ct,} whereas PostgreSQL does
+  so for the relations \textit{cmt}, \textit{cmm} and
+  \textit{est}.}\label{fig:plot:eval1:test1}
 \end{figure}
 
 \begin{figure}[ht]
@@ -66,7 +65,7 @@ of 1.]{The test conducted in the first evaluation using a sample size of 1 and
     ]
   }
 \end{minted}
-  \caption[Excerpt of the tool's output for MariaDB with 50 repetitions and a
+  \caption[Excerpt of the output for MariaDB with 50 repetitions and a
   sample size of 1.]{Excerpt of the tool's output when evaluating MariaDB with
     50 repetitions and a sample size of 1. The only relations shown are those
     where MariaDB will vary between different access methods. It can be seen
@@ -103,9 +102,6 @@ of 1.]{The test conducted in the first evaluation using a sample size of 1 and
 \end{figure}
 
 \subsection{Test 2}
-A second test.
-
-\subsection{Test 3}
 The results when testing query \#1 using a sample size of 100 can be seen in
 Figure~\ref{fig:plot:eval1:test3}. The corresponding program output can be seen
 in Figure~\ref{fig:json:eval1:test3:mariadb} for MariaDB and
@@ -130,13 +126,15 @@ Appendix~\ref{appendix:output} which contains the full output.
 
 \begin{figure}[ht]
 \begin{indexgraph}
-  \addplot coordinates {(ct,6) (t,2) (mt,3) (mm,2) (book,2) (cmt,2) (cmm,2) (est,2) (resamb,2)};
   \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
   \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,2) (est,1) (resamb,1)};
 \end{indexgraph}
-\caption[The access methods used when evaluating with a sample size of 100.]{The test conducted in
-  the first evaluation using a large sample size and many repetitions. See
-  Table~\ref{table:evaluation1} for the exact values used.}\label{fig:plot:eval1:test3}
+\caption[The access methods used for the test with 50 repetitions and a sample
+size of 100.]{The test conducted in the first evaluation using 50 repetitions
+  and a sample size of 100 to simulate a cardinality estimate of high
+  quality. The graph once again shows that MariaDB use three different access
+  methods for the relation \textit{ct.} PostgreSQL on the other hand now only use
+  different access methods for the relation \textit{cmm} and none else.}\label{fig:plot:eval1:test3}
 \end{figure}
 
 \begin{figure}[ht]
@@ -189,10 +187,10 @@ Appendix~\ref{appendix:output} which contains the full output.
 \end{minted}
   \caption[Excerpt of the tool's output for PostgreSQL with 50 repetitions and a
   sample size of 100.]{Excerpt of the tool's output when evaluating PostgreSQL
-    with 50 repetitions and a sample size of 100. The relation shown are the
-    same as those for the test with a sample size of 1. Unlike that test it is
-    only the relation \textit{cmm} which is accessed with multiple different
-    access methods.}\label{fig:json:eval1:test3:postgresql}
+    with 50 repetitions and a sample size of 100. The relations shown are the
+    same as those for the test with a sample size of 1. The output shows that
+    all but the relation \textit{cmm} are now accessed exclusively by using an
+    index.}\label{fig:json:eval1:test3:postgresql}
 \end{figure}
 
 \section{Evaluating subsets of the query}\label{sec:subsets}
@@ -224,13 +222,14 @@ different access methods --- a full table scan or via an index.
 
 \begin{figure}[ht]
 \begin{indexgraph}
-  \addplot coordinates {(ct,6) (t,2) (mt,3) (mm,2) (book,2) (cmt,2) (cmm,2) (est,2) (resamb,2)};
   \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
   \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,2) (cmm,2) (est,2) (resamb,1)};
 \end{indexgraph}
-\caption[The index selections for query \#1.]{The index selections for query \#1
-are shown next to each other, showing the actual index selections next to the
-possible index selections.}\label{fig:plot:eval2:test1}
+\caption[The access methods used for query \#1 with 1 repetition.]{The access
+  methods when evaluating query \#1 with only 1 repetition. The graph shows that
+even though the estimated cardinality is the same for all retrieved query plans,
+MariaDB still use different access methods for \textit{ct} and PostgreSQL for
+\textit{cmt}, \textit{cmm} and \textit{est}.}\label{fig:plot:eval2:test1}
 \end{figure}
 
 \begin{figure}[ht]
@@ -255,10 +254,10 @@ possible index selections.}\label{fig:plot:eval2:test1}
     ]
 }
 \end{minted}
-\caption[Excerpt of the tool's output for MariaDB with 1 repetition.]{Excerpt of
+\caption[Excerpt of the tool's output for MariaDB, query \#1 and 1 repetition.]{Excerpt of
   the tool's output when evaluating MariaDB with 1 repetition. Only the
-  relations which MariaDB selects multiple different access methods for is
-  shown, which is only the relation \textit{ct}.}\label{fig:json:eval2:test1:mariadb}
+  relation which MariaDB select multiple different access methods for is
+  shown, the relation \textit{ct}.}\label{fig:json:eval2:test1:mariadb}
 \end{figure}
 
 \begin{figure}[ht]
@@ -277,9 +276,9 @@ possible index selections.}\label{fig:plot:eval2:test1}
     ]
 }
 \end{minted}
-\caption[Excerpt of the tool's output for PostgreSQL with 1 repetition.]{Excerpt of
+\caption[Excerpt of the tool's output for PostgreSQL, query \#1 and 1 repetition.]{Excerpt of
   the tool's output when evaluating PostgreSQL with 1 repetition. The relation
-  shown is one of the relation for which PostgreSQL selects multiple access
+  shown is one of the relations for which PostgreSQL select multiple access
   methods and it is the one that will be used for future study with query \#2.}\label{fig:json:eval2:test1:postgresql}
 \end{figure}
 
@@ -296,14 +295,13 @@ methods are the same as those for the full query, seen in Figure~\ref{fig:json:e
 
 \begin{figure}[ht]
 \begin{indexgraph}
-  \addplot coordinates {(ct,6) (t,2) (mt,3) (mm,2) (book,2) (cmt,2) };
   \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) };
   \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,2) };
 \end{indexgraph}
-\caption[The index selections for query \#2.]{The index selections for query \#2
-are shown next to each other, showing the actual index selections next to the
-possible index selections. The relation of interest is \textit{cmt}, which PostgreSQL
-once again use two different access methods to access.}\label{fig:plot:eval2:test2}
+\caption[The access methods used for query \#2 with 1 repetition.]{The access
+  methods for query \#2 and 1 repetition. The graph shows that even though the
+  query is simpler than the original query PostgreSQL still use different access
+  methods for the relation \textit{cmt}.}\label{fig:plot:eval2:test2}
 \end{figure}
 
 \begin{figure}[ht]
@@ -340,15 +338,13 @@ for the original query in Figure~\ref{fig:json:eval2:test1:mariadb}.
 
 \begin{figure}[ht]
 \begin{indexgraph}
-  \addplot coordinates {(ct,6)};
   \addplot coordinates {(ct,3)};
   \addplot coordinates {(ct,1)};
 \end{indexgraph}
-\caption[The index selections for query \#3.]{The index selections for query \#3
-are shown next to each other, showing the actual index selections next to the
-possible index selections. Only relation is accessed, making the query a very
-simple one --- yet MariaDB will still use three different access methods to
-access \textit{ct}.}\label{fig:plot:eval2:test3}
+\caption[The access methods used for query \#3 with 1 repetition.]{The access
+  methods used for query \#3 with 1 repetition. Only one relation is accessed,
+  making the query trivial --- yet MariaDB will still use three different access
+  methods to access \textit{ct}.}\label{fig:plot:eval2:test3}
 \end{figure}
 
 \begin{figure}[ht]
@@ -376,5 +372,6 @@ access \textit{ct}.}\label{fig:plot:eval2:test3}
   \caption[Excerpt of the tool's output for MariaDB, query \#3 and 1
   repetition.]{Excerpt of the tool's output when evaluating MariaDB with query
     \#3 and 1 repetition. The output shows that even for the most simple of
-    queries MariaDB will use different access methods for the same relation.}\label{fig:json:eval2:test3:mariadb}
+    queries, MariaDB will use different access methods for the same
+    relation.}\label{fig:json:eval2:test3:mariadb}
 \end{figure}

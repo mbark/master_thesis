@@ -61,13 +61,14 @@
       legend style={at={(0.5,-0.15)},
         anchor=north,legend columns=-1},
       symbolic x coords={ct,t,mt,mm,book,cmt,cmm,est,resamb},
-      ylabel={\#access methods},
-      xtick=data,
       nodes near coords,
       nodes near coords align={vertical},
+      ylabel={\#access methods},
+      ytick=\empty,
+      xtick=data,
       width=14cm]
 } {
-  \legend{Possible access methods, MariaDB, PostgreSQL}
+  \legend{MariaDB, PostgreSQL}
 \end{axis}
 \end{tikzpicture}
 }

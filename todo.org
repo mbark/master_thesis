@@ -41,6 +41,6 @@ CLOSED: [2016-05-25 Wed 12:21]
 CLOSED: [2016-05-25 Wed 12:21]
 ** DONE Cost estimation -> cardinality estimate
 CLOSED: [2016-05-25 Wed 13:51]
-** TODO Add a test for sample size of 50
-** TODO Go through the figure-text on all results figures
-** TODO Test a query 3 to see if postgres remains sensitive
+** DONE Go through the figure-text on all results figures
+CLOSED: [2016-05-25 Wed 15:06]
+** TODO Test a query 4 to see if PostgreSQL remains sensitive

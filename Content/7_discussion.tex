@@ -97,6 +97,11 @@ accessed with two different methods. The output of the tool, seen in
 Figure~\ref{fig:json:eval1:test1:postgresql}, shows that these accesses are
 either using an index or a full table scan.
 
+It is also the case that this does not happen because of the varying predicate
+value, as the relation \textit{mt} has varying access methods --- which is not
+the case when testing with only one repetition, as can be seen in
+Figure~\ref{fig:plot:eval2:test1}.
+
 \subsubsection{PostgreSQL is more consistent for better cardinality estimates}
 When testing PostgreSQL with a better cardinality estimate, as shown in
 Figure~\ref{fig:plot:eval1:test3}, the number of relations which have different
@@ -116,7 +121,7 @@ estimates as can be seen when comparing the results in
 Figure~\ref{fig:plot:eval1:test1} to those in Figure~\ref{fig:plot:eval1:test3}.
 It is in both only one relation, \textit{ct}, that is accessed with multiple different
 access methods and that relation has the same number of different access methods
---- 3 --- for both tests. It is also the same access methods that are used, as
+--- three --- for both tests. It is also the same access methods that are used, as
 can be seen in Figure~\ref{fig:json:eval1:test1:mariadb} and
 Figure~\ref{fig:json:eval1:test3:mariadb}.
 
