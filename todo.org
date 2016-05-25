@@ -33,9 +33,14 @@ CLOSED: [2016-05-24 Tue 15:45]
 CLOSED: [2016-05-24 Tue 15:45]
 ** DONE Write more text about the graphs that are actually in the results
 CLOSED: [2016-05-24 Tue 15:48]
+** DONE What are the consequences of being sensitive? Good vs. bad
+CLOSED: [2016-05-25 Wed 12:20]
+** DONE Be more clear on the fact that Postgres = sensitive, MariaDB = not
+CLOSED: [2016-05-25 Wed 12:21]
+** DONE Clarify the effect of cardinality estimate on access method
+CLOSED: [2016-05-25 Wed 12:21]
+** DONE Cost estimation -> cardinality estimate
+CLOSED: [2016-05-25 Wed 13:51]
 ** TODO Add a test for sample size of 50
-** TODO Test some of the subsets with a higher sample size
-** TODO Cost estimation -> cardinality estimate
-** TODO Clarify the effect of cardinality estimate on access method
-** TODO Be more clear on the fact that Postgres = sensitive, MariaDB = not
-** TODO What are the consequences of being sensitive? Good vs. bad
+** TODO Go through the figure-text on all results figures
+** TODO Test a query 3 to see if postgres remains sensitive

@@ -72,88 +72,177 @@ different access methods used for the same relation. Following this a section
 describing the second set of results identified: the correlation between
 predicate value and access methods used.
 
-\subsection{Sample size in correlation to different access methods used}
-The main purpose of the study was to identify a correlation between the effect
-of cost estimation on the access methods selected by the query optimizer. As a
-way to evaluate this the number of samples used when analyzing and
-generating the cardinality estimates is varied from a low to a high value.
-
-The results of this evaluation can be seen in Figure~\ref{fig:plot:eval1:test1},
-which shows the test done with a low sample size, and
-Figure~\ref{fig:plot:eval1:test3}, which shows the test with the high sample size.
-It is clear that MariaDB performs the same regardless of sample size as the
-access methods used for all relations remain the same, regardless of sample size.
-
-This result clearly indicates that while MariaDB selects different access
-methods, it doesn't seem to do so because of varying estimations of the
-cardinality. Rather, it must be something else that determines it. This
-warranted another evaluation and the discussion regarding that can be seen in
-Section~\ref{sec:predicatecorrelation}.
-
-Apart from this finding it is also clear that MariaDB and PostgreSQL don't
-perform in the same way; for example MariaDB always selects the same access method for
-the relation \textit{mt} --- whereas PostgreSQL varies between two different access
-methods.
-
-Another difference between the two query optimizers is that MariaDB always uses an
-index if one exists, whereas PostgreSQL will sometimes do a full table scan
-instead of using an index.
-
-Additionally PostgreSQL does not use different indexes for \textit{ct}, unlike
-MariaDB which varies between three different indexes. This behavior is further
-evaluated in the second evaluation (see Section~\ref{sec:subsets} for the
-results), which is discussed in Section~\ref{sec:predicatecorrelation}.
-
-The maybe most important difference that can be seen from the results
-is that MariaDB consistently selects the same access methods regardless of
-the estimated cardinalities. However, PostgreSQL is more sensitive to estimated
-cardinalities, and for example the relation \textit{cmt} has different access methods
-with a low sample size but only one when the cardinality can be better
-estimated. This differing behavior leads to the question of which is the best
---- always using indexes if they exist, or varying between full table scans and
-indexes depending on cardinality estimates?
-
-\subsection{Predicate value in correlation to different access methods used}\label{sec:predicatecorrelation}
-From the first evaluation it is clear that both databases will sometimes select different
-access methods regardless of the sample size used when estimating cardinalities.
-To further evaluate this tests were done with only one repetition, but still
-for each possible value for the predicate.
-
-This evaluation shows two things:
+\subsection{The effect of cardinality estimate}
+The main purpose of the study was to identify the effect of the cardinality
+estimate on the access methods selected. As a way to evaluate this the number of
+samples used when analyzing and estimating the cardinality is varied from a low
+to a high value. The results found from the evaluation show the following:
 \begin{enumerate}
-\item The access method used can depend on the predicate value;
-\item The behavior differs between the two databases;
-\item And the behavior is consistent regardless of the complexity of the query.
+\item PostgreSQL will vary between doing a full table scan or accessing the data
+  via an index depending on the cardinality estimate;
+\item PostgreSQL becomes more consistent in using the same access method when
+  the cardinality is better estimated thanks to an increased sample size;
+\item MariaDB remains unaffected by the cardinality estimate for the tests done;
+\item The primary reason why MariaDB remains unaffected seems to be the fact
+  that it will always use an index if one exists, never doing a full table scan.
+\item And finally, MariaDB and PostgreSQL will sometimes use different access
+  methods, even for a cardinality estimate of high quality.
 \end{enumerate}
 
-Firstly, that the access method depends on the predicate value used can be seen in
-Figure~\ref{fig:plot:eval2:test1} where MariaDB has three different access
-methods for \textit{ct} and PostgreSQL has two different for \textit{cmt}. Since
-there are no repetitions, the only varying parameter is the predicate value.
+\subsubsection{PostgreSQL varies between full table scan and using an index}
+That PostgreSQL varies between full table scans and using an index depending on
+the cardinality estimated can be seen in Figure~\ref{fig:plot:eval1:test1} where
+the relations \textit{mt}, \textit{cmt}, \textit{cmm} and \textit{est} are all
+accessed with two different methods. The output of the tool, seen in
+Figure~\ref{fig:json:eval1:test1:postgresql}, shows that these accesses are
+either using an index or a full table scan.
 
-The fact that the query optimizer is sensitive to the predicate value can be seen as
-both intuitive and unintuitive --- the filter factor might vary considerably
-depending on the predicate value. At the same time, there should always exist
-one index that is the best for accessing the same relation.
+\subsubsection{PostgreSQL is more consistent for better cardinality estimates}
+When testing PostgreSQL with a better cardinality estimate, as shown in
+Figure~\ref{fig:plot:eval1:test3}, the number of relations which have different
+access methods decrease. With the high sample size it is only the relation
+\textit{cmm} that is accessed in multiple ways.
 
-Secondly, the behavior differing between the two databases, can be seen in that
-MariaDB switches between using different indexes whereas PostgreSQL will
-switch between using an index or doing a full table scan. This behavior can be
-seen for the relation \textit{cmm} which has two possible access methods --- via
-an index on the primary key or a full table scan; PostgreSQL will switch between
-the two while MariaDB will consistently use only the index.
+As can be seen in Figure~\ref{fig:json:eval1:test3:postgresql}, PostgreSQL will also choose
+to use an index when the cardinality is better estimated. All of the relations
+but \textit{cmm} are now accessed only using an index. This indicates that the
+behavior PostgreSQL's query optimizer considers correct is using an index for
+these relations, but when the cardinality estimate varies due to a low sample
+size it will sometimes opt for an incorrect full table scan.
 
-Thirdly and finally, the behavior being consistent regardless of the complexity
-of the query, can be seen in Figure~\ref{fig:plot:eval2:test3} which is a simple
-query on a single relation. Even so, MariaDB will still vary between three
-different indexes based only on the predicate value. For PostgreSQL the behavior
-can be observed in Figure~\ref{fig:plot:eval2:test2}, which is the least complex
-query used involving the relation \textit{cmt}.
+\subsubsection{MariaDB is unaffected by cardinality estimate}
+Unlike PostgreSQL, MariaDB seems to remain unaffected by the cardinality
+estimates as can be seen when comparing the results in
+Figure~\ref{fig:plot:eval1:test1} to those in Figure~\ref{fig:plot:eval1:test3}.
+It is in both only one relation, \textit{ct}, that is accessed with multiple different
+access methods and that relation has the same number of different access methods
+--- 3 --- for both tests. It is also the same access methods that are used, as
+can be seen in Figure~\ref{fig:json:eval1:test1:mariadb} and
+Figure~\ref{fig:json:eval1:test3:mariadb}.
 
-The fact that the behavior can be seen even for simpler queries indicate that it
-is not caused by the query optimizer acting incorrectly due to the query being
-too complex. Instead it seems to be a deliberate choice by both of the query
-optimizers.
+\subsubsection{MariaDB always use an index if one exists}
+Another difference to PostgreSQL is that MariaDB will always use an index if one
+exists. This can be seen in Appendix~\ref{appendix:output} where the full output
+of the tool is shown. For all relations which have only two possible access
+methods --- via an index on the primary key or through a full table scan ---
+MariaDB will only ever consider using the index. It is therefore only the case
+that relations \textit{ct} and \textit{mt} can have several access methods as
+they have more than one index.
+
+\subsubsection{Both databases use many access methods for high quality
+  cardinality estimates}
+The final discovery that can be drawn from the results is that both databases
+use multiple access methods even for high quality estimates of the cardinality.
+As an example consider Figure~\ref{fig:plot:eval1:test3}, the relation
+\textit{ct} for MariaDB and \textit{cm}m for PostgreSQL are both accessed with
+multiple access methods even though a high sample size is used when estimating
+the cardinality.
+
+Furthermore, as MariaDB remains consistent in choosing between the three
+different methods regardless of the sample size used when estimating cardinality
+it seems that the choice is a deliberate one. This behavior was therefore
+further evaluated by using only 1 repetition to see if the reason for varying
+behavior depended on another factor than varying cardinality estimates. The
+results for this evaluation will be discussed in the next section,
+Section~\ref{sec:predicatecorrelation}.
+
+\subsection{The effect of predicate value}\label{sec:predicatecorrelation}
+The second evaluation done was focused on identifying if a factor other than
+cardinality estimate was the reason for the varying use of access methods. This
+evaluation was therefore done by using only 1 repetition and so on only one
+cardinality estimate is the result for all the query plans generated.
+
+The evaluation found the following results:
+\begin{enumerate}
+\item Both databases will use different access methods for the same estimated
+  cardinality;
+\item The factor that is the reason for the different access methods used is the
+  predicate used to filter rows;
+\item The behavior is deliberate and will remain regardless of query complexity.
+\end{enumerate}
+
+\subsubsection{Both databases use different access methods}
+The first notable result is that both databases will use different access
+methods even when the estimated cardinality is the same. This can be clearly
+seen in Figure~\ref{fig:plot:eval2:test1} where the relation \textit{ct} for
+MariaDB and relations \textit{cmt}, \textit{cmm} and \textit{est} are all
+accessed with multiple different access methods.
+
+\subsubsection{The predicate value used is important}
+The reason that these relations are accessed in different ways can not be
+because of a varying cardinality estimate, as the same estimated cardinality is
+used when generating all query plans. The only other thing that varies in the
+tests is that all possible values for \sql{:KEY} in the query, seen in
+Figure~\ref{fig:sql:query1}, are used to generate query plans. From this it can
+be concluded that the the value of \sql{:KEY} in the predicate \sql{ct.key =
+  :KEY} will affect the access method for the relations.
+
+It can be further noted that for PostgreSQL the predicate will affect relations
+that are not directly involved in it, but also those that are joined together
+with it (for example \textit{cmt}). Since MariaDB always use an index if one
+exists this behavior is hard to observe as the only relation it will use
+different access methods for is the one in the predicate, \textit{ct}.
+
+\subsubsection{The behavior remains for simpler queries.}
+Finally, the behavior of being sensitive to predicate value was evaluated for
+two simpler queries to see if the result remains the same when not
+\texttt{JOIN}ing so many tables together.
+
+The first test was done on query \#2 and the results can be seen in
+Figure~\ref{fig:plot:eval2:test2}. The main focus was on evaluating PostgreSQL
+to see if it behaved the same and varied access method for the relation
+\textit{cmt}. As can be seen in the figure and when comparing the output, shown
+in Figure~\ref{fig:json:eval2:test1:postgresql} and
+Figure~\ref{fig:json:eval2:test2:postgresql} respectively, PostgreSQL does
+continue to use different access methods.
+
+For MariaDB the behavior was tested using query \#3, which is a simple select
+only on the relation \textit{ct}. The results can be seen in
+Figure~\ref{fig:plot:eval2:test3} and it is clear that the behavior remains ---
+three different access methods are used. Comparing the output, seen in
+Figure~\ref{fig:json:eval2:test1:mariadb} and
+Figure~\ref{fig:json:eval2:test3:mariadb}, also shows that the methods are the
+same.
+
+\subsection{Conclusions from the discussion}
+This section will discuss what conclusions can be drawn from the discussions
+regarding the effect of cardinality and predicate value.
+
+First of all, cardinality estimate has a clear effect on PostgreSQL and the
+access methods chosen by its query optimizer. When the sample size used to
+estimate cardinality is low the number of different access methods used for
+relations will vary much more than when the sample size used increases. This
+result provides a good indication as to the question that this thesis asks, and
+shows that cardinality estimate will affect access method chosen for PostgreSQL.\@
+
+The effect of cardinality estimate can however only be observed for PostgreSQL,
+for MariaDB no such correlation can be seen. The primary reason that MariaDB is
+not as sensitive to cardinality estimate is that it never considers doing a full
+table scan if it can use an index. However, it is worth noting that it can not
+be concluded that MariaDB is unaffected by cardinality estimates. Instead it
+might be concluded that it is less likely for MariaDB to vary between different
+access methods because of different cardinality estimates, as it must be the
+case that it is different indexes it varies between --- rather than an index or
+a full table scan, as is the case for PostgreSQL.\@
+
+When evaluating the databases it is also found that another factor that affects
+the choice of access method is the predicate value used to filter rows. For
+PostgreSQL till affects whether it uses an index or does a full table scan,
+whereas it for MariaDB means it will switch between using different indexes.
+Since it is usually the case that one index should be the correct one for a
+given query this behavior might be seen as unintuitive. Furthermore, this
+behavior might cause a query that was first fast to become fast with the
+Introduction of a seemingly unrelated index, a story of this happening to a
+company is described in~\cite{lahdenmaki_2005_relational_rdidatodossea}[Ch.~14].
+
+One final result that is noteworthy is that the two query optimizers behave
+considerably different for the tests done. PostgreSQL never considers
+many different indexes for the same relation, unlike MariaDB.\@ MariaDB on the
+other hand never considers a full table scan, unlike PostgreSQL.\@ This is
+interesting as it shows that there seems to be no clear best practice for query
+optimizers if they differ on such fundamental levels. This also indicates that
+further research and evaluation of query optimizer is necessary in order to find
+what is the best behavior.
 
 \section{Future research}
 This section will cover some suggestions for future research on the topic of
@@ -172,15 +261,21 @@ more realistic datasets with complex data, relations and indexes that could be
 used for research. Using these datasets for evaluation would then provide
 results that could be considered more general and correct.
 
-The focus of this thesis was the correlation between the quality of the
-statistics used in the cost estimation and the access methods chosen. The
-results found for this show that MariaDB consistently selects indexes if they
-exist, never opting to do a full table scan. On the other hand, PostgreSQL is more
-sensitive to cardinality estimates and will sometimes opt to do a full table
-scan instead. This shows a clear difference in behavior and one that could be
-further evaluated --- which is the best behavior out of the two?
+The focus of this thesis was the effect of the cardinality estimate on the
+access methods used by the query optimizer. The results show that PostgreSQL is
+more sensitive to this and will more often do a full table scan when the
+cardinality estimate is done with a lower sample size. MariaDB on the other hand
+is observed to be more robust as it never does a full table scan if an index
+exists. This leads to the question of which behavior is the best --- should the
+query optimizer allow full table scans or is it better to always skip them?
 
-Finally this study show that both database's query optimizers select
+This study also show that both database's query optimizers select
 different access methods depending on predicate value and that the two do so
-differently. This also leads to the question of if this is the correct behavior
-or not.
+differently. This leads to the question of whether this is the correct behavior
+or if the query optimizers should try to use only one access method always,
+regardless of predicate value.
+
+Finally it can be noted that the results from this study show the need for
+further research into query optimizers as two state-of-the-art query optimizers
+behave considerably different. The topic of query optimization clearly needs
+much further study to arrive at what is best practices.

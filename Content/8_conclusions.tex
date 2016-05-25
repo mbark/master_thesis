@@ -1,31 +1,40 @@
 This thesis concerns the evaluation of two modern, state-of-the-art database's,
-and the effect of estimating statistics on the index selection. The thesis
+and the effect of cardinality estimates on the access methods used; the thesis
 question posed was:
-\textit{How much effect does the cost estimation have on the query optimizers
+\textit{How much effect does the cardinality estimate have on the query optimizers
   selection of access method during the join enumeration?}
 
-Two databases --- PostgreSQL and MariaDB --- were chosen as a good representation of
+Two databases --- PostgreSQL and MariaDB --- were chosen as good representations of
 state-of-the-art query optimizers. A large enterprise dataset was ported to both
 of these two databases. Finally, a query was constructed using the most complex
 tables in the dataset.
 
 A tool was then implemented in Clojure to allow the two databases to be
 evaluated. With the tool the access methods used for each relation can be
-identified and tests conducted with different queries, sample sizes and repetitions.
-By testing over an increasing sample size the cost estimation can be simulated
-to range from bad to good, allowing the testing of databases in a realistic
-scenario.
+identified and tests conducted with different queries, sample sizes and
+repetitions.
 
-Using the tool to evaluate the databases with the query we find that the
-cardinality estimates have little effect on the access methods chosen by
-MariaDB, whereas PostgreSQL will vary between accessing the data via a full
-table scan or an index depending on the estimated cardinality.
+An evaluation of the two databases was done using the query constructed and
+testing their choice of access methods for varying sample sizes. The results
+from this evaluation warranted a second evaluation using the same estimated
+cardinality to identify other factors than cardinality estimate that might cause
+the databases to select different access methods.
 
-The results also indicate that predicate values cause the query optimizers to
-select different access methods. Furthermore, it is found that this behavior is
-different for the two databases.
+The results show that PostgreSQL is affected by bad cardinality estimates, and
+will vary between using an index or doing a full table scan for more relations
+when the sample size is kept small. MariaDB on the other hand was found to be
+less sensitive to cardinality estimate, mainly because it would never consider
+doing a full table scan if it could instead use an index.
 
-In conclusion we have found results indicating that the cardinality estimate has
-little effect on MariaDB, whereas PostgreSQL is more sensitive to cardinality
-estimates. We have also found results indicating that instead the predicate
-value used for filtering does effect the index selection.
+The second evaluation found that MariaDB will instead vary between using
+different indexes depending on the predicate value used when filtering rows.
+This was found to be true regardless of the complexity of the query and the
+behavior remained consistent even for a trivial query involving only one table.
+PostgreSQL also displayed a similar behavior, but instead switched between using
+an index or doing a full table scan depending on predicate value.
+
+In conclusion, we have found results showing that the cardinality estimate
+affects PostgreSQL and smaller samples used when estimating will increase the
+risk of doing a full table scan instead of using the correct index. MariaDB was
+found to be more robust to varying cardinality estimates, because it will always
+use an index if one exists.
