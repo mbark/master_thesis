@@ -1,0 +1,25 @@
+<html>
+  <body>
+    <h1>Evaluating the effect of cardinality estimates on two state-of-the-art
+  query optimizer's selection of access method</h1>
+    <h2>Martin Barksten</h2>
+    <h3>Abstract</h3>
+This master thesis concern relational databases and their query optimizer's
+sensitivity to cardinality estimates and the effect the quality of the estimate
+has on the number of different access methods used for the same relation. Two
+databases are evaluated - PostgreSQL and MariaDB - on a real-world dataset
+to provide realistic results. The evaluation was done via a tool implemented in
+Clojure and tests were conducted on a query and subsets of it with varying
+sample sizes used when estimating cardinality.</br>
+</br>
+The results indicate that MariaDB's query optimizer is less sensitive to
+cardinality estimates and for all tests select the same access methods,
+regardless of the quality of the cardinality estimate. This stands in contrast
+to PostgreSQL's query optimizer which will vary between using an index or doing
+a full table scan depending on the estimated cardinality. Finally, it is also
+found that the predicate value used in the query affects the access method used.
+Both PostgreSQL and MariaDB are found sensitive to this property, with MariaDB
+having the largest number of different access methods used depending on
+predicate value.
+  </body>
+</html>
