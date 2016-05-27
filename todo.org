@@ -8,8 +8,6 @@ CLOSED: [2016-05-19 Thu 12:42]
 CLOSED: [2016-05-20 Fri 11:23]
 ** DONE Do the 1rep tests for PostgreSQL
 CLOSED: [2016-05-20 Fri 11:23]
-** TODO redo 1rep tests with sample size = 100
-** TODO Do test with sample siz = 50
 * Report
 ** DONE Write the discussion part when results are in
 CLOSED: [2016-05-19 Thu 16:28]
@@ -43,4 +41,12 @@ CLOSED: [2016-05-25 Wed 12:21]
 CLOSED: [2016-05-25 Wed 13:51]
 ** DONE Go through the figure-text on all results figures
 CLOSED: [2016-05-25 Wed 15:06]
-** TODO Test a query 4 to see if PostgreSQL remains sensitive
+** DONE Test query 4 to see if PostgreSQL remains sensitive
+CLOSED: [2016-05-27 Fri 09:02]
+** DONE Write some text regarding test 2 in the results section
+CLOSED: [2016-05-27 Fri 09:02]
+** DONE Add to the discussion regarding the results when testing with the simpler query
+CLOSED: [2016-05-27 Fri 09:02]
+** TODO Go through discussion and results regarding test 2
+** TODO Update the longer captions in the first evaluation
+** TODO Go through the entire report (again...)

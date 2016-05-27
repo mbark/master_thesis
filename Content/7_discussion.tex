@@ -82,6 +82,8 @@ to a high value. The results found from the evaluation show the following:
   via an index depending on the cardinality estimate;
 \item PostgreSQL becomes more consistent in using the same access method when
   the cardinality is better estimated thanks to an increased sample size;
+\item The cardinality estimate rather than the number of joins seem to be the
+  main cause of PostgreSQL varying access method;
 \item MariaDB remains unaffected by the cardinality estimate for the tests done;
 \item The primary reason why MariaDB remains unaffected seems to be the fact
   that it will always use an index if one exists, never doing a full table scan.
@@ -114,6 +116,15 @@ but \textit{cmm} are now accessed only using an index. This indicates that the
 behavior PostgreSQL's query optimizer considers correct is using an index for
 these relations, but when the cardinality estimate varies due to a low sample
 size it will sometimes opt for an incorrect full table scan.
+
+\subsubsection{Cardinality estimate is the reason rather than complexity caused
+  by joins}
+The tests done with the simpler query, query \#2, showed that even though the
+query is simpler in terms of the number of joins and tables involved, PostgreSQL
+will still vary in what access methods its using, as can be seen in
+Figure~\ref{fig:plot:eval1:test2}. This can be seen as a further motivation that
+the cardinality estimate, rather than other factors, is what is causing
+PostgreSQL to vary between what access methods its using.
 
 \subsubsection{MariaDB is unaffected by cardinality estimate}
 Unlike PostgreSQL, MariaDB seems to remain unaffected by the cardinality

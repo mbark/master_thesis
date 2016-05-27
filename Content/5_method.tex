@@ -446,8 +446,9 @@ when testing both PostgreSQL and MariaDB.\@
       query & repetitions & sample sizes \\
       \midrule
       \#1 & 50 & 1 \\
-      \#1 & 50 & 50 \\
+      \#2 & 50 & 1 \\
       \#1 & 50 & 100 \\
+      \#2 & 50 & 100 \\
       \bottomrule
     \end{tabu}
     \caption[The number of repetitions and sample size used for the first evaluation]{The
@@ -458,19 +459,21 @@ when testing both PostgreSQL and MariaDB.\@
   \end{center}
 \end{table}
 
-In order to find a possible correlation between sample size and the number
-of different access methods for the same relation, the tests were done with
-sample sizes ranging from small to large all with a large number of repetitions
-This was only done for the original query as it is the most complex, making
-tests on the subsets unnecessary. The options used can be seen in
-Table~\ref{table:evaluation1}. The repetition size is set to 50 due to time
-constraints when evaluating --- for example, evaluating PostgreSQL with a sample
-size of 100 and 50 repetitions takes roughly 100 hours.
+In order to find what effect the cardinality estimate has on the access methods
+used the databases the tests use varying sample sizes used when generating the
+estimates. When using a low sample size the generated cardinality estimate tends
+to be worse than when a high sample size is used. The tests were done on the
+original query and a subset of it, seen in Figure~\ref{fig:sql:query2}. The
+simpler query was used to evaluate the effect cardinality estimate errors
+propagating when a large number of joins is involved. The options used for the
+tests can be seen in Table~\ref{table:evaluation1}. The repetition size is set
+to 50 due to time constraints when evaluating --- for example, evaluating
+PostgreSQL with a sample size of 100 and 50 repetitions takes roughly 100 hours.
 
-Additional tests were conducted on subsets of the query to further evaluate the behavior
-identified in the first evaluation. As can be seen in the table the number of
-repetitions and sample size is set to 1, this to test the effect of predicate
-value rather than sample size. For a further discussion about this see
+Additional tests were conducted on subsets of the query to further evaluate the
+behavior identified in the first evaluation. As can be seen in the table the
+number of repetitions and sample size is set to 1, this to test the effect of
+predicate value rather than sample size. For a further discussion about this see
 Section~\ref{sec:accessmethods}, where the results found for the initial tests
 are discussed in detail.
 
