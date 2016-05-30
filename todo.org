@@ -47,6 +47,7 @@ CLOSED: [2016-05-27 Fri 09:02]
 CLOSED: [2016-05-27 Fri 09:02]
 ** DONE Add to the discussion regarding the results when testing with the simpler query
 CLOSED: [2016-05-27 Fri 09:02]
-** TODO Go through discussion and results regarding test 2
+** DONE Go through discussion and results regarding test 2
+CLOSED: [2016-05-30 Mon 14:53]
 ** TODO Update the longer captions in the first evaluation
 ** TODO Go through the entire report (again...)
