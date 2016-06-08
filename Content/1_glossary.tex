@@ -184,6 +184,13 @@ combination of columns~\cite{lahdenmaki_2005_relational_rdidatodossea}. The
 cardinality of the data is usually used when the query optimizer estimates the
 cost of different access paths.
 
+\subsection*{Statistics target}
+The \textit{statistics target} is used to refer to the amount of statistics
+stored when analyzing a table, and thus by extension the sample size used when
+estimating the cardinality of the relations. How the statistics target is set
+varies between databases depending on what methods are provided to control
+cardinality estimate.
+
 \subsection*{Filter factor}
 The \textit{filter factor} specifies what proportion of the rows that    satisfy
 the conditions in a predicate~\cite{lahdenmaki_2005_relational_rdidatodossea}.

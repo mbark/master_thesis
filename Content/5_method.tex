@@ -225,7 +225,8 @@ Figure~\ref{fig:cmd:runtool1}.
   \end{minted}
   \caption[Using the tool to generate, parse and analyze a query]{An example of
     using the tool to generate, parse and analyze a query with some given
-    parameters, such as the sample sizes to use.}\label{fig:cmd:runtool1}
+    parameters, such as the statistics targets (referred to as sample sizes here)
+    to use.}\label{fig:cmd:runtool1}
 \end{figure}
 
 As the steps can be executed one at a time, the results for each are saved and
@@ -248,7 +249,7 @@ repository has further documentation regarding project structure etc.
 \subsection{Generating plans}\label{sec:generatingplans}
 The task of generating query plans can be broken down in the following steps:
 \begin{enumerate}
-\item Set the sample size used to estimate cardinalities;
+\item Set the statistics target used to estimate cardinalities;
 \item Generate new statistics, and thus new cardinality estimates, for all
   relations involved in the query used for evaluation;
 \item Find the query plan for each possible value of the query.
@@ -261,7 +262,7 @@ Figure~\ref{fig:clj:generating}. In the figure two functions can be seen:
 \clj{generate-plans} and \clj{sample-and-query}.
 
 The generation step is handled by \clj{generate-plans}, which is provided the
-options for the evaluation. This function will then for each sample size to use,
+options for the evaluation. This function will then for each statistics target to use,
 repeated the number of times specified, call \clj{sample-and-query}.
 
 The \clj{sample-and-query} function will in turn perform all of the steps
@@ -342,7 +343,7 @@ Analyzing the plans is done by merging all access methods found when parsing the
 plans, keeping the distinct methods for each relation. The code for analysis can
 be seen in Figure~\ref{fig:clj:analyzing}.
 
-Analyzing all generated plans for a sample size is done by the function
+Analyzing all generated plans for a statistics target is done by the function
 \clj{analyze-plans}, which is provided an identifier for the database evaluated,
 a function to read the next plan and the total number of plans to read. The
 analysis is done by reading the next plan and merging it with the previous one.
@@ -378,22 +379,22 @@ other.
 \label{fig:clj:analyzing}
 \end{figure}
 
-The analysis is done for each sample size, and the resulting map of relation to
+The analysis is done for each statistics target, and the resulting map of relation to
 access methods is saved for later study.
 
 \subsection{PostgreSQL}\label{sec:postgresql}
 In PostgreSQL the SQL commands used are quite straightforward, one is used to
-delete all previously gathered statistics, one to set the sample size and
+delete all previously gathered statistics, one to set the statistics target and
 finally an \sql{ANALYZE} is called for each relation involved in the query being
 evaluated. The specific commands used can be seen in
-Figure~\ref{fig:sql:pganalyze}, the value of the sample size is provided as a
+Figure~\ref{fig:sql:pganalyze}, the value of the statistics target is provided as a
 host variable, as it will depend on the options used when evaluating a database
 and query.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{postgresql}
   DELETE FROM pg_statistics;
-  SET default_statistics_target TO :SAMPLE_SIZE;
+  SET default_statistics_target TO :STATISTICS_TARGET:
   ANALYZE table1;
   ANALYZE table2;
 \end{minted}
@@ -421,7 +422,7 @@ The specific commands used can be seen in Figure~\ref{fig:sql:resamplemdb}.
 \begin{minted}[breaklines]{mysql}
   SET GLOBAL innodb_stats_persistent='OFF';
   SET GLOBAL innodb_stats_auto_recalc='OFF';
-  SET GLOBAL innodb_stats_transient_sample_pages = :SAMPLE_SIZE;
+  SET GLOBAL innodb_stats_transient_sample_pages = :STATISTICS_TARGET:
   ANALYZE TABLE table1, table2;
 \end{minted}
 \caption[Generating new cardinality estimates in MariaDB.]{The SQL commands used to
@@ -443,39 +444,79 @@ when testing both PostgreSQL and MariaDB.\@
   \begin{center}
     \begin{tabu} {c c c c}
       \toprule
-      query & repetitions & sample sizes \\
+      query & repetitions & statistics targets \\
       \midrule
-      \#1 & 50 & 1 \\
-      \#2 & 50 & 1 \\
-      \#1 & 50 & 100 \\
-      \#2 & 50 & 100 \\
+      \#1 & 50 & 1, $d$, $2d$ \\
+      \#2 & 50 & 1, $d$, $2d$ \\
       \bottomrule
     \end{tabu}
-    \caption[The number of repetitions and sample size used for the first evaluation]{The
-      number of repetitions and sample size used for the evaluation. The tests
-      are conducted with a low and high value for the sample size in order to
-      capture the difference when analyzing cardinality with few samples versus
-      many samples.}\label{table:evaluation1}
+    \caption[The number of repetitions and statistics targets used for the first
+    evaluation]{The number of repetitions and the statistics targets, where $d$
+      refers to the default statistics target for the database, used for the
+      evaluation. The tests are conducted with three different statistics
+      targets in order to identify the effect the cardinality estimate has on
+      the access methods used.}\label{table:evaluation1}
+  \end{center}
+\end{table}
+
+\begin{table}
+  \begin{center}
+    \begin{tabu} {c c c c}
+      \toprule
+      database & default statistics target \\
+      \midrule
+      MariaDB & 20 \\
+      PostgreSQL & 100 \\
+      \bottomrule
+    \end{tabu}
+    \caption[The default statistics targets for MariaDB and PostgreSQL]{The
+      default statistics targets for MariaDB and PostgreSQL, the reason they
+      vary so considerably in size is because they determine different factors
+      --- it is not the case that PostgreSQL has a 5 times higher default than
+      MariaDB.}\label{table:defaults}
   \end{center}
 \end{table}
 
 In order to find what effect the cardinality estimate has on the access methods
-used the databases the tests use varying sample sizes used when generating the
-estimates. When using a low sample size the generated cardinality estimate tends
-to be worse than when a high sample size is used. The tests were done on the
-original query and a subset of it, seen in Figure~\ref{fig:sql:query2}. The
-simpler query was used to evaluate the effect cardinality estimate errors
-propagating when a large number of joins is involved. The options used for the
-tests can be seen in Table~\ref{table:evaluation1}. The repetition size is set
-to 50 due to time constraints when evaluating --- for example, evaluating
-PostgreSQL with a sample size of 100 and 50 repetitions takes roughly 100 hours.
+used the tests are done in two different scenarios: one with a low quality
+cardinality estimate and one with a quality estimate. To simulate a low quality
+cardinality estimate, a low statistics target is used, causing a low sample size
+to be used. The reason is that, as described in
+Section~\ref{sec:collecting_statistics}, a small sample size will cause a small
+fraction of the rows in the relation to be used when estimating the cardinality
+--- which in turn will increase the risk of incorrect estimates.
 
-Additional tests were conducted on subsets of the query to further evaluate the
-behavior identified in the first evaluation. As can be seen in the table the
-number of repetitions and sample size is set to 1, this to test the effect of
-predicate value rather than sample size. For a further discussion about this see
-Section~\ref{sec:accessmethods}, where the results found for the initial tests
-are discussed in detail.
+The statistics target is not exactly the same for the two databases, for MariaDB
+it is the number of pages used when sampling and for PostgreSQL it is the amount
+of information stored for each relation. The effect of setting a low or high
+statistics target is however the same --- the higher the value the better the
+cardinality estimate.
+
+The exact options used for the tests can be seen in
+Table~\ref{table:evaluation1}, which shows what queries were tested, the
+repetitions done and the statistics target used for each of the tests. Two of
+the tests done use the variable $d$, which refers to the default statistics
+target of the databases, the values of which can be seen in Figure~\ref{table:defaults}.
+
+As can be seen in the table, the lowest statistics target used is 1 for both
+databases. The reason is that it is done in order to simulate the worst possible
+scenario for the databases --- the case where they must use the potentially most
+incorrect cardinality estimate.
+
+To contrast the worst case scenario the databases are then tested with two more
+statistics targets: the default statistics target; and double the default value. The
+reason is that the statistics target used is not controlled in the same way for
+both databases, thus using the default value as baseline provides a way to
+simulate a more similar scenario.
+
+Finally, the tests done with a focus on the effect of sample size showed results
+that warranted a second evaluation focusing on identifying other factors. The
+results for this evaluation can be seen in Figure~\ref{table:evaluation2}. This
+evaluation was done using subsets of the original query --- shown in
+Figure~\ref{fig:sql:query2} and Figure~\ref{fig:sql:query3} --- and with no
+repetitions of the test in order to use only one cardinality estimate for all
+query plans generated. A further motivation and discussion regarding this can be
+found in Section~\ref{sec:accessmethods} in the Discussion chapter.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{sql}
@@ -484,9 +525,8 @@ FROM ct JOIN t JOIN mt JOIN mm JOIN book JOIN cmt
 WHERE ct.key = :KEY
 \end{minted}
   \caption[Query \#2, used for the second evaluation]{Query \#2, a subset of the
-  original query used to provide a more simple scenario for the query optimizer.
-  While still containing the relation \textit{cmt}, which is relevant for
-  PostgreSQL.}\label{fig:sql:query2}
+  original query used to provide a more simple scenario for the query
+  optimizer.}\label{fig:sql:query2}
 \end{figure}
 
 \begin{figure}[ht]
@@ -506,15 +546,12 @@ WHERE ct.key = :KEY
       \toprule
       queries & repetitions & sample sizes \\
       \midrule
-      \#1  & 1 & 1 \\
-      \#2  & 1 & 1 \\
-      \#3  & 1 & 1 \\
+      \#1, \#2, \#3  & 1 & 1 \\
       \bottomrule
     \end{tabu}
-    \caption[The number of repetitions and sample size used for second evaluation]{The
-      number of repetitions and sample size used for the evaluation. Two tests
-      with a large number of repetitions were done for the original, and the
-      other queries evaluated with a lesser number of
-      repetitions.}\label{table:evaluation2}
+    \caption[The number of repetitions and statistics target used for second evaluation]{The
+      number of repetitions and statistics target used for the evaluation. The
+      tests are done with no repetitions in order to focus on what other factors
+      cause varying access methods to be used.}\label{table:evaluation2}
   \end{center}
 \end{table}

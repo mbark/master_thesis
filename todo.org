@@ -56,3 +56,17 @@ CLOSED: [2016-06-08 Wed 11:16]
 
 ** DONE Cut down on the number of graphs in results
 CLOSED: [2016-06-08 Wed 12:45]
+** DONE Explain sample size, what is sampled and what results this has on the estimation
+CLOSED: [2016-06-08 Wed 14:07]
+** DONE Motivate why 1 and 100 are used as sample size
+CLOSED: [2016-06-08 Wed 14:35]
+** DONE Change terminology from sample size to statistics target
+CLOSED: [2016-06-08 Wed 15:35]
+** DONE See if the tests can be presented in a better way, maybe via a graph?
+CLOSED: [2016-06-08 Wed 16:20]
+** TODO Rewrite the results section using plots instead of bar charts
+** TODO Explain the graphs even more so that even a dummy might understand them
+** TODO Say more about the results to show what results and conclusions can be drawn
+** TODO Test the databases with MariaDB: 1, 20, 40 and PostgreSQL: 1,100,200
+** TODO Update the results section with the results found for the new tests
+** TODO Look through and see if the conclusions can be further clarified

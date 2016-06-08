@@ -384,29 +384,36 @@ done in three steps:
 \item And then the calculate the statistics for the resulting output.
 \end{enumerate}
 
+Steps 2 and 3 are described in more detail
+in~\cite{chaudhuri_1998_overview_aooqoirs} and are less relevant for this
+thesis. Instead, the following section will focus on the first step ---
+collecting statistics of the stored data.
+
+\subsubsection{Collecting statistics}\label{sec:collecting_statistics}
 There are two important statistics that need to be calculated for the data: the
-number of tuples in a relation and the number of different values in the column
-of a relation for an attribute~\cite[p.
-807-808]{garcia-molina_2002_database_dstcb}. Common methods of saving the data
-is through a histogram describing the data distribution for an attribute. If
-histograms are not used the second highest and lowest values are used – this is
-because the highest and lowest values often are outliers
+number of tuples in a relation and the cardinality for each column in a relation
+~\cite[p.~807-808]{garcia-molina_2002_database_dstcb}. However, the exact
+cardinality is often impossible to calculate in a modern database as they often
+contain huge amounts of data, making it practically impossible to calculate the
+exact value.
 
-Modern databases can contain huge amounts of data and thus calculating the exact
-histograms is impossible, requiring them to be estimated, usually through
-\textit{sampling}~\cite[p. 807-808]{garcia-molina_2002_database_dstcb}. When
-estimating via sampling only a subset of the data is read and used to estimate.
-Furthermore the statistics are usually only computed periodically as they:
-\begin{itemize}
-\item Tend not to change radically in a short time;
-\item Even if inaccurate, they are used consistently for all cost estimations;
-\item And keeping them up to date may cause their calculations to take up the
-  most of the database's time.
-\end{itemize}
+Instead, the cardinality is often estimated through
+sampling~\cite[p.~807-808]{garcia-molina_2002_database_dstcb}. The idea is to
+sample a fraction of the data and from that data generate an approximation of
+the cardinality.
 
-Finally the statistics need to be propagated upwards in the tree. There are
-several ways of performing this propagation and they are described in more
-detail in~\cite{chaudhuri_1998_overview_aooqoirs}.
+Approximating the cardinality is however how trivial as it leads to the question
+of what assumptions are done regarding the data, is it for example assumed to be
+distributed uniformly? As described in
+Section~\ref{sec:improving_cardinality_estimates}, modern databases often make a
+simple assumption of independence --- an assumption which is often incorrect.
+
+Regardless of the complexities of approximating, the intuitive idea is that if
+we when sampling observe only a few different values for a relation, it
+seems likely that we've seen most of the values for that relation --- indicating
+a low cardinality. Or if we on the other hand observe almost only different
+values it is likely that it is instead the case that the relation has a high
+cardinality.
 
 \subsection{Enumeration}
 The enumeration is the final task of the optimizer and the one that will perform

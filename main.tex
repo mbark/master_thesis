@@ -73,6 +73,23 @@
 \end{tikzpicture}
 }
 
+\newenvironment{indexplot}{
+\begin{tikzpicture}[scale=0.8]
+  \begin{axis}[
+    ylabel={\#relations with varying access methods},
+    xlabel={target statistic},
+    legend style={at={(0.5,-0.2)},
+      anchor=north,legend columns=-1},
+    xtick={0,1,2},
+    ytick={1,2,3,4,5},
+    xticklabels={$1$, $d$, $2d$},
+    domain=0:2]
+}{
+  \legend{PostgreSQL, MariaDB}
+\end{axis}
+\end{tikzpicture}
+}
+
 \frontmatter
 \pagestyle{empty}
 \removepagenumbers{}
