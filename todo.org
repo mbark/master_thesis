@@ -49,5 +49,10 @@ CLOSED: [2016-05-27 Fri 09:02]
 CLOSED: [2016-05-27 Fri 09:02]
 ** DONE Go through discussion and results regarding test 2
 CLOSED: [2016-05-30 Mon 14:53]
-** TODO Update the longer captions in the first evaluation
-** TODO Go through the entire report (again...)
+** DONE Update the longer captions in the first evaluation
+CLOSED: [2016-06-08 Wed 11:16]
+** DONE Go through the entire report (again...)
+CLOSED: [2016-06-08 Wed 11:16]
+
+** DONE Cut down on the number of graphs in results
+CLOSED: [2016-06-08 Wed 12:45]

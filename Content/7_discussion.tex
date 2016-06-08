@@ -95,7 +95,7 @@ That PostgreSQL varies between full table scans and using an index depending on
 the cardinality estimated can be seen in Figure~\ref{fig:plot:eval1:test1} where
 the relations \textit{mt}, \textit{cmt}, \textit{cmm} and \textit{est} are all
 accessed with two different methods. The output of the tool, shown in
-Figure~\ref{fig:json:eval1:test1:postgresql}, shows that these accesses are
+Appendix~\ref{appendix:output}, shows that these accesses are
 either using an index or a full table scan.
 
 It is also the case that this does not happen because of the varying predicate
@@ -109,12 +109,13 @@ Figure~\ref{fig:plot:eval1:test3}, the number of relations which have different
 access methods decrease. With the high sample size it is only the relation
 \textit{cmm} that is accessed in multiple ways.
 
-As can be seen in Figure~\ref{fig:json:eval1:test3:postgresql}, PostgreSQL will
-also choose to use an index when the cardinality is better estimated --- all of
-the relations but \textit{cmm} are accessed only using an index. This indicates
-that the behavior PostgreSQL's query optimizer considers correct is using an
-index for these relations, but when the cardinality estimate varies due to a low
-sample size it will sometimes opt for a seemingly incorrect full table scan.
+PostgreSQL will also tend to use an index rather than full table scan when the
+cardinality is better estimated --- all of the relations but \textit{cmm} are
+accessed using only an index for the test shown in
+Figure~\ref{fig:plot:eval1:test2}. This indicates that the behavior PostgreSQL's
+query optimizer considers correct is using an index for these relations, but
+when the cardinality estimate varies due to a low sample size it will sometimes
+opt for a seemingly incorrect full table scan.
 
 \subsubsection{Cardinality estimate is the reason rather than complexity caused
   by joins}
@@ -131,8 +132,8 @@ estimates as can be seen when comparing the results in
 Figure~\ref{fig:plot:eval1:test1} to those in Figure~\ref{fig:plot:eval1:test3}.
 It is in both tests only one relation, \textit{ct}, that is accessed with
 multiple different access methods and they are the same for both tests, as can
-be seen in Figure~\ref{fig:json:eval1:test1:mariadb} and
-Figure~\ref{fig:json:eval1:test3:mariadb}.
+seen from the output, shown in Appendix~\ref{appendix:output}.
+
 
 \subsubsection{MariaDB always use an index if one exists}
 Another difference to PostgreSQL is that MariaDB will always use an index if one
@@ -204,18 +205,13 @@ two simpler queries to see if the result remains the same when not
 The first test was done on query \#2 and the results can be seen in
 Figure~\ref{fig:plot:eval2:test2}. The main focus was on evaluating PostgreSQL
 to see if it behaved the same and varied access method for the relation
-\textit{cmt}. As can be seen in the figure and when comparing the output, shown
-in Figure~\ref{fig:json:eval2:test1:postgresql} and
-Figure~\ref{fig:json:eval2:test2:postgresql}, PostgreSQL continues to use
-different access methods.
+\textit{cmt}. As can be seen in the figure PostgreSQL continues to use different
+access methods.
 
 For MariaDB the behavior was tested using query \#3, which is a simple select
 only on the relation \textit{ct}. The results can be seen in
 Figure~\ref{fig:plot:eval2:test3} and it is clear that the behavior remains ---
-three different access methods are used. Comparing the output, seen in
-Figure~\ref{fig:json:eval2:test1:mariadb} and
-Figure~\ref{fig:json:eval2:test3:mariadb}, also shows that the methods are the
-same.
+three different access methods are used.
 
 \subsection{Conclusions from the discussion}
 This section will discuss what conclusions can be drawn from the discussion

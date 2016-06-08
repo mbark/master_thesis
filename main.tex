@@ -18,12 +18,12 @@
 \usepackage{pgfplots}
 \usepackage{tabu}
 \usepackage{fancyvrb}
-
-\usepackage[backend=biber]{biblatex}
-\addbibresource{references.bib}
-
 \usepackage[section]{minted}
 \usepackage{standalone}
+\usepackage[backend=biber]{biblatex}
+\usepackage{hyperref}
+
+\addbibresource{references.bib}
 
 \title{Evaluating the effect of cardinality estimates on two state-of-the-art
   query optimizer's selection of access method}
@@ -37,8 +37,6 @@
 \blurb{Master's Thesis at NADA\\Supervisor: John Folkesson\\Examiner: Patric Jensfelt}
 \trita{TRITA xxx yyyy-nn}
 
-\usepackage{hyperref}
-
 \begin{document}
 \lstset{basicstyle=\ttfamily,breaklines=true}
 \lstset{frame=lines}
@@ -46,6 +44,10 @@
 \pgfplotsset{width=10cm, compat=1.9}
 \tabulinesep=1.2mm
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
+
+\makeatletter
+\g@addto@macro\@floatboxreset\centering
+\makeatother
 
 \newcommand{\json}[5]{
   \inputminted[breaklines, breakanywhere, fontsize=\footnotesize]{json}{#1}
@@ -55,7 +57,7 @@
 \newcommand{\clj}[1]{\mintinline{clojure}{#1}}
 \newcommand{\sql}[1]{\mintinline{sql}{#1}}
 \newenvironment{indexgraph}{
-  \begin{tikzpicture}
+  \begin{tikzpicture}[scale=0.8]
     \begin{axis}[
       ybar,
       legend style={at={(0.5,-0.15)},
@@ -64,8 +66,7 @@
       nodes near coords,
       ylabel={\#access methods},
       ytick=\empty,
-      xtick=data,
-      width=14cm]
+      xtick=data]
 } {
   \legend{MariaDB, PostgreSQL}
 \end{axis}
