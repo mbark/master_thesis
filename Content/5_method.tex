@@ -496,7 +496,11 @@ The exact options used for the tests can be seen in
 Table~\ref{table:evaluation1}, which shows what queries were tested, the
 repetitions done and the statistics target used for each of the tests. Two of
 the tests done use the variable $d$, which refers to the default statistics
-target of the databases, the values of which can be seen in Figure~\ref{table:defaults}.
+target of the databases, the values of which can be seen in
+Figure~\ref{table:defaults}. The options --- three statistics targets and
+50 repetitions --- were kept small out of necessity, the tests for each database
+must be run sequentially and testing one query with one statistics target takes
+roughly 30 hours of execution time.
 
 As can be seen in the table, the lowest statistics target used is 1 for both
 databases. The reason is that it is done in order to simulate the worst possible
@@ -521,7 +525,7 @@ found in Section~\ref{sec:accessmethods} in the Discussion chapter.
 \begin{figure}[ht]
 \begin{minted}[breaklines]{sql}
 SELECT *
-FROM ct JOIN t JOIN mt JOIN mm JOIN book JOIN cmt
+FROM ct JOIN t JOIN mt JOIN mm JOIN book
 WHERE ct.key = :KEY
 \end{minted}
   \caption[Query \#2, used for the second evaluation]{Query \#2, a subset of the

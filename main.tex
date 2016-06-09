@@ -43,7 +43,6 @@
 \emergencystretch=1em
 \pgfplotsset{width=10cm, compat=1.9}
 \tabulinesep=1.2mm
-\definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 \makeatletter
 \g@addto@macro\@floatboxreset\centering
@@ -51,8 +50,8 @@
 
 \newcommand{\json}[5]{
   \inputminted[breaklines, breakanywhere, fontsize=\footnotesize]{json}{#1}
-  \captionof{listing}{The output when testing #2 with query #3, a sample size of
-  #4 and #5 repetitions.}
+  \captionof{listing}{The output when testing #2 with query #3, a statistics
+    target of $#4$ and #5 repetitions.}
 }
 \newcommand{\clj}[1]{\mintinline{clojure}{#1}}
 \newcommand{\sql}[1]{\mintinline{sql}{#1}}
@@ -81,7 +80,7 @@
     legend style={at={(0.5,-0.2)},
       anchor=north,legend columns=-1},
     xtick={0,1,2},
-    ytick={1,2,3,4,5},
+    ytick={0, 1,2,3,4,5},
     xticklabels={$1$, $d$, $2d$},
     domain=0:2]
 }{

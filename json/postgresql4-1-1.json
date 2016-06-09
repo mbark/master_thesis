@@ -2,34 +2,34 @@
     "mt": [
         {
             "Node Type": "Seq Scan",
-            "Alias": "mt",
+            "Alias": "mt"
         }
     ],
     "ct": [
         {
             "Node Type": "Index Scan",
             "Index Name": "\"NoneCycleTrade_match_view_ref\"",
-            "Alias": "ct",
+            "Alias": "ct"
         }
     ],
     "t": [
         {
             "Node Type": "Index Scan",
             "Index Name": "\"NoneTrade_trade_key_pkey\"",
-            "Alias": "t",
+            "Alias": "t"
         }
     ],
     "mm": [
         {
             "Node Type": "Index Only Scan",
             "Index Name": "\"NoneMasterMatch_master_match_key_pkey\"",
-            "Alias": "mm",
+            "Alias": "mm"
         }
     ],
     "book": [
         {
             "Node Type": "Seq Scan",
-            "Alias": "book",
+            "Alias": "book"
         }
     ]
 }

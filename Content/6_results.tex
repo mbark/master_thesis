@@ -1,4 +1,4 @@
-This chapter contains the results of using the tool to evaluate the two
+This chapter contains the results of it using the tool to evaluate the two
 databases. The chapter starts with a section showing the results when
 evaluating the effect of the cardinality estimate for the access methods chosen
 by the databases. Following this is a section containing the results of the
@@ -7,112 +7,98 @@ estimate cause the databases to select different access methods.
 
 \section{The effect of cardinality estimate}\label{sec:correlation}
 This section contains the results of the evaluation which focused on the effect of
-cardinality estimates. The section is split into two sections, one describing
-the tests with the low sample size and the other describing the tests with a
-high sample size. For the exact parameters used see
-Table~\ref{table:evaluation1}, which describes queries tested, repetitions done
-and sample sizes used.
+cardinality estimates. The section is split into two subsections, describing the
+results for the first and second query used for evaluation. The options used
+when testing the queries is described in Section~\ref{sec:evaluation} and more
+specifically Table~\ref{table:evaluation1}.
 
-The results are presented in the form of graphs showing the number of unique
-access methods used for each relation and database. To complement these graphs
-are also excerpts of the most relevant parts of the tool's output for the test.
-The excerpts focus on the parts of the output showing which access methods are
-used for the relations with many access methods.
+To illustrate the results found graphs are used to show the number of relations
+with varying access methods. This is then plotted over the statistics
+targets used to show what effect improving the quality of the cardinality
+estimate has on the access methods used. Thus, the x-axis of the graphs shows
+the number of relations with varying access methods and the y-axis shows the
+statistics target used.
 
-\subsection{Low sample size}
-The low sample size was set to 1 and the process of generating new cardinality
-estimates and retrieving query plans for them repeated 50 times.
+The graphs can be seen as a measure of how consistent the query optimizer is for
+the different statistics targets --- the lower the x-value the more consistent
+it is.
 
-The first test was done on query \#1 and the results can be seen in
-Figure~\ref{fig:plot:eval1:test1}. It is clear from the figure that both
-databases use different access methods for the same relation; for MariaDB the
-relation \textit{ct} is accessed using three different methods and PostgreSQL
-for the relations \textit{mt}, \textit{cmt}, \textit{cmm} and \textit{est} are
-all accessed with two different methods.
+In addition to the graphs, the full output of the tool is sometimes referred to,
+however due to the lengthiness of this it is included in
+Appendix~\ref{appendix:output}. The output of the tool is the relevant parts
+of the query plans generated, showing the access methods used for each relation.
 
-The output of the tool, shown in Appendix~\ref{appendix:output}, shows that
-MariaDB access the relation \textit{ct} with three different indexes. The
-output also shows that PostgreSQL on the other hand only varies between doing a
-full table scan or using an index for all the relations it has varying access
-methods for.
+\subsection{Query \#1}
+The first test was done on query \#1, shown in Figure~\ref{fig:sql:query1}, and
+the sample sizes used were $1$, $d$ and $2d$ --- capturing the worst scenario, a
+reasonable one and a good one. The estimation of cardinality and generation of
+query plans was repeated a total of 50 times, as described in
+Table~\ref{table:evaluation1}, in order to attempt to capture all access methods
+that might reasonably be selected.
 
-The results of the second test --- using query \#2 instead --- can be seen in
-Figure~\ref{fig:plot:eval1:test2}. The query  is simpler in terms of the number
-of joins and tables involved, yet it is still the case that PostgreSQL will
-select multiple access methods for the relation \textit{mt}.
+The results from this test can be seen in Figure~\ref{fig:plot:eval1:query1}.
+The graph shows that PostgreSQL has a total of three relations that are accessed
+with different methods, but as the statistics target increases that value
+decreases to one. For MariaDB the graph shows that it remains consistent in
+always having a varying access method for one relation.
+
+The output of the tool shows that for PostgreSQL the relations \textit{cmm},
+\textit{cmm} and \textit{est} are the ones that have varying access methods. The
+access methods used are either a full table scan --- a \textit{Seq Scan}
+--- an index.
+
+For MariaDB the output shows that one relation remains consistent in being
+accessed in multiple different ways --- \textit{ct}. Furthermore, the relation
+is accessed using three different indexes. As a matter of fact, no relation is
+accessed with a full table scan in MariaDB, it instead always appears to use an
+index if one exists on the relation.
 
 \begin{figure}
-\begin{indexgraph}
-  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
-  \addplot coordinates {(ct,1) (t,1) (mt,2) (mm,1) (book,1) (cmt,2) (cmm,2) (est,2) (resamb,1)};
-\end{indexgraph}
-\caption[The access methods used for query \#1 with 50 repetitions and a sample
-size of 1.]{The test conducted in the first evaluation using a sample size of 1
-  and 50 repetitions. The graph shows that MariaDB varies between three
-  different access methods for the relation \textit{ct} and PostgreSQL between
-  two for the relations \textit{mt}, \textit{cmt}, \textit{cmm} and
-  \textit{est}.}\label{fig:plot:eval1:test1}
+  \begin{indexplot}
+    \addplot coordinates {
+      (0,3) (1,1) (2,1)
+    };
+    \addplot coordinates {
+      (0,1) (1,1) (2,1)
+    };
+  \end{indexplot}
+  \caption[The results when evaluating query \#1 with 50 repetitions and a
+  varying statistics target.]{The results when evaluating query \#1 with 50
+    repetitions and statistics targets of $1$, $d$ and $2d$, where $d$ is the
+    default statistics target for the database.}\label{fig:plot:eval1:query1}
 \end{figure}
 
-\begin{figure}
-\begin{indexgraph}
-  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1)};
-  \addplot coordinates {(ct,1) (t,1) (mt,2) (mm,1) (book,1)};
-\end{indexgraph}
-\caption[The access methods used for the query \#2 with 50 repetitions and a sample
-size of 1.]{The test conducted using query \#2, 50 repetitions
-  and a sample size of 1 to simulate a cardinality estimate of low
-  quality. The graph shows that PostgreSQL will vary between using two different
-  access methods for the relation \textit{mt}, even though the query is simpler
-  in terms of the number of joins used compared to query
-  \#1.}\label{fig:plot:eval1:test2}
-\end{figure}
+\subsection{Query \#2}
+The second test was done on query \#2, shown in Figure~\ref{fig:sql:query2},
+which is a subset of the original query involving only five relations. The
+tests were once again done with 50 repetitions and a statistics target of $1$, $d$
+and $2d$.
 
-\subsection{High sample size}
-The second set of tests done was done using a sample size of 100, the number of
-repetitions was set to the same value as before --- 50.
+The results of the tests can be seen in Figure~\ref{fig:plot:eval1:query2}. The
+graph shows the same results as previously observed for PostgreSQL:\@ a bad
+quality cardinality estimate will cause it to vary between access methods.
+It is this time the relation \textit{mt} which has varying access methods, once
+again varying between a full table scan or using an index. As the statistics
+target increases PostgreSQL stabilizes and becomes consistent in always opting
+to use an index.
 
-The first test was done on query \#1 and the results of it can be seen in
-Figure~\ref{fig:plot:eval1:test3}. Compared to the access methods used for the
-low sample size, seen in Figure~\ref{fig:plot:eval1:test1}, PostgreSQL has
-become more consistent in its choice of access methods. However, MariaDB remains
-consistent in using three different access methods for the relation ct.
-
-Furthermore, the output of the tool (shown in Appendix~\ref{appendix:output})
-shows that as the cardinality estimate is improved, PostgreSQL will stop doing
-full table scans and instead always use an index. The output also shows that the
-access methods used for MariaDB remains the same three indexes.
-
-Query \#2 was also tested with a high sample size and the results, seen in
-Figure~\ref{fig:plot:eval1:test4}, show the same results as those for PostgreSQL
-and query \#1 --- the relation \textit{mt} is now accessed with only one access
-method.
+For MariaDB the behavior observed in Figure~\ref{fig:plot:eval1:query1} is also
+once again observed: the relation \textit{ct} is accessed with three different
+indexes.
 
 \begin{figure}
-\begin{indexgraph}
-  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,1) (est,1) (resamb,1)};
-  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) (cmm,2) (est,1) (resamb,1)};
-\end{indexgraph}
-\caption[The access methods used for query \#1 with 50 repetitions and a sample
-size of 100.]{The test conducted using query \#1, 50 repetitions
-  and a sample size of 100 to simulate a cardinality estimate of high
-  quality. The graph once again shows that MariaDB use three different access
-  methods for the relation \textit{ct.} PostgreSQL on the other hand now only use
-  different access methods for the relation \textit{cmm} and none else.}\label{fig:plot:eval1:test3}
-\end{figure}
-
-\begin{figure}
-\begin{indexgraph}
-  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1)};
-  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1)};
-\end{indexgraph}
-\caption[The access methods used for the query \#2 with 50 repetitions and a sample
-size of 100.]{The test conducted using query \#2, 50 repetitions
-  and a sample size of 100 to simulate a cardinality estimate of high
-  quality. The graph should be compared that of the test with a sample size of
-  1, which can be seen in Figure~\ref{fig:plot:eval1:test2}. The notable
-  difference is that \textit{mt} is selected using only one access method,
-  rather than two.}\label{fig:plot:eval1:test4}
+  \begin{indexplot}
+    \addplot coordinates {
+      (0,1) (1,0) (2,0)
+    };
+    \addplot coordinates {
+      (0,1) (1,1) (2,1)
+    };
+  \end{indexplot}
+  \caption[The results when evaluating query \#2 with 50 repetitions and a
+  varying statistics target.]{The results when evaluating query \#2 with 50
+    repetitions and statistics targets of $1$, $d$ and $2d$, where $d$ is the
+    default statistics target for the database.}\label{fig:plot:eval1:query2}
 \end{figure}
 
 \section{Evaluating subsets of the query}\label{sec:subsets}
@@ -126,17 +112,23 @@ Three queries are tested, the original query, a subset of the original query
 with less tables involved and a trivial query accessing only the relation
 \textit{ct}.
 
+The results are presented in the form of bar charts, with each bin of bars
+representing a relation and each bar representing the number of different access
+methods used for that relation for a database. Thus, a number larger than 1
+shows that the relation is accessed using varying access methods.
+
 \subsection{Query \#1}
 The first test was done on query \#1 in order to see which access methods
-varied, event though only one query plan was retrieved and the results can be
-seen in Figure~\ref{fig:plot:eval2:test1}. The results show that even though the
-cardinality estimate is fixed, different query plans are still generated.
+varied, event though only one query plan was retrieved. The results can be
+seen in Figure~\ref{fig:plot:eval2:test1}.
 
-Furthermore, the graph shows that PostgreSQL will access the relations
-\textit{cmt}, \textit{cmm} and \textit{est} with varying access methods, however
---- unlikely in the previous evaluation (shown in
-Figure~\ref{fig:plot:eval1:test1}), the relation \textit{mt} is not accessed
-with different access methods.
+The results show that even though the cardinality estimate remains fixed for all
+query plans generated, relations are still accessed with multiple access
+methods. For MariaDB it is only the relation ct whereas it is relations
+\textit{cmt}, \textit{cmm} and \textit{est} for PostgreSQL.
+
+This indicates that there are factors other than the cardinality estimate which
+may cause multiple access methods to be used.
 
 \begin{figure}
 \begin{indexgraph}
@@ -152,14 +144,18 @@ MariaDB still use different access methods for \textit{ct} and PostgreSQL for
 
 \subsection{Query \#2}
 The second query tested is simpler than the original as it involves less tables
-and thus \texttt{JOIN} operations. The results of the test can be seen in
-Figure~\ref{fig:plot:eval2:test2}, which shows that PostgreSQL still use
-multiple access methods for the relation \textit{cmt}.
+and thus less \texttt{JOIN} operations. The results of the test can be seen in
+Figure~\ref{fig:plot:eval2:test2}, which shows that even though the query is
+simpler, PostgreSQL still use multiple access methods relations.
+
+This indicates that the behavior is intentional and not the cause of the query
+being sufficiently complex to throw PostgreSQL off and thus cause it to use
+varying access methods. Instead, it seems to some extent deliberate.
 
 \begin{figure}
 \begin{indexgraph}
-  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1) (cmt,1) };
-  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1) (cmt,2) };
+  \addplot coordinates {(ct,3) (t,1) (mt,1) (mm,1) (book,1)};
+  \addplot coordinates {(ct,1) (t,1) (mt,1) (mm,1) (book,1)};
 \end{indexgraph}
 \caption[The access methods used for query \#2 with 1 repetition.]{The access
   methods for query \#2 with 1 repetition. The graph shows that even though the
@@ -172,8 +168,8 @@ The final query used used to test the databases with was the most simple variant
 of query \#1 --- selecting and filtering only the relation \textit{ct}.
 The results of the test can be seen in Figure~\ref{fig:plot:eval2:test3}, which
 shows that MariaDB still use three access methods. Furthermore, the output of
-the tool (shown in Appendix~\ref{appendix:output}) shows that the access methods
-are the same as for all previous tests with MariaDB.
+the tool shows that the access methods are the same as for all previous tests
+with MariaDB.\@
 
 \begin{figure}
 \begin{indexgraph}

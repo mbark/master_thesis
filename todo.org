@@ -64,9 +64,18 @@ CLOSED: [2016-06-08 Wed 14:35]
 CLOSED: [2016-06-08 Wed 15:35]
 ** DONE See if the tests can be presented in a better way, maybe via a graph?
 CLOSED: [2016-06-08 Wed 16:20]
-** TODO Rewrite the results section using plots instead of bar charts
-** TODO Explain the graphs even more so that even a dummy might understand them
-** TODO Say more about the results to show what results and conclusions can be drawn
-** TODO Test the databases with MariaDB: 1, 20, 40 and PostgreSQL: 1,100,200
+** DONE Format the MariaDB test results
+CLOSED: [2016-06-09 Thu 10:31]
+** DONE Rewrite the results section using plots instead of bar charts
+CLOSED: [2016-06-09 Thu 10:56]
+** DONE Rewrite the results text to describe the new plots instead
+CLOSED: [2016-06-09 Thu 12:54]
+*** Ensure that it is clear so even a dummy might understand
+** DONE Say more about the results to show what results and conclusions can be drawn
+CLOSED: [2016-06-09 Thu 13:18]
+** DONE Explain the conclusions found more clearly so that it is clear what is actually found
+CLOSED: [2016-06-09 Thu 15:33]
+
+** TODO Test the databases: MariaDB: 1, 20, 40; and PostgreSQL: 1,100,200
 ** TODO Update the results section with the results found for the new tests
-** TODO Look through and see if the conclusions can be further clarified
+** TODO Consider counting the number of different access methods to show distribution
