@@ -76,6 +76,10 @@ CLOSED: [2016-06-09 Thu 13:18]
 ** DONE Explain the conclusions found more clearly so that it is clear what is actually found
 CLOSED: [2016-06-09 Thu 15:33]
 
-** TODO Test the databases: MariaDB: 1, 20, 40; and PostgreSQL: 1,100,200
-** TODO Update the results section with the results found for the new tests
-** TODO Consider counting the number of different access methods to show distribution
+** DONE Test the databases: MariaDB: 1, 20, 40; and PostgreSQL: 1,100,200
+CLOSED: [2016-06-10 Fri 10:36]
+** DONE Update the results section with the results found for the new tests
+CLOSED: [2016-06-10 Fri 10:36]
+** TODO Add the results for Postgresql4, 2d, 50 when it is done
+** TODO Go through the the results, discussion and conclusions again
+** TODO Finish a draft for the presentation

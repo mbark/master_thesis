@@ -176,7 +176,10 @@ The original query used for evaluation can be seen in
 Figure~\ref{fig:sql:query1}, the relation names are once again anonymized. The
 query is constructed so that the predicate used for filtering is an indexable
 one. For the metrics of the relations involved see Figure~\ref{table:dataset}.
-The variations of the query simply remove one or more relations involved.
+
+Variations, in the form of subsets involving fewer tables, were constructed to
+present simpler scenarios for the query optimizer. These subsets can be seen in
+Figure~\ref{fig:sql:query2}, Figure~\ref{fig:sql:query3} and Figure~\ref{fig:sql:query4}.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{sql}
@@ -188,6 +191,40 @@ WHERE ct.key = :KEY
     evaluation, simplified and anonymized. The relations are joined on rows in
     common.}\label{fig:sql:query1}
 \end{figure}
+
+\begin{figure}[ht]
+\begin{minted}[breaklines]{sql}
+SELECT *
+FROM ct JOIN t JOIN mt JOIN mm JOIN book
+WHERE ct.key = :KEY
+\end{minted}
+  \caption[Query \#2, used for the second evaluation]{Query \#2, a subset of the
+  original query used to provide a more simple scenario for the query
+  optimizer.}\label{fig:sql:query2}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{minted}[breaklines]{sql}
+SELECT *
+FROM ct JOIN t JOIN mt JOIN mm JOIN book JOIN cmm JOIN cmt
+WHERE ct.key = :KEY
+\end{minted}
+  \caption[Query \#3, used for the second evaluation]{Query \#3, a subset of the
+  original query used to provide a more simple scenario for the query
+  optimizer.}\label{fig:sql:query3}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{minted}[breaklines]{sql}
+SELECT *
+FROM ct
+WHERE ct.key = :KEY
+\end{minted}
+  \caption[Query \#4, used for the second evaluation]{Query \#4, a subset of the
+  original query and one that should be trivial for the query optimizer as it
+  does no joins and only selects a single relation.}\label{fig:sql:query4}
+\end{figure}
+
 
 \section{Implementation}\label{sec:implementation}
 This section will cover the implementation details of the tool used for
@@ -221,7 +258,7 @@ Figure~\ref{fig:cmd:runtool1}.
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{bash}
-    lein run steps='generate parse analyze' query=queryid repetitions=100 samplesizes='10 100' --database=postgresql
+    lein run --steps='generate parse analyze' --query=queryid --repetitions=100 --samplesizes='10 100' --database=postgresql
   \end{minted}
   \caption[Using the tool to generate, parse and analyze a query]{An example of
     using the tool to generate, parse and analyze a query with some given
@@ -236,7 +273,7 @@ generated plan is parsed and analyzed.
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{bash}
-    lein run plans/xxx-000000000 steps='parse analyze'
+    lein run plans/xxx-000000000 --steps='parse analyze'
   \end{minted}
   \caption[Using the tool to parse and analyze a previously generated plan]{An
     example of how the tool can be used to parse and analyze a previously
@@ -513,36 +550,11 @@ reason is that the statistics target used is not controlled in the same way for
 both databases, thus using the default value as baseline provides a way to
 simulate a more similar scenario.
 
-Finally, the tests done with a focus on the effect of sample size showed results
-that warranted a second evaluation focusing on identifying other factors. The
-results for this evaluation can be seen in Figure~\ref{table:evaluation2}. This
-evaluation was done using subsets of the original query --- shown in
-Figure~\ref{fig:sql:query2} and Figure~\ref{fig:sql:query3} --- and with no
-repetitions of the test in order to use only one cardinality estimate for all
-query plans generated. A further motivation and discussion regarding this can be
-found in Section~\ref{sec:accessmethods} in the Discussion chapter.
-
-\begin{figure}[ht]
-\begin{minted}[breaklines]{sql}
-SELECT *
-FROM ct JOIN t JOIN mt JOIN mm JOIN book
-WHERE ct.key = :KEY
-\end{minted}
-  \caption[Query \#2, used for the second evaluation]{Query \#2, a subset of the
-  original query used to provide a more simple scenario for the query
-  optimizer.}\label{fig:sql:query2}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{minted}[breaklines]{sql}
-SELECT *
-FROM ct
-WHERE ct.key = :KEY
-\end{minted}
-  \caption[Query \#3, used for the second evaluation]{Query \#3, a subset of the
-  original query and one that should be trivial for the query optimizer as it
-  does no joins and only selects a single relation.}\label{fig:sql:query3}
-\end{figure}
+Finally, an additional evaluation was done in order to identify if there were
+factors other than the cardinality estimate that caused the varying access
+methods. These tests are therefore done with one repetition --- making all
+generated query plans be based on the same cardinality estimate. The options for
+the tests can be seen in Figure~\ref{table:evaluation2}.
 
 \begin{table}
   \begin{center}
@@ -550,7 +562,7 @@ WHERE ct.key = :KEY
       \toprule
       queries & repetitions & sample sizes \\
       \midrule
-      \#1, \#2, \#3  & 1 & 1 \\
+      \#1, \#3, \#4  & 1 & 1 \\
       \bottomrule
     \end{tabu}
     \caption[The number of repetitions and statistics target used for second evaluation]{The

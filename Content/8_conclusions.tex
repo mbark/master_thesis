@@ -32,17 +32,19 @@ MariaDB is found to be unaffected by bad cardinality estimates and remains
 consistent in what query plans are generated, regardless of statistics target
 used. The main reason identified for this is that MariaDB will always use an
 index if one exists, thus making it impossible to do the same mistake as
-PostgreSQL does. However, one relation is consistently selected using multiple
-access methods.
+PostgreSQL does. However, MariaDB will consistently select one relation using
+varying access methods --- regardless of statistics target.
 
-The reason that the databases used varying access methods for the same data even
-with a high statistics target was studied in the second evaluation. The results
-found that both were sensitive to the predicate value used when filtering the
-rows selected. MariaDB would vary between using three different predicates
-depending on what predicate value was used. This behavior was also observed for
-PostgreSQL, except it would vary between using an index or doing a full table scan.
+The reason that the databases used varying access methods for the same relation
+even with a high statistics target was studied in the second evaluation. The
+results found that both were sensitive to the predicate value used when
+filtering the rows selected. MariaDB would vary between using three different
+indexes depending on what predicate value was used. A similar behavior was
+observed for PostgreSQL, which would vary between using an index or doing a
+full table scan.
 
 In conclusion, we have found results showing that for PostgreSQL the cardinality
 estimate clearly affects what access methods are used --- with bad estimates
-resulting in incorrect full table scans. MariaDB was found to not be affected
-by cardinality estimate, mainly because it would always use an index if one existed.
+resulting in incorrect full table scans. MariaDB was found to be more resistant
+to incorrect cardinality estimates, mainly because it would always use an index
+if one existed.
