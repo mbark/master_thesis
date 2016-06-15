@@ -40,6 +40,7 @@
 *.tdo
 
 _region_.tex
+_minted-main/
 
 ### Emacs ###
 # -*- mode: gitignore; -*-

@@ -80,6 +80,9 @@ CLOSED: [2016-06-09 Thu 15:33]
 CLOSED: [2016-06-10 Fri 10:36]
 ** DONE Update the results section with the results found for the new tests
 CLOSED: [2016-06-10 Fri 10:36]
-** TODO Add the results for Postgresql4, 2d, 50 when it is done
-** TODO Go through the the results, discussion and conclusions again
-** TODO Finish a draft for the presentation
+** DONE Add the results for Postgresql4, 2d, 50 when it is done
+CLOSED: [2016-06-13 Mon 11:11]
+** DONE Go through the the results, discussion and conclusions again
+CLOSED: [2016-06-13 Mon 11:11]
+** DONE Finish a draft for the presentation
+CLOSED: [2016-06-13 Mon 11:11]
