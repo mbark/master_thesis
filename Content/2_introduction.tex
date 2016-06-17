@@ -60,6 +60,14 @@ The exact setup and metrics of the dataset is described in
 Section~\ref{sec:benchmark}. A motivation to why the databases are used is
 described in Section~\ref{sec:choiceofdatabases}.
 
+\section{Delimitation}
+This thesis will do only one study and that is on the number of access methods.
+Thus, no evaluation will be done on the performance of the databases in terms of
+other metrics such as execution time. The reason is that the results found in
+this thesis are generally applicable regardless of hardware and conditions under
+which the evaluation is done. A study focusing on database performance is a much
+larger undertaking and one that is beyond the scope of this thesis.
+
 \section{Purpose}~\label{sec:purpose}
 Query optimizers make bad cardinality estimates, and as a consequence bad cost
 estimations of access paths~\cite{leis_2015_how_hgaqor} – but how much does this
@@ -95,12 +103,13 @@ reasons~\ref{item:purpose:tool},~\ref{item:purpose:steps}
 and~\ref{item:purpose:data} whereas database vendors might be more interested
 in~\ref{item:purpose:performance} and~\ref{item:purpose:compare}.
 
-\subsubsection{Ethics and sustainability}
+\section{Ethics and sustainability}
 There are no ethical implications of this thesis as an evaluation of a built-in
-tool in databases does not in any way relate to any ethical problem. When it
-comes to sustainability the most direct consequence is of course that improving
-something that has such widespread use would provide the ability to save a
-considerable amount of energy through more effective query execution.
+tool in databases does not in any way relate to any ethical problem.
+
+When it comes to sustainability it is the case that any improvement to databases
+will potentially provide considerable energy-savings considering the prevalence
+and extensive use of databases.
 
 \section{Outline}
 Below is a brief outline of the chapters in the report and what can be expected

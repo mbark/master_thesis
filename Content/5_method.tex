@@ -9,13 +9,28 @@ conducted.
 \section{Choice of method}\label{sec:choiceofmethod}
 This section will motivate the methods' three primary questions:
 \begin{enumerate}
+\item How is the evaluation done?
 \item What databases are evaluated?
 \item What dataset is used to evaluate the databases?
 \item How are the databases evaluated?
 \end{enumerate}
 
-The following three sections will answer these questions, motivating
-choice of databases, dataset and implementation.
+The following four sections will answer these questions, motivating
+choice of evaluation method, databases, dataset and implementation.
+
+\subsection{Method of evaluation}\label{sec:methodofevaluation}
+The method of evaluation is a Monte Carlo method, the reasons for this are
+primarily:
+\begin{itemize}
+\item The number of parameters involved in the query optimization makes it hard
+  to test in a deterministic way;
+\item And the all plans found are ones that the query optimizer under reasonable
+  circumstances do generate.
+\end{itemize}
+
+The method of evaluation is therefore done by allowing the database to generate
+new cardinality estimates for all relations in the database, find the access
+methods used and then repeat this process a sufficient number of times.
 
 \subsection{Choice of databases}\label{sec:choiceofdatabases}
 The two databases chosen to evaluated are PostgreSQL and MariaDB.\@ The choice was
@@ -224,7 +239,6 @@ WHERE ct.key = :KEY
   original query and one that should be trivial for the query optimizer as it
   does no joins and only selects a single relation.}\label{fig:sql:query4}
 \end{figure}
-
 
 \section{Implementation}\label{sec:implementation}
 This section will cover the implementation details of the tool used for

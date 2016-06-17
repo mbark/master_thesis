@@ -1,3 +1,19 @@
+This Appendix contains the output of the program for all of the tests conducted.
+The output is the output of the database's \texttt{EXPLAIN} output in
+\textit{JSON}-form. The format of the output is a map where each relation is
+mapped to a list of the access methods used for that relation. Each access
+method is described by a map containing the access method used and, if it is an
+index, the name of the index.
+
+For PostgreSQL the access method is described by the field \texttt{"Node Type"}
+and \texttt{"Seq Scan"} means a full table scan. If an index is used instead the
+\texttt{"Node Type"} is \emph{Index Scan} (or \texttt{"Index Only Scan"}) and the
+\texttt{"Index Name"} identifies which index it is that is used.
+
+For MariaDB all relations are accessed using an index and the name of that index
+is described in \texttt{"key"}. MariaDB also contains an additional field in the form of
+\texttt{"possible\_keys"} which shows what access methods were considered applicable.
+
 \section{Evaluation 1}
 
 \subsection{PostgreSQL}
