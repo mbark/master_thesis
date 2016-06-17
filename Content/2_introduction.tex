@@ -4,14 +4,14 @@
   and use data.}{\textit{The King of Kod, from~\cite[p.~6]{takahashi_2009_manga_tmgtd}}}
 
 If you want to save data, you need a database. And almost every computer program
-need to save some form of data, consequently requiring them to use a database.
+needs to save some form of data, consequently requiring them to use a database.
 The trend is also going towards generating more and more data, putting higher
 strain on databases and requiring better performance. To improve and develop
 databases is therefore a topic of much relevance in today's society.
 
 One key component of databases is the query optimizer, the part of the database
-that analyses the users query and finds the optimal path to access it. Or
-rather, theoretically it finds the optimal path. Work has been done improving
+that analyses the user's query and finds the optimal path to access it. Or
+rather, theoretically it finds the optimal path. Work has been done on improving
 query optimizers since the early '70s~\cite{chaudhuri_1998_overview_aooqoirs},
 yet optimizers often select a bad access path, causing slow
 queries~\cite{leis_2015_how_hgaqor}.
@@ -50,14 +50,14 @@ measure the performance of the query optimizer in order to answer the question:
 \textit{How much effect does the cardinality estimate have on the query optimizers
   selection of access method during the join enumeration?}
 
-To evaluate this tests will be done in order to identify a correlation between
+To evaluate this, tests will be done in order to identify a correlation between
 the quality of the cost estimation and the number of different access methods
-used. To simulate varying, but realistic, quality of the cost estimation the
+used. To simulate a varying, but realistic, quality of the cost estimation, the
 sample size used to estimate the cardinality will be varied. For a more in-depth
 description of how this evaluation is conducted, see Section~\ref{sec:choiceofmethod}.
 
 The exact setup and metrics of the dataset is described in
-Section~\ref{sec:benchmark}. A motivation to why the databases are used is
+Section~\ref{sec:benchmark} and a motivation to why the databases are used is
 described in Section~\ref{sec:choiceofdatabases}.
 
 \section{Delimitation}
@@ -105,7 +105,7 @@ in~\ref{item:purpose:performance} and~\ref{item:purpose:compare}.
 
 \section{Ethics and sustainability}
 There are no ethical implications of this thesis as an evaluation of a built-in
-tool in databases does not in any way relate to any ethical problem.
+tool in databases has very few ethical implications.
 
 When it comes to sustainability it is the case that any improvement to databases
 will potentially provide considerable energy-savings considering the prevalence
@@ -123,14 +123,12 @@ to be found in each:
   previous and relevant work has been done in the area of improving and
   evaluating the performance of query optimizers.
 \item The \nameref{chap:theory} chapter gives a background and the information
-  necessary to understand the thesis. The chapter begins with a background on
-  how a modern query optimizer works. It then continues with a description of
-  the individual characteristics of the databases analysed: MariaDB and
-  PostgreSQL.\@ It also defines some important terms used throughout the thesis.
-\item The \nameref{chap:method} chapter describes the evaluations done and how they
-  were implemented. It also describes more in-detail the data used for the
-  databases, the database configurations used and the environment the tests were
-  run in.
+  necessary to understand the thesis. The chapter focuses on providing the
+  theory behind query optimization and related topics such as indexes.
+\item The \nameref{chap:method} chapter provides a motivation to the choice of
+  method as well as the dataset and query used. The chapter further provides
+  implementation details for the tool developed and information on the options
+  used for the evaluation done.
 \item The \nameref{chap:results} chapter displays the results from the
   performance test in the form of graphs. It also gives some brief commentary on
   them.
@@ -138,4 +136,7 @@ to be found in each:
   query optimizers and the consequences of it, as well as the validity of the
   results. It also answers the problem statement and provides suggestions for
   future research.
+\item The \nameref{chap:conclusions} chapter finally provides a concluding
+  remark as to what the study focused on, what was done and the conclusions
+  derived.
 \end{itemize}

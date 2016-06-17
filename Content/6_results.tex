@@ -36,7 +36,7 @@ attempt to capture all access methods that might reasonably be selected.
 
 The results from this test can be seen in Figure~\ref{fig:plot:eval1:query1}.
 The graph shows that PostgreSQL has a total of three relations that are accessed
-with different methods, but as the statistics target increases that value
+with different methods, but as the statistics target increases, that value
 decreases to one. For MariaDB the graph shows that it remains consistent in
 always having a varying access method for one relation.
 
@@ -170,10 +170,10 @@ caused by a too complex query, but rather a deliberate choice by the optimizer.
   methods for the relations \textit{cmt} and \textit{cmm}.}\label{fig:plot:eval2:test2}
 \end{figure}
 
-\subsection{Query \#3}
-The final query used used to test the databases with was the most simple variant
-of query \#1 --- selecting and filtering only the relation \textit{ct}.
-The results of the test can be seen in Figure~\ref{fig:plot:eval2:test3}, which
+\subsection{Query \#4}
+The final query used used to test the databases with was the simplest query
+constructed --- selecting and filtering only the relation \textit{ct}. The
+results of the test can be seen in Figure~\ref{fig:plot:eval2:test3}, which
 shows that MariaDB still use three access methods. Furthermore, the output of
 the tool shows that the access methods are the same as for all previous tests
 with MariaDB.\@

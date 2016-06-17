@@ -13,12 +13,12 @@ In~\cite{leis_2015_how_hgaqor} Leis et.\ al.\ perform what they claim is:
 \textit{``the first end-to-end study of the join ordering problem using a
   real-world data set and realistic queries''}.
 
-In the study they create the a database setup based on the Internet Movie
+In the study they create a database setup based on the Internet Movie
 Database (IMDb), create a set of realistic queries for it and call it the Join
 Order Benchmark (JOB). Using this benchmark they then measure how PostgreSQL,
 HyPer and three unnamed commercial databases perform in terms of cardinality
 estimates, cost modelling and general performance. They also compare the results
-to TPC-H, the database setup previously mostly used for evaluation and show that
+to TPC-H, the database setup previously mostly used for evaluation, and show that
 the PostgreSQL optimizer performs unrealistically well for TPC-H because of the
 uniform data distribution. The results of their study show that relational
 databases produce large estimation errors and that primarily the cardinality
@@ -102,8 +102,8 @@ find alternatives method that do not assume independence.
 
 Tzoumas et\ al.\ present one method that instead of the usual one-dimensional
 statistical summary, saves it as a small, two-dimensional
-distribution~\cite{tzoumas_2011_lightweight_lgmfsewia}. Their results show an
-small overhead, and an order of magnitude better selectivity estimates.
+distribution~\cite{tzoumas_2011_lightweight_lgmfsewia}. Their results show a
+small overhead with selectivity estimates being better by an order of magnitude.
 
 In~\cite{yu_2013_cs2_candsfqea} Yu et\ al.\ develop a  method called
 \textit{Correlated Sampling} that does not sample randomly, but rather save
@@ -115,8 +115,8 @@ provides better estimations than existing methods.
 In~\cite{vengerov_2015_join_jsestfc} Vengerov et\ al.\ once again study
 Correlated Sampling, but improve on it by allowing it to only make a single pass
 over the data. They compare the algorithm to two other sampling approaches
-(independent Bernoulli Sampling and End-Biased Sampling, which is described
-in~\cite{estan_2006_end_esfjce}) and find Correlated Sampling to give the best
+(Independent Bernoulli Sampling and End-Biased Sampling, which is described
+in~\cite{estan_2006_end_esfjce}) and find Correlated Sampling to provide the best
 estimates in a large range of situations.
 
 \section{Improving operators}
@@ -132,5 +132,4 @@ to pick nested-loop joins (more about these in Section~\ref{sec:nestedloopjoin})
 even though they provide a high risk but only a very small payoff.
 In~\cite{graefe_2011_generalized_agja} Goetz Graefe provides a generalized join
 algorithm that can replace both merge joins and hash joins in databases, thus
-avoiding the danger of mistaken join algorithm choices during query
-optimization.
+avoiding the danger of an incorrectly chosen join algorithm during query optimization.

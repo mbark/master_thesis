@@ -1,12 +1,11 @@
 The terminology of databases often varies across literature and database
 vendors, this section therefore defines the terms used in this thesis. When
-it is the case that something commonly goes by other names as well, they will be
-included to a great an extent as possible.
+it is the case that something commonly goes by other names as well, an attempt
+has been made to include these names as well.
 
 \subsection*{Database}
 No distinction is made between the database and the Database Management Systems
-(DBMS) in this thesis as it is not relevant to separate them. If it is relevant
-to distinguish between the two it will be done explicitly.
+(DBMS) in this thesis and the terms are used interchangeably.
 
 \subsection*{Data}
 The \textit{data} in a database is the values stored in the rows and columns of
@@ -24,8 +23,8 @@ thesis. If an optimizer of some other kind is used this will be made explicit.
 \subsection*{Host variable}
 A \textit{host variable} is a variable declared in the program in which the SQL
 statement is embedded~\cite[p. 151]{chamberlin_1998_complete_acgtdud}. Host
-variables are by the fact that they begin with a colon. An example of a host
-variable is \sql{:HEIGHT} in Figure~\ref{fig:sql:hostvar}.
+variables are identified by the fact that they begin with a colon. An example of
+a host variable is \sql{:HEIGHT} in Figure~\ref{fig:sql:hostvar}.
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{sql}
@@ -40,8 +39,8 @@ variable is \sql{:HEIGHT} in Figure~\ref{fig:sql:hostvar}.
 \subsection*{Predicate}
 In order to get the data you need, you must be able to specify what conditions
 the data should fulfill to be relevant, this is done by specifying predicates.
-To illustrate, consider Figure~\ref{fig:sql:predicate} taken
-from~\cite{lahdenmaki_2005_relational_rdidatodossea}.
+To illustrate, consider Figure~\ref{fig:sql:predicate} (example taken
+from~\cite{lahdenmaki_2005_relational_rdidatodossea}).
 
 \begin{figure}[ht]
   \begin{minted}[breaklines]{sql}
@@ -187,9 +186,8 @@ cost of different access paths.
 \subsection*{Statistics target}
 The \textit{statistics target} is used to refer to the amount of statistics
 stored when analyzing a table, and thus by extension the sample size used when
-estimating the cardinality of the relations. How the statistics target is set
-varies between databases depending on what methods are provided to control
-cardinality estimate.
+estimating the cardinality of the relations. What the statistics target is
+varies between database implementations.
 
 \subsection*{Filter factor}
 The \textit{filter factor} specifies what proportion of the rows that    satisfy

@@ -2,8 +2,8 @@
   He walks up to them and asks ``Can I join you?''}{\textit{– Source: Unknown,
     from~\cite{join_tjo}}}
 
-In this chapter a background is given to relational databases with more focus on
-the areas of interest for this thesis. The first section will give a high-level
+In this chapter a background is given to relational databases, focusing on the
+areas of interest for this thesis. The first section will give a high-level
 introduction to relational databases and how they work in general. Following
 this is a section with a more in-depth description of indexes. After this comes
 the final section covering the query optimizer, detailing how it works, how it
@@ -23,20 +23,21 @@ one or more of Tuple B''.
 
 The following sections will describe some components of the database which are
 of the most relevant for this thesis.  First comes a section describing the most
-common method to access data in a relational database, SQL, after this is is a
-section about how the query described by SQL is executed and finally a section
-about one of the most fundamental operations in SQL – the join operation.
+common language, SQL, when writing queries in relation languages, after this is
+is a section describing how the query described by SQL is executed and finally a
+section covering one of the most fundamental operations in SQL --- the join
+operation.
 
 \subsection{SQL}
 SQL, or Structured Query Language in full, is the computer language most
 commonly used to query and modify the database, it is formally defined by
-ISO/IEC 9075~\cite[p.
-29]{garcia-molina_2002_database_dstcb}\cite{iso_i9itdlsp1f}. The language came
-from research into manipulating databases in the early '70s and it is now one of
-the most popular database languages in existence~\cite{sql_s|cl}.
+ISO/IEC
+9075~\cite[p.~29]{garcia-molina_2002_database_dstcb}\cite{iso_i9itdlsp1f}. The
+language came from research into manipulating databases in the early '70s and it
+is now one of the most popular database languages in existence~\cite{sql_s|cl}.
 
 \subsection{Query execution}
-The execution of a query in the form of an SQL statement is split into four
+The execution of a query in the form of an SQL-statement is split into four
 phases~\cite{selinger_1979_access_apsiardms}:
 \begin{enumerate}
 \item \textit{Parsing}, in which the input text is transformed into query
@@ -55,7 +56,7 @@ time for the query. The query optimization process is performed by the query
 optimizer, which is described in more detail in Section~\ref{sec:queryopt}.
 
 \subsection{The join operation}
-One of the most fundamental operations in SQL is that of joining two tables. An
+One of the most fundamental operations in SQL is joining two tables. An
 example of an inner join on the tables \sql{EMPLOYEES} and \sql{DEPARTMENTS} can
 be found in Figure~\ref{fig:sql:joinop}.
 
@@ -95,7 +96,6 @@ diagrams.
 \end{figure}
 
 \subsection{Implementation of operators}\label{sec:opimpl}
-
 Operators can be divided into three classes:
 \begin{enumerate}
 \item\label{item:classop:sort} \textit{Sorting-based} methods;
@@ -155,20 +155,20 @@ class~\ref{item:classop:sort}.
 \subsubsection{Hash join}
 There are several types of hash joins but the general principle remains the
 same: build a hash table for the outer table, then scan the inner table to find
-rows that match the join condition~\cite[p.
-732-738]{garcia-molina_2002_database_dstcb}.
+rows that match the join
+condition~\cite[p.~732-738]{garcia-molina_2002_database_dstcb}.
 
 Hash joins are two-pass algorithms of class~\ref{item:classop:hash}.
 
 \section{Indexes}
 This section will cover the basics behind indexes as described by Ramakrishnan
-et.\ al.\ in~\cite[Ch. 8]{ramakrishnan_2003_database_dms}.
+et.\ al.\ in~\cite[Ch.~8]{ramakrishnan_2003_database_dms}.
 
 An index is a data structure that allows data stored in the database to be
-accessed quicker through some retrieval operations. The data stored in the index
-is called the \textit{data entry} and the value that is indexed – the value in
-the column – is called the \textit{search key}. There are three alternatives for
-what to store as the data in the data entry:
+accessed more efficiently for some retrieval operations. The data stored in the
+index is called the \textit{data entry} and the value that is indexed --- the
+value in the column --- is called the \textit{search key}. There are three
+alternatives for what to store as the data in the data entry:
 
 \begin{enumerate}
 \item\label{item:indexes:alt1} A data entry is a the actual data saved;
@@ -210,19 +210,19 @@ non-leaf nodes direct the search toward the correct leaf node. In practice the
 trees are often implemented as $B^{+}$-trees, which is a data structure that
 ensure that paths from the root to a leaf node are of the same
 length~\cite{comer_1979_ubiquitous_ub}. The efficiency of a B-tree index depends
-on the number of levels the B-tree has~\cite[p.
-645]{garcia-molina_2002_database_dstcb}.
+on the number of levels the B-tree
+has~\cite[p.~645]{garcia-molina_2002_database_dstcb}.
 
 \section{The query optimizer}\label{sec:queryopt}
-In order to access the data in an as efficient way as possible, the query is
-optimized by a built-in tool in the databases called the query optimizer. Below
-is a description of the fundamental operations performed by query optimizer,
-taken mostly from C., Surajits article on the
+In order to access the data in an efficient way, the query is optimized by a
+built-in tool in the database called the query optimizer. Below is a
+description of the fundamental operations performed by query optimizer, taken
+mostly from C., Surajits article on the
 topic~\cite{chaudhuri_1998_overview_aooqoirs}.
 
 Query evaluation is handled by two components: the \textit{query optimizer} and
 the \textit{query execution engine}. The input to the query optimizer is a
-parsed representation of the SQL query and the output is an access path, that is
+parsed representation of the SQL~query and the output is an access path, that is
 transformed into a query plan that the query execution engine then performs.
 
 In order for the query optimizer to find an access path it must be able to:
@@ -300,18 +300,18 @@ single node with many children, see Figure~\ref{fig:groupop} for an example.
     \caption{\label{fig:groupop:b}}
   \end{subfigure}
   \caption[An example of how operators can be grouped into a single node]{The
-    \texttt{JOIN} operators are assumed to be associative and commutative,
-    allowing Figure~\ref{fig:groupop:a} to be transformed into
-    Figure~\ref{fig:groupop:b}, example taken from~\cite[p.
-    791]{garcia-molina_2002_database_dstcb}.}\label{fig:groupop}
+    \texttt{JOIN} operator is associative and commutative, allowing the access
+    path in Figure~\ref{fig:groupop:a} to be transformed into
+    Figure~\ref{fig:groupop:b}, example taken
+    from~\cite[p.~791]{garcia-molina_2002_database_dstcb}.}\label{fig:groupop}
 \end{figure}
 
 \subsubsection{Pushing operations up and down the tree}
 Another fundamental rule used by optimizers is that of pushing an operator down
-the expression tree in order to reduce the cost of performing it~\cite[p.
-768-792]{garcia-molina_2002_database_dstcb}. For the example the selection
-operators tend to reduce the size of the relations, meaning pushing them down as
-far down the tree as possible is beneficial.
+the expression tree in order to reduce the cost of performing
+it~\cite[p.~768-792]{garcia-molina_2002_database_dstcb}. For the example the
+selection operators tend to reduce the size of the relations, meaning pushing
+them down as far down the tree as possible is beneficial.
 
 Another rule that can be applied is to pull an operator up the tree, in order to
 then be able to push it down again to reduce the size of more relations. See
@@ -320,7 +320,7 @@ allows it to then be pushed down more branches.
 
 The conditions for when these rules are applicable naturally varies a lot
 depending on the operator and it is beyond the scope of this thesis to list them
-all. See~\cite[p. 768-779]{garcia-molina_2002_database_dstcb} for an in-depth
+all. See~\cite[p.~768-779]{garcia-molina_2002_database_dstcb} for an in-depth
 description of the rules and conditions.
 
 \begin{figure}[ht]
@@ -349,17 +349,17 @@ description of the rules and conditions.
   \end{subfigure}
   \caption[Illustrating how operators can be pushed and pulled up and down the
   tree]{An expression tree representing a query to find which stars worked for
-    which studios in 1996, example taken from~\cite[p.
-    774]{garcia-molina_2002_database_dstcb}. The selection operator in
-    Figure~\ref{fig:pushop:a} is first pulled up the tree, allowing it to then
-    be pushed down an additional branch as illustrated in
+    which studios in 1996, example taken
+    from~\cite[p.~774]{garcia-molina_2002_database_dstcb}. The selection
+    operator in Figure~\ref{fig:pushop:a} is first pulled up the tree, allowing
+    it to then be pushed down an additional branch as illustrated in
     Figure~\ref{fig:pushop:b}.}\label{fig:pushop}
 \end{figure}
 
 \subsubsection{Eliminating operators via an index}
 Several operations such as \sql{GROUP BY}, \sql{ORDER BY}, \sql{MAX} etc can be
 eliminated because the the relation is known to already fulfill these
-criteria~\cite[p. 777-779]{garcia-molina_2002_database_dstcb}. One of the more
+criteria~\cite[p.~777-779]{garcia-molina_2002_database_dstcb}. One of the more
 common criteria is the existence of an index that allows the data to be
 retrieved sorted.
 
@@ -380,7 +380,7 @@ thus it is important that the estimation is efficient. The cost estimation is
 done in three steps:
 \begin{enumerate}
 \item Collect statistics of stored data;
-\item For each node in the tree calculate the cost of applying the operation;
+\item For each node in the tree, calculate the cost of applying the operation;
 \item And then the calculate the statistics for the resulting output.
 \end{enumerate}
 
@@ -397,12 +397,12 @@ cardinality is often impossible to calculate in a modern database as they often
 contain huge amounts of data, making it practically impossible to calculate the
 exact value.
 
-Instead, the cardinality is often estimated through
+Instead, the cardinality is estimated through
 sampling~\cite[p.~807-808]{garcia-molina_2002_database_dstcb}. The idea is to
 sample a fraction of the data and from that data generate an approximation of
 the cardinality.
 
-Approximating the cardinality is however how trivial as it leads to the question
+Approximating the cardinality is however not trivial --- it leads to the question
 of what assumptions are done regarding the data, is it for example assumed to be
 distributed uniformly? As described in
 Section~\ref{sec:improving_cardinality_estimates}, modern databases often make a
@@ -410,9 +410,9 @@ simple assumption of independence --- an assumption which is often incorrect.
 
 Regardless of the complexities of approximating, the intuitive idea is that if
 we when sampling observe only a few different values for a relation, it
-seems likely that we've seen most of the values for that relation --- indicating
-a low cardinality. Or if we on the other hand observe almost only different
-values it is likely that it is instead the case that the relation has a high
+seems likely that we have seen most of the values for that relation --- indicating
+a low cardinality. If we on the other hand observe almost only different
+values, it is likely that it is instead the case that the relation has a high
 cardinality.
 
 \subsection{Enumeration}
@@ -420,13 +420,14 @@ The enumeration is the final task of the optimizer and the one that will perform
 the actual expansion and cost estimation, as it selects in what way to expand
 the search space. It would be too costly to expand the entire search space and
 for each plan estimate the cost, instead the search space is expanded
-heuristically in a way that the optimizer believes will give cheap plans.
+heuristically in a way that the optimizer believes will identify the fast access
+paths.
 
 When expanding the search space the general principle is to find paths where the
 size of relations is reduced as early as possible. For example pushing an
 operation down the tree, as shown in Figure~\ref{fig:pushop}, can reduce the
 size of the relation and thus reduce the cost of performing a join later
-on~\cite[p. 772-774]{garcia-molina_2002_database_dstcb}.
+on~\cite[p.~772-774]{garcia-molina_2002_database_dstcb}.
 
 If the enumeration algorithm estimates the cost for a new plan to be more
 expensive than a previously found one, it can discard it right away. The main
@@ -436,8 +437,8 @@ plans can be discarded quickly later on~\cite{nica_2012_analyzing_aqoppojea}.
 
 Most modern query optimizers use a dynamic programming algorithm first proposed
 in 1979 for the System R database~\cite{selinger_1979_access_apsiardms}. The
-algorithm is built on the observation that the \sql{JOIN}s are independent ---
-the $i$th \sql{JOIN} is independent of how the first $i-1$ relations were
+algorithm is built on the observation that the joins are independent ---
+the $i$th join is independent of how the first $i-1$ relations were
 joined. Based on this it is possible to construct a tree of all permutations of
 joins by searching from smaller to successively larger subsets.
 
@@ -447,9 +448,9 @@ consider~\cite{ono_1990_measuring_mtcojeiqo}.
 
 \subsection{Monitoring}
 It is often useful to monitor and see what decisions the query optimizer make
-and why; most databases implement the ability to do so via an SQL
-statement~\cite[p. 34]{lahdenmaki_2005_relational_rdidatodossea}. In PostgreSQL
-and MariaDB the statement is called
+and why; most databases implement the ability to do so via an
+SQL-statement~\cite[p. 34]{lahdenmaki_2005_relational_rdidatodossea}. In
+PostgreSQL and MariaDB the statement is called
 \sql{EXPLAIN}~\cite{postgresql_pd9e}~\cite{explain_emkb}, but it is also called
 \sql{SHOW PLAN} or \sql{EXPLAIN PLAN}. For an example of how \sql{EXPLAIN} is
 used see Figure~\ref{fig:sql:explainquery}, which shows the code for a query,
@@ -480,14 +481,16 @@ and Figure~\ref{fig:sql:explaintrace}, which shows the corresponding trace.
   \end{lstlisting}
   \caption[An example of an \sql{EXPLAIN} trace]{The access path as shown by
     PostgreSQL's EXPLAIN statement, corresponding to the the query in
-    Figure~\ref{fig:sql:explainquery}.}\label{fig:sql:explaintrace}
+    Figure~\ref{fig:sql:explainquery}. The output shows for example that the
+    relation \texttt{title} is read with an \texttt{Index Scan} using
+    \texttt{title\_pkey}, which is an index.}\label{fig:sql:explaintrace}
 \end{figure}
 
 \subsection{Limitations}
 Even though much work has been done on improving query optimizers they may not
-always choose the correct access path. This section will describe some of the
+always choose the best access path. This section will describe some of the
 primary reasons why an incorrect access path path is chosen, as described
-in~\cite[Ch. 14]{lahdenmaki_2005_relational_rdidatodossea}.
+in~\cite[Ch.~14]{lahdenmaki_2005_relational_rdidatodossea}.
 
 \subsubsection{The optimizer can't see the best path}
 One reason the query optimizer cannot find the best path is because it is unable
@@ -513,7 +516,7 @@ path.
 \begin{itemize}
 \item If the filter factor is not estimated for a host variable, it must use a
   default value which often results in a poor estimate. However, if the filter
-  facotr is estimated evewry time the query is executed it adds a large
+  factor is estimated every time the query is executed it adds a large
   overhead.
 \item If the optimizer is unaware of the true distribution of the data it is
   forced to guess cardinality, a guess that tends to be wrong if the

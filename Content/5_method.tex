@@ -24,7 +24,7 @@ primarily:
 \begin{itemize}
 \item The number of parameters involved in the query optimization makes it hard
   to test in a deterministic way;
-\item And the all plans found are ones that the query optimizer under reasonable
+\item And all generated plans are ones that the query optimizer under reasonable
   circumstances do generate.
 \end{itemize}
 
@@ -56,8 +56,7 @@ improvement.
 \subsection{Choice of dataset}\label{sec:dataset}
 The primary focus when selecting the dataset was to use a dataset which
 could capture the complexity of a real-world database and provide a realistic
-challenge for the query optimizer. The primary requirements are that the dataset
-feature:
+challenge for the query optimizer. The primary requirements on the dataset are:
 \begin{enumerate}
 \item Many relations with multiple indexes each;
 \item\label{item:dataset:req2} More than just trivial indexes on a single row;
@@ -71,7 +70,7 @@ The datasets most commonly used for evaluation of database implementations are
 TPC-H~\cite{tpc_th}, TPC-DS~\cite{tpc_tha} and more recently
 JOB~\cite{leis_2015_how_hgaqor}. However, none of these datasets meet
 requirement~\ref{item:dataset:req2} making the problem of selecting access
-methods for these databases trivial.
+method for these datasets trivial.
 
 Instead, the dataset chosen was one taken from the real world: the dataset for
 TriOptima's product triReduce~\cite{portfolio_pcsfoddt|t} which fulfill all the
@@ -83,7 +82,7 @@ Selecting these was done based on the following critera:
 \begin{itemize}
 \item The relations involved in the query must be sufficiently large as to require the
   cardinality to be estimated via sampling;
-\item The data most be accessible via one or more index so that the actual index
+\item And the data most be accessible via one or more index so that the actual index
   selection is not trivial for the query optimizer.
 \end{itemize}
 
@@ -139,7 +138,7 @@ As detailed in Section~\ref{sec:dataset} the dataset should be sufficiently
 complex in terms of indexes, table size and table values.
 Table~\ref{table:dataset} presents the number of indexes, the number of rows and
 the size in MB of the entire database and all relations involved in the
-benchmarking, the names of the relations have been anonymized and are referred
+benchmarking; the names of the relations have been anonymized and are referred
 to by an identifier such as \textit{mm} or \textit{book}.
 
 \begin{table}
@@ -148,16 +147,16 @@ to by an identifier such as \textit{mm} or \textit{book}.
       \toprule
       & \#index & \#rows & size (MB) \\
       \midrule
-      database total & 1130 & 305 & 1165290 \\
-      mm & 6 & 64882651 & 9448 \\
-      book & 6 & 51709 & 10 \\
-      resamb & 3 & 40598 & 5 \\
-      cmm & 2 & 17335822 & 1219 \\
-      cmt & 9 & 52808814 & 12811 \\
-      t & 35 & 115851469 & 92633 \\
-      est & 32 & 33726190 & 19434 \\
-      ct & 23 & 115751571 & 72320 \\
-      mt & 9 & 21721256 & 4284 \\
+      database total & 1,130 & & 1,165,290 \\
+      mm & 6 & 64,882,651 & 9,448 \\
+      book & 6 & 51,709 & 10 \\
+      resamb & 3 & 40,598 & 5 \\
+      cmm & 2 & 17,335,822 & 1,219 \\
+      cmt & 9 & 52,808,814 & 12,811 \\
+      t & 35 & 115,851,469 & 92,633 \\
+      est & 32 & 33,726,190 & 19,434 \\
+      ct & 23 & 115,751,571 & 72,320 \\
+      mt & 9 & 21,721,256 & 4,284 \\
       \bottomrule
     \end{tabu}
     \caption[The metrics for the dataset]{The metrics for the dataset used for
@@ -168,33 +167,35 @@ to by an identifier such as \textit{mm} or \textit{book}.
 \end{table}
 
 The original dataset was stored in a MySQL database and was ported to
-PostgreSQL and MariaDB.\@ MariaDB is made as an add-on to MySQL and thus required
-no tooling, the data was just copied into a fresh install of MariaDB using a
-\textit{mysqldump}. For PostgreSQL
+PostgreSQL and MariaDB.\@ MariaDB is developed as an add-on to MySQL and thus
+required no tooling to port --- the data was just copied into a fresh install of
+MariaDB using a \textit{mysqldump}. For PostgreSQL the tool
 \textit{py-mysql2pgsql}~\cite{philipsoutham_p} was used to create a dump of the
 MySQL database with all MySQL specific data types converted to their most
 similar PostgreSQL equivalents. The data was then read into a fresh install of
 PostgreSQL.\@
 
 In the copying process all indexes and relations were maintained, thus
-maintaining essentially the same metrics for both of the copies as for the original.
+maintaining essentially the same metrics for both of the copies as for the
+original.
 
 \subsection{The queries}\label{sec:queries}
-To evaluate the databases only one query was used. The reason is that, as
-described in Section~\ref{sec:dataset}, there are few relations that can be
-involved in the query as they must fulfill the important critera in terms of
-indexes and size. As such one query covering all of the most complex relations was
-constructed. This query can be considered to be the most complex query for the
-dataset and subsets of it are used to simulate simpler scenarios.
+To evaluate the databases one query and subsets of it was used. The reason is
+that, as described in Section~\ref{sec:dataset}, there are few relations that
+can be involved in the query as they must fulfill the important critera in terms
+of indexes and size. As such one query covering all of the most complex
+relations was constructed. This query can be considered to be the most complex
+query for the dataset and subsets of it are used to simulate simpler scenarios.
 
-The original query used for evaluation can be seen in
+The original query, referred to as query \#1, used for evaluation can be seen in
 Figure~\ref{fig:sql:query1}, the relation names are once again anonymized. The
 query is constructed so that the predicate used for filtering is an indexable
 one. For the metrics of the relations involved see Figure~\ref{table:dataset}.
 
 Variations, in the form of subsets involving fewer tables, were constructed to
-present simpler scenarios for the query optimizer. These subsets can be seen in
-Figure~\ref{fig:sql:query2}, Figure~\ref{fig:sql:query3} and Figure~\ref{fig:sql:query4}.
+present simpler scenarios for the query optimizer. These queries are referred to
+as queries \#2 through \#4, and can be seen in Figure~\ref{fig:sql:query2},
+Figure~\ref{fig:sql:query3} and Figure~\ref{fig:sql:query4} respectivelyk.
 
 \begin{figure}[ht]
 \begin{minted}[breaklines]{sql}
@@ -246,7 +247,7 @@ evaluation. The section starts with a general overview of the process of
 evaluation, breaking it down into steps. Following this is a description of the
 tool developed, showing how it is used and what technologies are used. After
 this section comes three sections describing each of the three steps of evaluation.
-Finally implementation details are provided for PostgreSQL and MariaDB.\@
+Finally, implementation details are provided for PostgreSQL and MariaDB.\@
 
 Evaluating a database for a given query can be broken down into three primary
 steps:
@@ -276,8 +277,8 @@ Figure~\ref{fig:cmd:runtool1}.
   \end{minted}
   \caption[Using the tool to generate, parse and analyze a query]{An example of
     using the tool to generate, parse and analyze a query with some given
-    parameters, such as the statistics targets (referred to as sample sizes here)
-    to use.}\label{fig:cmd:runtool1}
+    parameters, such as the statistics targets (via the flag \texttt{samplesizes}
+    here).}\label{fig:cmd:runtool1}
 \end{figure}
 
 As the steps can be executed one at a time, the results for each are saved and
@@ -303,7 +304,7 @@ The task of generating query plans can be broken down in the following steps:
 \item Set the statistics target used to estimate cardinalities;
 \item Generate new statistics, and thus new cardinality estimates, for all
   relations involved in the query used for evaluation;
-\item Find the query plan for each possible value of the query.
+\item And find the query plan for each possible value of the query.
 \end{enumerate}
 These steps are then repeated a number of times to ensure that all query plans
 are found.
@@ -483,13 +484,15 @@ then set the statistics target and finally analyze all relations involved in the
 \end{figure}
 
 \section{Evaluation}\label{sec:evaluation}
-In order to evaluate the database the dataset described in~\ref{sec:dataset} and
-query \#1, shown in Figure~\ref{fig:sql:query1}. The tool supports several
-options to be set and the values used for the evaluation can be seen in
-Table~\ref{table:evaluation1}, which shows the initial tests conducted. The
-results from these tests warranted further evaluation and the options for these
-tests can be seen in Table~\ref{table:evaluation2}. The same values were used
-when testing both PostgreSQL and MariaDB.\@
+This section will cover the parameters used for the tool when evaluating the
+databases, as well as provide an explanation and motivation to why these values
+were chosen.
+
+The options used for the first evaluation can be seen in
+Table~\ref{table:evaluation1}. The results from this evaluation warranted
+further evaluation and the options for these tests can be seen in
+Table~\ref{table:evaluation2}. The same values were used when testing both
+PostgreSQL and MariaDB.\@
 
 \begin{table}
   \begin{center}
@@ -529,13 +532,14 @@ when testing both PostgreSQL and MariaDB.\@
 \end{table}
 
 In order to find what effect the cardinality estimate has on the access methods
-used the tests are done in two different scenarios: one with a low quality
-cardinality estimate and one with a quality estimate. To simulate a low quality
-cardinality estimate, a low statistics target is used, causing a low sample size
-to be used. The reason is that, as described in
-Section~\ref{sec:collecting_statistics}, a small sample size will cause a small
-fraction of the rows in the relation to be used when estimating the cardinality
---- which in turn will increase the risk of incorrect estimates.
+used the tests are done in three different scenarios: one with a low quality
+cardinality estimate, one with a reasonable quality estimate and one with a high
+quality estimate. To simulate a low quality cardinality estimate, a low
+statistics target is used, causing a low sample size to be used. The reason is
+that, as described in Section~\ref{sec:collecting_statistics}, a small sample
+size will cause a small fraction of the rows in the relation to be used when
+estimating the cardinality --- which in turn will increase the risk of incorrect
+estimates.
 
 The statistics target is not exactly the same for the two databases, for MariaDB
 it is the number of pages used when sampling and for PostgreSQL it is the amount
@@ -554,9 +558,9 @@ must be run sequentially and testing one query with one statistics target takes
 roughly 30 hours of execution time.
 
 As can be seen in the table, the lowest statistics target used is 1 for both
-databases. The reason is that it is done in order to simulate the worst possible
-scenario for the databases --- the case where they must use the potentially most
-incorrect cardinality estimate.
+databases. The reason is that it provides the worst possible scenario for the
+databases --- the case where they must use the potentially most incorrect
+cardinality estimate.
 
 To contrast the worst case scenario the databases are then tested with two more
 statistics targets: the default statistics target; and double the default value. The
